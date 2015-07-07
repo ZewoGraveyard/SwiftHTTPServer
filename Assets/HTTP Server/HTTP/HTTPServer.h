@@ -25,6 +25,7 @@
 #ifndef HTTPServer_h
 #define HTTPServer_h
 
+#include <libpq-fe.h>
 #include <dispatch/dispatch.h>
 #include <sys/socket.h>
 #include <regex.h>

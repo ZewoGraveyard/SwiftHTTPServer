@@ -1,4 +1,4 @@
-// HTTPServer.h
+// FormURLEncodedBody.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct FormURLEncodedBody: HTTPBody {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    let contentType: InternetMediaType? = .ApplicationXWWWFormURLEncoded
+    let data: Data?
+    let parameters: [String: String]
 
-#endif /* HTTPServer_h */
+    init(data: Data) throws {
+
+        guard let body = String(data: data)
+        else { throw Error.Generic("Could not create FormURLEncodedBody from data", "Data is not UTF-8 encoded") }
+
+        self.data = data
+        self.parameters = body.queryParameters ?? [:]
+        
+    }
+    
+}

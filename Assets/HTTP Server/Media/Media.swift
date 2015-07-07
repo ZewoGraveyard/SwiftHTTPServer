@@ -1,4 +1,4 @@
-// Resource.swift
+// Media.swift
 //
 // The MIT License (MIT)
 //
@@ -22,64 +22,57 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if os(iOS)
- 
-import Foundation
-    
-#endif
-
-struct Resource {
+struct Media {
 
     let path: String
     let data: Data
 
     init?(path: String) {
 
-        let resourcePath = Resource.pathForResource(path)
+        let mediaPath = Media.pathForMedia(path)
 
-        guard let resourceData = Resource.getDataForResourceAtPath(resourcePath)
+        guard let mediaData = Media.getDataForMediaAtPath(mediaPath)
         else { return nil }
 
-        self.path = resourcePath
-        self.data = resourceData
+        self.path = mediaPath
+        self.data = mediaData
 
+    }
+
+    init?(path: String, data: Data) {
+
+        let mediaPath = Media.pathForMedia(path)
+
+        guard let mediaData = Media.saveData(data, forMediaAtPath: mediaPath)
+        else { return nil }
+
+        self.path = mediaPath
+        self.data = mediaData
+        
     }
 
 }
 
 // MARK: - Private
 
-extension Resource {
+extension Media {
 
-    private static func pathForResource(path: String) -> String {
+    private static func pathForMedia(path: String) -> String {
 
-        return "Assets/" + path
+        return "Media/" + path
 
     }
 
-    private static func getDataForResourceAtPath(path: String) -> Data? {
+    private static func getDataForMediaAtPath(path: String) -> Data? {
         
-        #if os(iOS)
-            
-            let resourcePath = NSBundle.mainBundle().resourcePath!
-            let filePath = resourcePath.stringByExpandingTildeInPath.stringByAppendingPathComponent(path)
-            
-            if let data = NSData(contentsOfFile: filePath) {
-                
-                let rawArray = Array<UInt8>(start: data.bytes, length: data.length)
-                return Data(bytes: data.bytes)
-                
-            }
-            
-            return nil
-            
+        return File(path: path)?.data
+        
+    }
+
+    private static func saveData(data: Data, forMediaAtPath path: String) -> Data? {
+
+        return File(path: path, data: data)?.data
+
+    }
     
-        #elseif os(OSX)
-            
-            return File(path: path)?.data
-            
-        #endif
-        
-    }
-
 }

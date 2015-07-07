@@ -1,4 +1,4 @@
-// HTTPServer.h
+// Dictionary.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+func +<Key, Value>(var left: [Key: Value], right: [Key: Value]) -> [Key: Value] {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    for (key, value) in right {
 
-#endif /* HTTPServer_h */
+        left[key] = value
+
+    }
+
+    return left
+
+}
+
+func dictionaryFromKeys<Key, Value>(keys: [Key], values: [Value]) -> [Key: Value] {
+
+    var dictionary: [Key: Value] = [:]
+
+    for (index, key) in keys.enumerate() {
+
+        dictionary[key] = values[index]
+        
+    }
+    
+    return dictionary
+    
+}

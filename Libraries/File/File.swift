@@ -1,4 +1,4 @@
-// Resource.swift
+// File.swift
 //
 // The MIT License (MIT)
 //
@@ -22,64 +22,75 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if os(iOS)
- 
-import Foundation
-    
-#endif
+struct File {
 
-struct Resource {
-
-    let path: String
     let data: Data
 
     init?(path: String) {
 
-        let resourcePath = Resource.pathForResource(path)
-
-        guard let resourceData = Resource.getDataForResourceAtPath(resourcePath)
+        guard let data = File.getData(path)
         else { return nil }
 
-        self.path = resourcePath
-        self.data = resourceData
+        self.data = data
 
     }
 
-}
+    init?(path: String, data: Data) {
 
-// MARK: - Private
+        guard let data = File.saveData(data, atPath: path)
+        else { return nil }
 
-extension Resource {
-
-    private static func pathForResource(path: String) -> String {
-
-        return "Assets/" + path
+        self.data = data
 
     }
 
-    private static func getDataForResourceAtPath(path: String) -> Data? {
-        
-        #if os(iOS)
+    private static func saveData(data: Data, atPath path: String) -> Data? {
+
+        let file = fopen(path, "w")
+
+        if file == .None {
+
+            return .None
             
-            let resourcePath = NSBundle.mainBundle().resourcePath!
-            let filePath = resourcePath.stringByExpandingTildeInPath.stringByAppendingPathComponent(path)
-            
-            if let data = NSData(contentsOfFile: filePath) {
-                
-                let rawArray = Array<UInt8>(start: data.bytes, length: data.length)
-                return Data(bytes: data.bytes)
-                
+        }
+
+        fwrite(data.bytes, 1, data.length, file)
+        fclose(file)
+
+        return data
+
+    }
+
+    private static func getData(path: String) -> Data? {
+
+        let file = fopen(path, "r")
+
+        if file == nil {
+
+            return .None
+
+        }
+
+        var array: [UInt8] = []
+
+        while true {
+
+            let element = fgetc(file)
+
+            if feof(file) != 0 {
+
+                break
+
             }
-            
-            return nil
-            
-    
-        #elseif os(OSX)
-            
-            return File(path: path)?.data
-            
-        #endif
-        
-    }
 
+            array.append(UInt8(element))
+
+        }
+
+        fclose(file)
+
+        return Data(bytes: array)
+
+    }
+    
 }

@@ -1,4 +1,4 @@
-// HTTPServer.h
+// RedirectController.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct RedirectController: HTTPRequestController {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    func any(request: HTTPRequest) -> HTTPResponse {
 
-#endif /* HTTPServer_h */
+        return HTTPResponse(status: .MovedPermanently, headers: ["location": "http://www.google.com"])
+
+    }
+    
+}

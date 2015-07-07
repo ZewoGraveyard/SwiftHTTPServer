@@ -22,12 +22,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if os(iOS)
- 
-import Foundation
-    
-#endif
-
 struct Resource {
 
     let path: String
@@ -53,32 +47,13 @@ extension Resource {
 
     private static func pathForResource(path: String) -> String {
 
-        return "Assets/" + path
+        return "Resources/" + path
 
     }
 
     private static func getDataForResourceAtPath(path: String) -> Data? {
-        
-        #if os(iOS)
-            
-            let resourcePath = NSBundle.mainBundle().resourcePath!
-            let filePath = resourcePath.stringByExpandingTildeInPath.stringByAppendingPathComponent(path)
-            
-            if let data = NSData(contentsOfFile: filePath) {
-                
-                let rawArray = Array<UInt8>(start: data.bytes, length: data.length)
-                return Data(bytes: data.bytes)
-                
-            }
-            
-            return nil
-            
-    
-        #elseif os(OSX)
-            
-            return File(path: path)?.data
-            
-        #endif
+
+        return File(path: path)?.data
         
     }
 

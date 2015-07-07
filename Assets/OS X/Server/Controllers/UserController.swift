@@ -1,4 +1,4 @@
-// HTTPServer.h
+// UserController.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct UserController: HTTPRequestController {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    func any(request: HTTPRequest) throws -> HTTPResponse {
 
-#endif /* HTTPServer_h */
+//        print(request.pathParameters)
+//        print(request.queryParameters)
+//        print(request.bodyParameters)
+
+        let info: [String: MustacheBoxable] = [
+            "URI": request.URI,
+            "method": request.method.description,
+            "headers": request.headers,
+            "params": request.pathParameters
+        ]
+
+        return HTTPResponse(status: .OK, body: try TemplateBody(template: "user.html", data: info))
+        
+    }
+    
+}

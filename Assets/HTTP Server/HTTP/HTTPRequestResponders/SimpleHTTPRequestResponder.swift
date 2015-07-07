@@ -1,4 +1,4 @@
-// HTTPServer.h
+// SimpleHTTPRequestResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct SimpleHTTPRequestResponder: HTTPRequestResponder {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    let responder: HTTPRequest throws -> HTTPResponse
 
-#endif /* HTTPServer_h */
+    init(responder: HTTPRequest throws -> HTTPResponse) {
+
+        self.responder = responder
+
+    }
+
+    func respondRequest(request: HTTPRequest) throws -> HTTPResponse {
+
+        return try responder(request)
+        
+    }
+    
+}

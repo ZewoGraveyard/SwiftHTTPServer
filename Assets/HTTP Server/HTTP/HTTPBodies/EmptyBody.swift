@@ -1,4 +1,4 @@
-// HTTPServer.h
+// FormURLEncodedBody.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct EmptyBody: HTTPBody {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
-
-#endif /* HTTPServer_h */
+    let contentType: InternetMediaType? = .None
+    let data: Data? = .None
+    
+}

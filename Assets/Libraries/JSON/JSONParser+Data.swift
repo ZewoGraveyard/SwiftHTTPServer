@@ -1,4 +1,4 @@
-// HTTPServer.h
+// JSONParser+Data.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+extension JSONParser {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    public static func parse(source: Data) throws -> JSON {
 
-#endif /* HTTPServer_h */
+        return try GenericJSONParser(source.bytes).parse()
+        
+    }
+
+}

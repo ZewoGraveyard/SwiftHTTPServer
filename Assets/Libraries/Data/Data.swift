@@ -1,4 +1,4 @@
-// HTTPServer.h
+// Data.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,69 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+public struct Data {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    let bytes: [UInt8]
 
-#endif /* HTTPServer_h */
+    var length: Int {
+
+        return bytes.count
+
+    }
+
+    init(bytes: [UInt8]) {
+
+        self.bytes = bytes
+
+    }
+
+    init(string: String) {
+
+        var chars: [UInt8] = []
+
+        for char in string.utf8 {
+
+            chars.append(char)
+
+        }
+
+        self.bytes = chars
+        
+    }
+
+}
+
+
+extension Data: CustomStringConvertible {
+
+    public var description: String {
+
+        if length > 500 {
+
+            return "Data: Data too large to be represented as string."
+
+        }
+
+        if let string = String(data: self) {
+
+            return string
+
+        } else {
+
+            return "Data: Unable to convert data to UTF-8 string."
+
+        }
+
+    }
+
+}
+
+extension Data: SequenceType {
+
+    public func generate() -> IndexingGenerator<[UInt8]> {
+
+        return IndexingGenerator(bytes)
+
+    }
+
+}

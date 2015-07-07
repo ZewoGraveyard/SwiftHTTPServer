@@ -1,4 +1,4 @@
-// HTTPServer.h
+// HTTPSerializer.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct HTTPSerializer {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    static func sendHTTPResponse(clientSocket: Socket, response: HTTPResponse) throws {
 
-#endif /* HTTPServer_h */
+        try clientSocket.writeString("\(response.status.HTTPVersion) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+
+        for (name, value) in response.headers {
+
+            try clientSocket.writeString("\(name): \(value)\r\n")
+
+        }
+
+        try clientSocket.writeString("\r\n")
+        
+        if let data = response.body.data {
+            
+            try clientSocket.writeData(data)
+            
+        }
+        
+    }
+    
+}
+

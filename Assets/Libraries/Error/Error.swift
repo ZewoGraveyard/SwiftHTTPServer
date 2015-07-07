@@ -1,4 +1,4 @@
-// HTTPServer.h
+// Error.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+typealias ErrorDescription = String
+typealias ErrorReason = String
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+enum Error: ErrorType {
 
-#endif /* HTTPServer_h */
+    case Generic(ErrorDescription, ErrorReason)
+
+    static func lastSystemError(reason reason: String) -> Error {
+
+        if let errorDescription = String.fromCString(UnsafePointer(strerror(errno))) {
+
+            return Error.Generic(errorDescription, reason)
+
+        }
+
+        return Error.Generic("Unknown Error", reason)
+
+    }
+
+}

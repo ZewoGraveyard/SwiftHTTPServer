@@ -1,4 +1,4 @@
-// Resource.swift
+// DataBody.swift
 //
 // The MIT License (MIT)
 //
@@ -22,64 +22,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if os(iOS)
- 
-import Foundation
-    
-#endif
+struct DataBody: HTTPBody {
 
-struct Resource {
+    let data: Data?
+    let contentType: InternetMediaType?
 
-    let path: String
-    let data: Data
+    init?(resourceAtPath path: String, contentType: InternetMediaType? = .None) {
 
-    init?(path: String) {
-
-        let resourcePath = Resource.pathForResource(path)
-
-        guard let resourceData = Resource.getDataForResourceAtPath(resourcePath)
+        guard let resource = Resource(path: path)
         else { return nil }
 
-        self.path = resourcePath
-        self.data = resourceData
+        self.init(resource: resource, contentType: contentType)
 
     }
 
-}
+    init(resource: Resource, contentType: InternetMediaType? = .None) {
 
-// MARK: - Private
-
-extension Resource {
-
-    private static func pathForResource(path: String) -> String {
-
-        return "Assets/" + path
+        self.init(data: resource.data, contentType: contentType)
 
     }
 
-    private static func getDataForResourceAtPath(path: String) -> Data? {
+    init(data: Data, contentType: InternetMediaType? = .None) {
         
-        #if os(iOS)
-            
-            let resourcePath = NSBundle.mainBundle().resourcePath!
-            let filePath = resourcePath.stringByExpandingTildeInPath.stringByAppendingPathComponent(path)
-            
-            if let data = NSData(contentsOfFile: filePath) {
-                
-                let rawArray = Array<UInt8>(start: data.bytes, length: data.length)
-                return Data(bytes: data.bytes)
-                
-            }
-            
-            return nil
-            
+        self.data = data
+        self.contentType = contentType
+        
+    }
     
-        #elseif os(OSX)
-            
-            return File(path: path)?.data
-            
-        #endif
-        
-    }
-
 }

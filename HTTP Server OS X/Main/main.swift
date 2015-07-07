@@ -1,4 +1,4 @@
-// Resource.swift
+// main.swift
 //
 // The MIT License (MIT)
 //
@@ -22,64 +22,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if os(iOS)
- 
-import Foundation
+do {
     
-#endif
-
-struct Resource {
-
-    let path: String
-    let data: Data
-
-    init?(path: String) {
-
-        let resourcePath = Resource.pathForResource(path)
-
-        guard let resourceData = Resource.getDataForResourceAtPath(resourcePath)
-        else { return nil }
-
-        self.path = resourcePath
-        self.data = resourceData
-
-    }
-
-}
-
-// MARK: - Private
-
-extension Resource {
-
-    private static func pathForResource(path: String) -> String {
-
-        return "Assets/" + path
-
-    }
-
-    private static func getDataForResourceAtPath(path: String) -> Data? {
+    let database = try PostgreSQL(connectionInfo: "dbname = postgres")
+    
+    try database.transaction {
         
-        #if os(iOS)
+        try database.command("DECLARE myportal CURSOR FOR select * from pg_database")
+        
+        let result = try database.query("FETCH ALL in myportal")
+        
+        for fieldName in result.fieldNames  {
             
-            let resourcePath = NSBundle.mainBundle().resourcePath!
-            let filePath = resourcePath.stringByExpandingTildeInPath.stringByAppendingPathComponent(path)
+            let string = String(format: "%-15s", fieldName)
+            print(string, appendNewline: false)
             
-            if let data = NSData(contentsOfFile: filePath) {
+        }
+        
+        print("\n")
+        
+        for tuple in result.tuples {
+            
+            for field in tuple.fields {
                 
-                let rawArray = Array<UInt8>(start: data.bytes, length: data.length)
-                return Data(bytes: data.bytes)
+                let string = String(format: "%-15s", field.value)
+                print(string, appendNewline: false)
                 
             }
             
-            return nil
+            print("")
             
-    
-        #elseif os(OSX)
-            
-            return File(path: path)?.data
-            
-        #endif
+        }
+        
+        database.clear(result)
+        
+        try database.command("CLOSE myportal")
         
     }
-
+    
+    database.finish()
+    
+} catch {
+    
+    Log.error(error)
+    
 }
+
+Server().start()

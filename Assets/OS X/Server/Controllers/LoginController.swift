@@ -1,4 +1,4 @@
-// HTTPServer.h
+// LoginController.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,44 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct LoginController: HTTPRequestController {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    func get(request: HTTPRequest) -> HTTPResponse {
 
-#endif /* HTTPServer_h */
+        if let body = DataBody(resourceAtPath: "login.html") {
+
+            return HTTPResponse(status: .OK, body: body)
+
+        } else {
+
+            return HTTPResponse(status: .NotFound)
+
+        }
+
+    }
+
+    func post(request: HTTPRequest) -> HTTPResponse {
+
+        guard let body = request.body as? FormURLEncodedBody
+        else { return HTTPResponse(status: .BadRequest) }
+
+        guard let email = body.parameters["email"],
+               password = body.parameters["password"] else {
+
+            return HTTPResponse(status: .BadRequest)
+
+        }
+
+        if email == "regis@regis.com" && password == "123" {
+
+            return HTTPResponse(status: .OK, body: HTMLBody(body: "logou"))
+
+        } else {
+
+            return HTTPResponse(status: .Unauthorized)
+
+        }
+        
+    }
+
+}

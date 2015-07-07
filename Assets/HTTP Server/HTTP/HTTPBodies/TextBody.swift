@@ -1,4 +1,4 @@
-// HTTPServer.h
+// TextBody.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct TextBody: HTTPBody {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    let contentType: InternetMediaType? = .TextPlain
+    let text: String
 
-#endif /* HTTPServer_h */
+    init(data: Data) throws {
+
+        guard let text = String(data: data)
+        else { throw Error.Generic("Could not create TextBody from data", "Data is not UTF-8 encoded") }
+        self.text = text
+
+    }
+
+    init(text: String) {
+
+        self.text = text
+
+    }
+
+    var data: Data? {
+
+        return Data(string: text)
+        
+    }
+    
+}

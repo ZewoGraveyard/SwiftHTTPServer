@@ -1,4 +1,4 @@
-// HTTPServer.h
+// TemplateBody.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct TemplateBody: HTTPBody {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    let contentType: InternetMediaType? = .TextHTML
+    let body: String
 
-#endif /* HTTPServer_h */
+    init(template: String, data: MustacheBoxable) throws {
+
+        guard let resource = Resource(path: template)
+        else { throw Error.Generic("Template Response Body", "Could not find resource \(template)") }
+
+        guard let resourceString = String(data: resource.data)
+        else { throw Error.Generic("Template Response Body", "Could not get string from resource \(template)") }
+
+        let template = try Template(string: resourceString)
+        let rendering = try template.render(Box(data))
+        self.body = rendering
+
+    }
+
+    var data: Data? {
+
+        return Data(string: "\(body)")
+        
+    }
+    
+}

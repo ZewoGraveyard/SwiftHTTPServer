@@ -1,4 +1,4 @@
-// HTTPServer.h
+// HTTPRoute.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct HTTPRoute {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    let path: String
+    let pathParameterKeys: [String]
+    let regularExpression: RegularExpression
+    let responder: HTTPRequestResponder
 
-#endif /* HTTPServer_h */
+    init(path: String, responder: HTTPRequestResponder) {
+
+        let pathParameterRegularExpression = try! RegularExpression(pattern: ":([[:alnum:]]+)")
+        let finalPattern = try! pathParameterRegularExpression.replace(path, withTemplate: "([[:alnum:]]+)")
+
+        self.path = path
+        self.pathParameterKeys = try! pathParameterRegularExpression.groups(path)
+        self.regularExpression = try! RegularExpression(pattern: "^" + finalPattern + "$")
+        self.responder = responder
+            
+    }
+    
+}

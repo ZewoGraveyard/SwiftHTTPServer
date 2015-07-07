@@ -1,4 +1,4 @@
-// HTTPServer.h
+// JSONBody.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct JSONBody: HTTPBody {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    let contentType: InternetMediaType? = .ApplicationJSON
+    var json: JSON
 
-#endif /* HTTPServer_h */
+    init(data: Data) throws {
+
+        self.json = try JSONParser.parse(data)
+        
+    }
+
+    init(json: JSON) {
+
+        self.json = json
+
+    }
+
+    var data: Data? {
+
+        return Data(string: "\(json)")
+        
+    }
+    
+}

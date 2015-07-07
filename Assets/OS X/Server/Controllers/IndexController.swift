@@ -1,4 +1,4 @@
-// HTTPServer.h
+// IndexController.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct IndexController: HTTPRequestController {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    func get(request: HTTPRequest) -> HTTPResponse {
 
-#endif /* HTTPServer_h */
+        if let body = DataBody(resourceAtPath: "index.html") {
+
+            return HTTPResponse(status: .OK, body: body)
+
+        } else {
+
+            return HTTPResponse(status: .NotFound)
+
+        }
+
+    }
+    
+}

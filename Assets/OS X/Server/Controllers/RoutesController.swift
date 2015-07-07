@@ -1,4 +1,4 @@
-// HTTPServer.h
+// RoutesController.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct RoutesController: HTTPRequestController {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    let server: HTTPServer
 
-#endif /* HTTPServer_h */
+    func any(request: HTTPRequest) throws -> HTTPResponse {
+
+        let routes = [
+
+            "routes": server.routes
+
+        ]
+
+        return HTTPResponse(status: .OK, body: try TemplateBody(template: "routes.html", data: routes))
+
+    }
+    
+}

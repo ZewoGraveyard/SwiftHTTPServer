@@ -1,4 +1,4 @@
-// HTTPServer.h
+// JSONController.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct JSONController: HTTPRequestController {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    func get(request: HTTPRequest) -> HTTPResponse {
 
-#endif /* HTTPServer_h */
+        let json: JSON = [
+
+            "null": nil,
+            "string": "Foo Bar",
+            "boolean": true,
+            "array": [
+                "1",
+                2,
+                nil,
+                true,
+                ["1", 2, nil, false],
+                ["a": "b"]
+            ],
+            "object": [
+                "a": "1",
+                "b": 2,
+                "c": nil,
+                "d": false,
+                "e": ["1", 2, nil, false],
+                "f": ["a": "b"]
+            ],
+            "number": 1969
+
+        ]
+
+        return HTTPResponse(status: .OK, body: JSONBody(json: json))
+
+    }
+
+    func post(request: HTTPRequest) -> HTTPResponse {
+
+        guard var body = request.body as? JSONBody
+        else { return HTTPResponse(status: .BadRequest, body: TextBody(text: "Expected JSON body")) }
+
+        body.json["number"] = 321
+        body.json["array"][0] = 3
+        body.json["array"][2] = 1
+
+        return HTTPResponse(status: .OK, body: body)
+
+    }
+
+}

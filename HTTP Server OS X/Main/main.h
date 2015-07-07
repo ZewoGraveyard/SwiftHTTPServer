@@ -1,4 +1,4 @@
-// HTTPServer.h
+// main.h
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+#ifndef BridgingHeader_h
+#define BridgingHeader_h
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+#include <libpq-fe.h>
+#include "HTTPServer.h"
 
-#endif /* HTTPServer_h */
+#endif

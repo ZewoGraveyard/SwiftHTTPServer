@@ -1,4 +1,4 @@
-// HTTPServer.h
+// HTTPRequestResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+protocol HTTPRequestResponder {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
-
-#endif /* HTTPServer_h */
+    func respondRequest(request: HTTPRequest) throws -> HTTPResponse
+    
+}

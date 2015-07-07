@@ -1,4 +1,4 @@
-// HTTPServer.h
+// Server.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct Server {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    private let server = HTTPServer()
 
-#endif /* HTTPServer_h */
+    init() {
+
+        server.route("/", responder: IndexController())
+        server.route("/login", responder: LoginController())
+        server.route("/user/:id", responder: UserController())
+        server.route("/json", responder: JSONController())
+        server.route("/redirect", responder: RedirectController())
+        server.route("/routes", responder: RoutesController(server: server))
+
+    }
+
+}
+
+// MARK: - Public
+
+extension Server {
+
+    func start() {
+
+        server.start()
+
+    }
+    
+}

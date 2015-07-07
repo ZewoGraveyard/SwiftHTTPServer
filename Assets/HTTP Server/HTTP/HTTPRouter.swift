@@ -1,4 +1,4 @@
-// HTTPServer.h
+// HTTPRouter.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,61 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+struct HTTPRouter {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    var routes: [HTTPRoute] = []
 
-#endif /* HTTPServer_h */
+    struct RouteMatch {
+
+        let pathParameters: [String: String]
+        let responder: HTTPRequestResponder
+        
+    }
+
+}
+
+// MARK: - Public
+
+extension HTTPRouter {
+
+    mutating func addRoute(path: String, responder: HTTPRequestResponder) {
+
+        let route = HTTPRoute(path: path, responder: responder)
+        routes.append(route)
+
+    }
+
+    func match(path: String) -> RouteMatch? {
+
+        let matches = routes.filter { route in
+
+            do {
+
+                return try route.regularExpression.matches(path)
+
+            } catch {
+
+                return false
+                
+            }
+            
+        }
+
+        if let route = matches.first {
+
+            let responder = route.responder
+            let groups = try! route.regularExpression.groups(path)
+            let pathParameters = dictionaryFromKeys(route.pathParameterKeys, values: groups)
+
+            return RouteMatch(
+                pathParameters: pathParameters,
+                responder: responder
+            )
+
+        }
+
+        return .None
+
+    }
+
+}

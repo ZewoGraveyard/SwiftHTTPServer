@@ -1,4 +1,4 @@
-// HTTPServer.h
+// HTTPBody.swift
 //
 // The MIT License (MIT)
 //
@@ -22,11 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+protocol HTTPBody {
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+    var contentType: InternetMediaType? { get }
+    var data: Data? { get }
 
-#endif /* HTTPServer_h */
+}
