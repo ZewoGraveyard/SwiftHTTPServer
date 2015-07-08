@@ -41,7 +41,7 @@ extension HTTPServer {
 
     func route(path: String, responder: HTTPRequest throws -> HTTPResponse) {
 
-        let simpleResponder = SimpleHTTPRequestResponder(responder: responder)
+        let simpleResponder = HTTPSimpleRequestResponder(responder: responder)
         router.addRoute(path, responder: simpleResponder)
 
     }
@@ -66,8 +66,6 @@ extension HTTPServer {
                 self.waitForClients(failure)
 
             }
-
-            Dispatch.main()
 
         } catch {
 
@@ -120,7 +118,7 @@ extension HTTPServer {
 
             while true {
 
-                let request = try HTTPParser.receiveHTTPRequest(clientSocket)
+                let request = try HTTPServerParser.receiveHTTPRequest(clientSocket)
 
                 Log.info(request)
 
@@ -154,7 +152,7 @@ extension HTTPServer {
 
         } else {
 
-            response = responseForResourceAtPath(request.path)
+            response = responseForAssetAtPath(request.path)
 
         }
 
@@ -166,7 +164,7 @@ extension HTTPServer {
 
         Log.info(response)
 
-        try HTTPSerializer.sendHTTPResponse(clientSocket, response: response)
+        try HTTPServerSerializer.sendHTTPResponse(clientSocket, response: response)
 
     }
 
@@ -190,13 +188,13 @@ extension HTTPServer {
         
     }
 
-    private func responseForResourceAtPath(path: String) -> HTTPResponse {
+    private func responseForAssetAtPath(path: String) -> HTTPResponse {
 
-        let resourcePath = path.dropFirstCharacter()
+        let assetPath = path.dropFirstCharacter()
 
-        if let resource = Resource(path: resourcePath) {
+        if let asset = Asset(path: assetPath) {
 
-            return HTTPResponse(status: .OK, body: DataBody(resource: resource))
+            return HTTPResponse(status: .OK, body: DataBody(asset: asset))
 
         } else {
 

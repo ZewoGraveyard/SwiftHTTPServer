@@ -25,7 +25,7 @@
 #ifndef BridgingHeader_h
 #define BridgingHeader_h
 
-#include <libpq-fe.h>
-#include "HTTPServer.h"
+#include "Server.h"
+#include <arpa/inet.h>
 
 #endif

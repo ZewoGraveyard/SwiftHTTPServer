@@ -1,4 +1,4 @@
-// ViewController.swift
+// Server.h
 //
 // The MIT License (MIT)
 //
@@ -22,7 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+#ifndef Client_h
+#define Client_h
 
-class ViewController: UIViewController {}
+#include "HTTPClient.h"
 
+#endif /* Client_h */

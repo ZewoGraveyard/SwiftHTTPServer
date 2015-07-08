@@ -22,50 +22,5 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-do {
-    
-    let database = try PostgreSQL(connectionInfo: "dbname = postgres")
-    
-    try database.transaction {
-        
-        try database.command("DECLARE myportal CURSOR FOR select * from pg_database")
-        
-        let result = try database.query("FETCH ALL in myportal")
-        
-        for fieldName in result.fieldNames  {
-            
-            let string = String(format: "%-15s", fieldName)
-            print(string, appendNewline: false)
-            
-        }
-        
-        print("\n")
-        
-        for tuple in result.tuples {
-            
-            for field in tuple.fields {
-                
-                let string = String(format: "%-15s", field.value)
-                print(string, appendNewline: false)
-                
-            }
-            
-            print("")
-            
-        }
-        
-        database.clear(result)
-        
-        try database.command("CLOSE myportal")
-        
-    }
-    
-    database.finish()
-    
-} catch {
-    
-    Log.error(error)
-    
-}
-
 Server().start()
+Dispatch.main()

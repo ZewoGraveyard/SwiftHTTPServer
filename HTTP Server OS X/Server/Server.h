@@ -1,4 +1,4 @@
-// ViewController.swift
+// Server.h
 //
 // The MIT License (MIT)
 //
@@ -22,7 +22,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+#ifndef Server_h
+#define Server_h
 
-class ViewController: UIViewController {}
+#include "HTTPServer.h"
+#include "PostgreSQL.h"
+
+#endif /* Server_h */
+
 

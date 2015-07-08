@@ -26,7 +26,7 @@ struct IndexController: HTTPRequestController {
 
     func get(request: HTTPRequest) -> HTTPResponse {
 
-        if let body = DataBody(resourceAtPath: "index.html") {
+        if let body = DataBody(assetAtPath: "index.html") {
 
             return HTTPResponse(status: .OK, body: body)
 

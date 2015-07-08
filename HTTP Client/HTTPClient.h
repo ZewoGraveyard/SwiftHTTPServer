@@ -1,4 +1,4 @@
-// ViewController.swift
+// HTTPClient.h
 //
 // The MIT License (MIT)
 //
@@ -22,7 +22,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+#ifndef HTTPClient_h
+#define HTTPClient_h
 
-class ViewController: UIViewController {}
+#include "Dispatch.h"
+#include "Socket.h"
+#include "RegularExpression.h"
 
+#endif /* HTTPClient_h */

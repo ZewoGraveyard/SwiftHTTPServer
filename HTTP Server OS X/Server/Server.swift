@@ -32,6 +32,7 @@ struct Server {
         server.route("/login", responder: LoginController())
         server.route("/user/:id", responder: UserController())
         server.route("/json", responder: JSONController())
+        server.route("/database", responder: DatabaseController())
         server.route("/redirect", responder: RedirectController())
         server.route("/routes", responder: RoutesController(server: server))
 

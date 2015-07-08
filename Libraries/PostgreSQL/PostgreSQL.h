@@ -1,4 +1,4 @@
-// ViewController.swift
+// PostgreSQL.h
 //
 // The MIT License (MIT)
 //
@@ -22,7 +22,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+#ifndef PostgreSQL_h
+#define PostgreSQL_h
 
-class ViewController: UIViewController {}
+#ifdef __APPLE__
+    #if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR && TARGET_OS_MAC
+        #include <libpq-fe.h>
+    #endif
+#endif
 
+#endif /* PostgreSQL_h */

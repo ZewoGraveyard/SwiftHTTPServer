@@ -1,4 +1,4 @@
-// ViewController.swift
+// Dispatch.h
 //
 // The MIT License (MIT)
 //
@@ -22,7 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+#ifndef Dispatch_h
+#define Dispatch_h
 
-class ViewController: UIViewController {}
+#include <dispatch/dispatch.h>
 
+#endif /* Dispatch_h */

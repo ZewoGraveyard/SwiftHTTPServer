@@ -1,4 +1,4 @@
-// ViewController.swift
+// Socket.h
 //
 // The MIT License (MIT)
 //
@@ -22,7 +22,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+#ifndef Socket_h
+#define Socket_h
 
-class ViewController: UIViewController {}
+#include <sys/socket.h>
+#include <arpa/inet.h>
 
+#endif /* Socket_h */

@@ -29,13 +29,13 @@ struct TemplateBody: HTTPBody {
 
     init(template: String, data: MustacheBoxable) throws {
 
-        guard let resource = Resource(path: template)
-        else { throw Error.Generic("Template Response Body", "Could not find resource \(template)") }
+        guard let asset = Asset(path: template)
+        else { throw Error.Generic("Template Response Body", "Could not find template \(template)") }
 
-        guard let resourceString = String(data: resource.data)
-        else { throw Error.Generic("Template Response Body", "Could not get string from resource \(template)") }
+        guard let assetString = String(data: asset.data)
+        else { throw Error.Generic("Template Response Body", "Could not get string from template \(template)") }
 
-        let template = try Template(string: resourceString)
+        let template = try Template(string: assetString)
         let rendering = try template.render(Box(data))
         self.body = rendering
 

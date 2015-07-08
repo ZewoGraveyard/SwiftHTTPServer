@@ -1,4 +1,4 @@
-// ViewController.swift
+// Client.h
 //
 // The MIT License (MIT)
 //
@@ -22,7 +22,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+struct Client {
 
-class ViewController: UIViewController {}
+    private let client = HTTPClient()
 
+    init() throws {
+
+        let request = try HTTPRequest(method: "GET", URI: "/", headers: [:], body: nil)
+        let serverInfo = HTTPServerInfo(address: "127.0.0.1", port: 8080)
+
+        try client.sendRequest(request, serverInfo: serverInfo) { response in
+
+            print(response)
+
+        }
+        
+    }
+    
+}

@@ -27,18 +27,18 @@ struct DataBody: HTTPBody {
     let data: Data?
     let contentType: InternetMediaType?
 
-    init?(resourceAtPath path: String, contentType: InternetMediaType? = .None) {
+    init?(assetAtPath path: String, contentType: InternetMediaType? = .None) {
 
-        guard let resource = Resource(path: path)
+        guard let asset = Asset(path: path)
         else { return nil }
 
-        self.init(resource: resource, contentType: contentType)
+        self.init(asset: asset, contentType: contentType)
 
     }
 
-    init(resource: Resource, contentType: InternetMediaType? = .None) {
+    init(asset: Asset, contentType: InternetMediaType? = .None) {
 
-        self.init(data: resource.data, contentType: contentType)
+        self.init(data: asset.data, contentType: contentType)
 
     }
 

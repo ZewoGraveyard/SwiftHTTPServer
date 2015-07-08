@@ -26,7 +26,7 @@ struct LoginController: HTTPRequestController {
 
     func get(request: HTTPRequest) -> HTTPResponse {
 
-        if let body = DataBody(resourceAtPath: "login.html") {
+        if let body = DataBody(assetAtPath: "login.html") {
 
             return HTTPResponse(status: .OK, body: body)
 

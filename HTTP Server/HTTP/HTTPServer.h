@@ -25,8 +25,8 @@
 #ifndef HTTPServer_h
 #define HTTPServer_h
 
-#include <dispatch/dispatch.h>
-#include <sys/socket.h>
-#include <regex.h>
+#include "Dispatch.h"
+#include "Socket.h"
+#include "RegularExpression.h"
 
 #endif /* HTTPServer_h */

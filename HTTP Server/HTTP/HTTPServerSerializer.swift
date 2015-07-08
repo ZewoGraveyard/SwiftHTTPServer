@@ -1,4 +1,4 @@
-// ViewController.swift
+// HTTPServerSerializer.swift
 //
 // The MIT License (MIT)
 //
@@ -22,7 +22,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+struct HTTPServerSerializer {
 
-class ViewController: UIViewController {}
+    static func sendHTTPResponse(clientSocket: Socket, response: HTTPResponse) throws {
+
+        try clientSocket.writeString("\(response.status.HTTPVersion) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+
+        for (name, value) in response.headers {
+
+            try clientSocket.writeString("\(name): \(value)\r\n")
+
+        }
+
+        try clientSocket.writeString("\r\n")
+        
+        if let data = response.body.data {
+            
+            try clientSocket.writeData(data)
+            
+        }
+        
+    }
+    
+}
 

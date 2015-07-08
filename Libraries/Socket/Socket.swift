@@ -40,6 +40,43 @@ struct Socket {
 
     }
 
+    init(address: String, port: TCPPort) throws {
+
+        socketHandler = try Socket.createSocketHandler()
+
+        try setReuseAddressOption()
+        try setNoSigPipeOption()
+        try connectToAddress(address, port: port)
+
+    }
+
+    func connectToAddress(address: String, port: TCPPort) throws {
+
+        var serverAddress = sockaddr_in(
+            sin_len: __uint8_t(sizeof(sockaddr_in)),
+            sin_family: sa_family_t(AF_INET),
+            sin_port: port_htons(port),
+            sin_addr: in_addr(s_addr: inet_addr(address)),
+            sin_zero: (0, 0, 0, 0, 0, 0, 0, 0)
+        )
+
+        var address = sockaddr(
+            sa_len: 0,
+            sa_family: 0,
+            sa_data: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        )
+
+        memcpy(&address, &serverAddress, Int(sizeof(sockaddr_in)))
+
+        if connect(socketHandler, &address, socklen_t(sizeof(sockaddr_in))) == -1 {
+
+            release()
+            throw Error.lastSystemError(reason: "connect() failed")
+
+        }
+
+    }
+
     init(socketHandler: SocketHandler) throws {
 
         if socketHandler == -1 {
@@ -103,7 +140,13 @@ struct Socket {
 
     func acceptClient() throws -> Socket {
 
-        var addr = sockaddr(sa_len: 0, sa_family: 0, sa_data: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), len: socklen_t = 0
+        var addr = sockaddr(
+            sa_len: 0,
+            sa_family: 0,
+            sa_data: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        )
+
+        var len: socklen_t = 0
 
         let clientSocketHandler = accept(socketHandler, &addr, &len)
 
@@ -163,10 +206,19 @@ struct Socket {
 
     private func bindToPort(port: TCPPort) throws {
 
-        var addr = sockaddr_in(sin_len: __uint8_t(sizeof(sockaddr_in)), sin_family: sa_family_t(AF_INET),
-            sin_port: port_htons(port), sin_addr: in_addr(s_addr: inet_addr("0.0.0.0")), sin_zero: (0, 0, 0, 0, 0, 0, 0, 0))
+        var addr = sockaddr_in(
+            sin_len: __uint8_t(sizeof(sockaddr_in)),
+            sin_family: sa_family_t(AF_INET),
+            sin_port: port_htons(port),
+            sin_addr: in_addr(s_addr: inet_addr("0.0.0.0")),
+            sin_zero: (0, 0, 0, 0, 0, 0, 0, 0)
+        )
 
-        var sock_addr = sockaddr(sa_len: 0, sa_family: 0, sa_data: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+        var sock_addr = sockaddr(
+            sa_len: 0,
+            sa_family: 0,
+            sa_data: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        )
         
         memcpy(&sock_addr, &addr, Int(sizeof(sockaddr_in)))
         

@@ -1,4 +1,4 @@
-// ViewController.swift
+// RegularExpression.h
 //
 // The MIT License (MIT)
 //
@@ -22,7 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+#ifndef RegularExpression_h
+#define RegularExpression_h
 
-class ViewController: UIViewController {}
+#include <regex.h>
 
+#endif /* RegularExpression_h */
