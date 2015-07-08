@@ -25,7 +25,7 @@
 struct JSONController: HTTPRequestController {
 
     func get(request: HTTPRequest) -> HTTPResponse {
-
+        
         let json: JSON = [
 
             "null": nil,

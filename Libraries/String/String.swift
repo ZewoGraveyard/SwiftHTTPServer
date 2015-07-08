@@ -306,7 +306,7 @@ public struct StringFormatter {
             return toDecimalString(attr, IntMax(v))
         case let v as Double:
             return toDecimalString(attr, IntMax(v))
-        case let v as Float80:
+        case let v as Float:
             return toDecimalString(attr, IntMax(v))
         case let v:
             return toDecimalString(attr, atoll("\(v)"))
@@ -318,7 +318,7 @@ public struct StringFormatter {
         case let v as Int:
             return toFloatString(attr, Double(v))
         case let v as IntMax:
-            return toFloatString(attr, Float80(v))
+            return toFloatString(attr, Float(v))
         case let v as Float:
             return attr.fill(attr.floatToString(Double(v)))
         case let v as Double:

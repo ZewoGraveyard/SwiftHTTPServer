@@ -25,16 +25,21 @@
 struct Client {
 
     private let client = HTTPClient()
-
-    init() throws {
-
-        let request = try HTTPRequest(method: "GET", URI: "/", headers: [:], body: nil)
-        let serverInfo = HTTPServerInfo(address: "127.0.0.1", port: 8080)
-
-        try client.sendRequest(request, serverInfo: serverInfo) { response in
-
-            print(response)
-
+    private let address: String = "10.100.101.221"
+    private let port: TCPPort = 8080
+    
+    func send() {
+        
+        do {
+        
+            let request = try HTTPRequest(method: "GET", URI: "/json")
+            let response = try client.sendRequest(request, address: address, port: port)
+            Log.info(response)
+        
+        } catch {
+            
+            Log.error("Server error: \(error)")
+            
         }
         
     }

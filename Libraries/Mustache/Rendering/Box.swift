@@ -615,7 +615,7 @@ extension Dictionary: MustacheBoxable {
 
                 } else {
 
-                    Log.warning("Tried to use a dictionary as MustacheBoxable, but the dictionary is not boxable.")
+                    Log.warning("Tried to use a dictionary as MustacheBoxable, but the value: \(value) is not boxable.")
                     return Box()
 
                 }

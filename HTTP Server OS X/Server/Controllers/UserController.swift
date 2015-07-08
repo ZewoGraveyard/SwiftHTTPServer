@@ -22,6 +22,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+typealias TemplateData = MustacheBoxable
+
 struct UserController: HTTPRequestController {
 
     func any(request: HTTPRequest) throws -> HTTPResponse {
@@ -30,7 +32,7 @@ struct UserController: HTTPRequestController {
 //        print(request.queryParameters)
 //        print(request.bodyParameters)
 
-        let info: [String: MustacheBoxable] = [
+        let info: [String: TemplateData] = [
             "URI": request.URI,
             "method": request.method.description,
             "headers": request.headers,

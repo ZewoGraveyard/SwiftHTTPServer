@@ -24,21 +24,21 @@
 
 struct HTTPServerSerializer {
 
-    static func sendHTTPResponse(clientSocket: Socket, response: HTTPResponse) throws {
+    static func sendHTTPResponse(socket: Socket, response: HTTPResponse) throws {
 
-        try clientSocket.writeString("\(response.status.HTTPVersion) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+        try socket.writeString("\(response.status.HTTPVersion) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
 
         for (name, value) in response.headers {
 
-            try clientSocket.writeString("\(name): \(value)\r\n")
+            try socket.writeString("\(name): \(value)\r\n")
 
         }
 
-        try clientSocket.writeString("\r\n")
+        try socket.writeString("\r\n")
         
         if let data = response.body.data {
             
-            try clientSocket.writeData(data)
+            try socket.writeData(data)
             
         }
         

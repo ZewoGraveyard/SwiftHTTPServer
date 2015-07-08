@@ -1,4 +1,4 @@
-// AppDelegate.swift
+// main.h
 //
 // The MIT License (MIT)
 //
@@ -22,19 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+#ifndef BridgingHeader_h
+#define BridgingHeader_h
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+#include "Client.h"
 
-    var window: UIWindow?
-
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-
-        Server().start()
-        return true
-        
-    }
-
-}
-
+#endif

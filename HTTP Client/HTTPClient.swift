@@ -22,14 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPServerInfo {
-
-    let address: String
-    let port: TCPPort
-
-}
-
-class HTTPClient {
+final class HTTPClient {
 
 
     
@@ -39,13 +32,12 @@ class HTTPClient {
 
 extension HTTPClient {
 
-    func sendRequest(request: HTTPRequest, serverInfo: HTTPServerInfo, response: HTTPResponse -> Void) throws {
+    func sendRequest(request: HTTPRequest, address: String, port: TCPPort) throws -> HTTPResponse {
 
-        let x = try Socket(address: serverInfo.address, port: serverInfo.port)
-
-        try x.writeString("GET / HTTP/1.0\r\n\r\n")
-        
-
+        let socket = try Socket(address: address, port: port)
+        try HTTPClientSerializer.sendHTTPRequest(socket, request: request)
+        return try HTTPClientParser.receiveHTTPResponse(socket)
+    
     }
 
 }

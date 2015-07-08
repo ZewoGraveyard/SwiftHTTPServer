@@ -32,7 +32,7 @@ struct HTTPRequest {
     var pathParameters: [String: String]
     let queryParameters: [String: String]
 
-    init(method: String, URI: String, headers: [String: String], body: Data?, pathParameters: [String: String] = [:]) throws {
+    init(method: String, URI: String, headers: [String: String] = [:], body: Data? = nil, pathParameters: [String: String] = [:]) throws {
 
         self.method = HTTPMethod(string: method)
         self.URI = URI

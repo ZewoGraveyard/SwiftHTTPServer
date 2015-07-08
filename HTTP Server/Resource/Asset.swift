@@ -59,6 +59,7 @@ extension Asset {
 
     private static func getDataForAssetAtPath(path: String) -> Data? {
         
+        // TODO: Find out if it's possible to access files in iOS with fopen
         #if os(iOS)
             
             let resourcePath = NSBundle.mainBundle().resourcePath!

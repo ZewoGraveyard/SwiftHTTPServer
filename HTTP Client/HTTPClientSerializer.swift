@@ -1,4 +1,4 @@
-// AppDelegate.swift
+// HTTPClientSerializer.swift
 //
 // The MIT License (MIT)
 //
@@ -22,19 +22,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
-
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
-    var window: UIWindow?
-
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-
-        Server().start()
-        return true
+struct HTTPClientSerializer {
+    
+    static func sendHTTPRequest(socket: Socket, request: HTTPRequest) throws {
+        
+        try socket.writeString("\(request.method) \(request.URI) HTTP/1.1\r\n")
+        
+        for (name, value) in request.headers {
+            
+            try socket.writeString("\(name): \(value)\r\n")
+            
+        }
+        
+        try socket.writeString("\r\n")
+        
+        if let data = request.body.data {
+            
+            try socket.writeData(data)
+            
+        }
         
     }
-
+    
 }
 

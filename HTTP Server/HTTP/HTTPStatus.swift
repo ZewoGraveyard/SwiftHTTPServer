@@ -99,6 +99,79 @@ enum HTTPStatus {
 
     // MARK: Raw
     case Raw(statusCode: Int, reasonPhrase: String)
+    
+    init(statusCode: Int, reasonPhrase: String) {
+        
+        switch statusCode {
+            
+        case Continue.statusCode:                      self = Continue
+        case SwitchingProtocols.statusCode:            self = SwitchingProtocols
+        case Processing.statusCode:                    self = Processing
+            
+        case OK.statusCode:                            self = OK
+        case Created.statusCode:                       self = Created
+        case Accepted.statusCode:                      self = Accepted
+        case NonAuthoritativeInformation.statusCode:   self = NonAuthoritativeInformation
+        case NoContent.statusCode:                     self = NoContent
+        case ResetContent.statusCode:                  self = ResetContent
+        case PartialContent.statusCode:                self = PartialContent
+            
+        case MultipleChoices.statusCode:               self = MultipleChoices
+        case MovedPermanently.statusCode:              self = MovedPermanently
+        case Found.statusCode:                         self = Found
+        case SeeOther.statusCode:                      self = SeeOther
+        case NotModified.statusCode:                   self = NotModified
+        case UseProxy.statusCode:                      self = UseProxy
+        case SwitchProxy.statusCode:                   self = SwitchProxy
+        case TemporaryRedirect.statusCode:             self = TemporaryRedirect
+        case PermanentRedirect.statusCode:             self = PermanentRedirect
+            
+            
+        case BadRequest.statusCode:                    self = BadRequest
+        case Unauthorized.statusCode:                  self = Unauthorized
+        case PaymentRequired.statusCode:               self = PaymentRequired
+        case Forbidden.statusCode:                     self = Forbidden
+        case NotFound.statusCode:                      self = NotFound
+        case MethodNotAllowed.statusCode:              self = MethodNotAllowed
+        case NotAcceptable.statusCode:                 self = NotAcceptable
+        case ProxyAuthenticationRequired.statusCode:   self = ProxyAuthenticationRequired
+        case RequestTimeout.statusCode:                self = RequestTimeout
+        case Conflict.statusCode:                      self = Conflict
+        case Gone.statusCode:                          self = Gone
+        case LengthRequired.statusCode:                self = LengthRequired
+        case PreconditionFailed.statusCode:            self = PreconditionFailed
+        case RequestEntityTooLarge.statusCode:         self = RequestEntityTooLarge
+        case RequestURITooLong.statusCode:             self = RequestURITooLong
+        case UnsupportedMediaType.statusCode:          self = UnsupportedMediaType
+        case RequestedRangeNotSatisfiable.statusCode:  self = RequestedRangeNotSatisfiable
+        case ExpectationFailed.statusCode:             self = ExpectationFailed
+        case ImATeapot.statusCode:                     self = ImATeapot
+        case AuthenticationTimeout.statusCode:         self = AuthenticationTimeout
+        case EnhanceYourCalm.statusCode:               self = EnhanceYourCalm
+        case UnprocessableEntity.statusCode:           self = UnprocessableEntity
+        case Locked.statusCode:                        self = Locked
+        case FailedDependency.statusCode:              self = FailedDependency
+        case PreconditionRequired.statusCode:          self = PreconditionRequired
+        case TooManyRequests.statusCode:               self = TooManyRequests
+        case RequestHeaderFieldsTooLarge.statusCode:   self = RequestHeaderFieldsTooLarge
+            
+        case InternalServerError.statusCode:           self = InternalServerError
+        case NotImplemented.statusCode:                self = NotImplemented
+        case BadGateway.statusCode:                    self = BadGateway
+        case ServiceUnavailable.statusCode:            self = ServiceUnavailable
+        case GatewayTimeout.statusCode:                self = GatewayTimeout
+        case HTTPVersionNotSupported.statusCode:       self = HTTPVersionNotSupported
+        case VariantAlsoNegotiates.statusCode:         self = VariantAlsoNegotiates
+        case InsufficientStorage.statusCode:           self = InsufficientStorage
+        case LoopDetected.statusCode:                  self = LoopDetected
+        case NotExtended.statusCode:                   self = NotExtended
+        case NetworkAuthenticationRequired.statusCode: self = NetworkAuthenticationRequired
+            
+        default: self = Raw(statusCode: statusCode, reasonPhrase: reasonPhrase)
+            
+        }
+        
+    }
 
     var statusCode: Int {
 

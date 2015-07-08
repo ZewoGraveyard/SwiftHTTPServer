@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class HTTPServer {
+final class HTTPServer {
 
     private var router = HTTPRouter()
     private var socket: Socket?
@@ -57,7 +57,7 @@ extension HTTPServer {
         do {
 
             socket?.release()
-            socket = try Socket(port: port)
+            socket = try Socket(port: port, maxConnections: 1000)
 
             Log.info("HTTP Server connected at port \(port).")
 

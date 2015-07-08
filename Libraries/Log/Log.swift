@@ -44,7 +44,9 @@ struct Log {
     // MARK: - Colors
 
     static var colorsEnabled: Bool {
-
+        
+        return true
+        
         let xcodeColors = getenv("XcodeColors")
 
         if let enabled = String.fromCString(xcodeColors) where enabled == "YES" {
