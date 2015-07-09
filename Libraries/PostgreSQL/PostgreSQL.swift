@@ -51,15 +51,52 @@ struct PostgreSQL {
 
     let connection: PostgreSQLConnection
 
-    init(connectionInfo: String) throws {
+    struct Connection: CustomStringConvertible {
 
-        self.connection = try PostgreSQL.connect(connectionInfo)
+        let host: String?
+        let port: Int?
+        let database: String?
+        let user: String?
+        let password: String?
+        let timeout: Int?
+
+        init(host: String? = nil, port: Int? = nil, database: String? = nil, user: String? = nil, password: String? = nil, timeout: Int? = nil) {
+
+            self.host = host
+            self.port = port
+            self.database = database
+            self.user = user
+            self.password = password
+            self.timeout = timeout
+
+        }
+
+        var description: String {
+
+            var string = ""
+
+            host.map     { string += "hostaddr = \($0) " }
+            port.map     { string += "port = \($0) " }
+            database.map { string += "dbname = \($0) " }
+            user.map     { string += "user = \($0) " }
+            password.map { string += "password = \($0) " }
+            timeout.map  { string += "connect_timeout = \($0) " }
+
+            return string
+
+        }
+
+    }
+
+    init(connection: Connection) throws {
+
+        self.connection = try PostgreSQL.connect(connection.description)
         
     }
 
     func finish() {
 
-        PQfinish(connection)
+        PostgreSQL.finish(connection)
 
     }
 
@@ -103,7 +140,7 @@ struct PostgreSQL {
 
     func clear(result: PostgreSQLResult) {
 
-        PQclear(result)
+        PostgreSQL.clear(result)
         
     }
 
@@ -169,6 +206,18 @@ extension PostgreSQL {
         PQfinish(connection)
         return Error.Generic(description, errorReason)
         
+    }
+
+    static func finish(connection: PostgreSQLConnection) {
+
+        PQfinish(connection)
+        
+    }
+
+    static func clear(result: PostgreSQLResult) {
+
+        PQclear(result)
+
     }
 
 }

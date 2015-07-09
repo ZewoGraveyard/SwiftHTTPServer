@@ -28,7 +28,8 @@ struct DatabaseController: HTTPRequestController {
 
         #if os(OSX)
 
-            let database = try PostgreSQL(connectionInfo: "dbname = postgres")
+            let connection = PostgreSQL.Connection(database: "postgres")
+            let database = try PostgreSQL(connection: connection)
 
             try database.transaction {
 
