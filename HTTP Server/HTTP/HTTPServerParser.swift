@@ -24,7 +24,7 @@
 
 struct HTTPServerParser {
 
-    static func receiveHTTPRequest(socket: Socket) throws -> HTTPRequest {
+    static func receiveHTTPRequest(socket socket: Socket) throws -> HTTPRequest {
 
         let requestLine = try getRequestLine(socket)
         let headers = try HTTPParser.getHeaders(socket)

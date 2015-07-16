@@ -1,4 +1,4 @@
-// HTTPPathParametersMiddleware.swift
+// Array.swift
 //
 // The MIT License (MIT)
 //
@@ -22,29 +22,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPPathParametersMiddleware: HTTPRequestMiddleware {
+extension CollectionType {
 
-    let pathParameters: [String: String]
+    /// Returns the first value of `self`
+    /// that satisfy the predicate `isMatch`.
+    func find(@noescape isMatch: (Self.Generator.Element) -> Bool) -> Self.Generator.Element? {
 
-    func mediate(var request: HTTPRequest) -> HTTPRequestMiddlewareResult {
+        for element in self {
 
-        if pathParameters.count == 0 {
+            if isMatch(element) {
 
-            return .Request(request)
+                return element
+
+            }
 
         }
-
-        request = HTTPRequest(
-            method: request.method,
-            URI: request.URI,
-            version: request.version,
-            headers: request.headers,
-            body: request.body,
-            parameters: request.parameters + pathParameters
-        )
-
-        return .Request(request)
-
+        
+        return .None
+        
     }
-
+    
 }

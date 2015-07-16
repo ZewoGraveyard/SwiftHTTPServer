@@ -24,60 +24,50 @@
 
 final class HTTPServer {
 
-    private var router = HTTPRouter()
+    private let requestMiddlewares: RequestMiddleware?
+    private let router: (path: String) -> RequestResponder?
+    private let responseMiddlewares: ResponseMiddleware?
     private var socket: Socket?
 
-    var routes: [String] {
+    let routes: [String]
 
-        return router.routes.map { $0.path }
+    init(requestMiddlewares: RequestMiddleware? = nil,
+        routes: [HTTPRoute] = [],
+        responseMiddlewares: ResponseMiddleware? = nil) {
+
+        self.requestMiddlewares = requestMiddlewares
+        self.router = HTTPRouter.routes(routes)
+        self.responseMiddlewares = responseMiddlewares
+        self.routes = routes.map { $0.path }
 
     }
 
-    init(inMiddlewares: RequestMiddleware? = nil, routes: [String: RequestResponder], outMiddlewares: ResponseMiddleware? = nil) {
-
-        for (path, responder) in routes {
-
-            let responderChain: RequestResponder
-
-            if let inMiddlewares = inMiddlewares,
-                  outMiddlewares = outMiddlewares {
-
-                responderChain = inMiddlewares >>> responder >>> outMiddlewares
-
-            } else if let inMiddlewares = inMiddlewares {
-
-                responderChain = inMiddlewares >>> responder
-
-            } else if let outMiddlewares = outMiddlewares {
-
-                responderChain = responder >>> outMiddlewares
-
-            } else {
-
-                responderChain = responder
-                
-            }
-
-            router.addRoute(path, responder: responderChain)
-            
-        }
-        
-    }
-
-    convenience init(_ serverConfiguration: HTTPServerConfiguration) {
+    convenience init(_ configuration: HTTPServerConfiguration) {
 
         self.init(
-            inMiddlewares: serverConfiguration.inMiddlewares,
-            routes: serverConfiguration.routes,
-            outMiddlewares: serverConfiguration.outMiddlewares
+            requestMiddlewares: configuration.requestMiddlewares,
+            routes: configuration.routes,
+            responseMiddlewares: configuration.responseMiddlewares
         )
 
     }
 
-    convenience init(_ routes: [String: RequestResponder]) {
+    convenience init(_ requestMiddlewares: RequestMiddleware) {
+
+        self.init(requestMiddlewares: requestMiddlewares)
+
+    }
+
+    convenience init(_ routes: [HTTPRoute] = []) {
 
         self.init(routes: routes)
         
+    }
+
+    convenience init(_ responseMiddlewares: ResponseMiddleware) {
+
+        self.init(responseMiddlewares: responseMiddlewares)
+
     }
 
 }
@@ -86,7 +76,7 @@ final class HTTPServer {
 
 extension HTTPServer {
 
-    func start(port port: TCPPort = 8080, failure: ErrorType -> Void = HTTPServer.defaultFailure)   {
+    func start(port port: TCPPort = 8080, failureHandler: ErrorType -> Void = HTTPServer.defaultFailureHandler)   {
 
         do {
 
@@ -97,13 +87,13 @@ extension HTTPServer {
 
             Dispatch.async {
 
-                self.waitForClients(failure)
+                self.waitForClients(failureHandler: failureHandler)
 
             }
 
         } catch {
 
-            failure(error)
+            failureHandler(error)
 
         }
 
@@ -121,13 +111,13 @@ extension HTTPServer {
 
 extension HTTPServer {
 
-    private static func defaultFailure(error: ErrorType) {
+    private static func defaultFailureHandler(error: ErrorType) {
 
         Log.error("Server error: \(error)")
         
     }
 
-    private func waitForClients(failure: ErrorType -> Void) {
+    private func waitForClients(failureHandler failureHandler: ErrorType -> Void) {
 
         do {
 
@@ -137,7 +127,7 @@ extension HTTPServer {
 
                 Dispatch.async {
 
-                    self.processClientSocket(clientSocket, failure: failure)
+                    self.processClientSocket(clientSocket, failureHandler: failureHandler)
 
                 }
 
@@ -146,21 +136,30 @@ extension HTTPServer {
         } catch {
 
             socket?.release()
-            failure(error)
+            failureHandler(error)
             
         }
 
     }
 
-    private func processClientSocket(clientSocket: Socket, failure: ErrorType -> Void) {
+    private func processClientSocket(clientSocket: Socket, failureHandler: ErrorType -> Void) {
 
         do {
 
             while true {
 
-                let request =  try HTTPServerParser.receiveHTTPRequest(clientSocket)
-                let response = responseForRequest(request, failure: failure)
-                try HTTPServerSerializer.sendHTTPResponse(clientSocket, response: response)
+                let request =  try HTTPServerParser.receiveHTTPRequest(socket: clientSocket)
+
+                let responder = requestMiddlewares >>>
+                                router(path: request.path) ?? Responder.assetAtPath(request.path) >>>
+                                responseMiddlewares >>>
+                                Middleware.keepAlive(request.keepAlive) >>>
+                                Middleware.headers(["server": "HTTP Server"]) >>>
+                                failureHandler
+
+                let response = responder(request)
+
+                try HTTPServerSerializer.sendHTTPResponse(socket: clientSocket, response: response)
 
                 if !request.keepAlive { break }
 
@@ -170,58 +169,10 @@ extension HTTPServer {
 
         } catch {
 
-            failure(error)
+            failureHandler(error)
 
-        }
-
-    }
-
-    private func responseForRequest(request: HTTPRequest, failure: ErrorType -> Void) -> HTTPResponse {
-
-        if let routeMatch = router.match(request.path) {
-
-            return responseForRouteMatch(routeMatch, request: request, failure: failure)
-
-        } else {
-
-            return responseForAssetAtPath(request.path)
-            
-        }
-
-    }
-
-    private func responseForRouteMatch(routeMatch: HTTPRouter.RouteMatch, request: HTTPRequest, failure: ErrorType -> Void) -> HTTPResponse {
-
-        do {
-
-            let keepAliveMiddleware = HTTPKeepAliveMiddleware(keepAlive: request.keepAlive).mediate
-            let responder = routeMatch.responder >>> keepAliveMiddleware
-            return try responder(request)
-
-        } catch {
-
-            failure(error)
-            return HTTPResponse(status: .InternalServerError, body: TextBody(text: "\(error)"))
-
-        }
-        
-    }
-
-    private func responseForAssetAtPath(path: String) -> HTTPResponse {
-
-        let assetPath = path.dropFirstCharacter()
-
-        if let asset = Asset(path: assetPath) {
-
-            return HTTPResponse(status: .OK, body: DataBody(asset: asset))
-
-        } else {
-
-            return HTTPResponse(status: .NotFound)
-            
         }
 
     }
 
 }
-

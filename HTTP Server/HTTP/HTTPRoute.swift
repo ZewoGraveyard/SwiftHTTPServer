@@ -25,19 +25,33 @@
 struct HTTPRoute {
 
     let path: String
-    let pathParameterKeys: [String]
-    let regularExpression: RegularExpression
-    var responder: RequestResponder
+    let responder: RequestResponder
+
+    private let parameterKeys: [String]
+    private let regularExpression: RegularExpression
 
     init(path: String, responder: RequestResponder) {
 
-        let pathParameterRegularExpression = try! RegularExpression(pattern: ":([[:alnum:]]+)")
-        let finalPattern = try! pathParameterRegularExpression.replace(path, withTemplate: "([[:alnum:]]+)")
+        let parameterRegularExpression = try! RegularExpression(pattern: ":([[:alnum:]]+)")
+        let pattern = try! parameterRegularExpression.replace(path, withTemplate: "([[:alnum:]]+)")
 
         self.path = path
-        self.pathParameterKeys = try! pathParameterRegularExpression.groups(path)
-        self.regularExpression = try! RegularExpression(pattern: "^" + finalPattern + "$")
+        self.parameterKeys = try! parameterRegularExpression.groups(path)
+        self.regularExpression = try! RegularExpression(pattern: "^" + pattern + "$")
         self.responder = responder
+
+    }
+
+    func matchesPath(path: String) -> Bool {
+
+        return try! regularExpression.matches(path)
+
+    }
+
+    func parametersForPath(path: String) -> [String: String] {
+
+        let values = try! regularExpression.groups(path)
+        return dictionaryFromKeys(parameterKeys, values: values)
 
     }
 

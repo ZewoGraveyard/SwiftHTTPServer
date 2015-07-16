@@ -1,4 +1,4 @@
-// HTTPSimpleResponder.swift
+// AssetResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,20 +22,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPSimpleResponder: HTTPResponder {
+extension Responder {
 
-    private let responder: HTTPRequest throws -> HTTPResponse
+    static func assetAtPath(path: String) -> RequestResponder {
 
-    init(responder: HTTPRequest throws -> HTTPResponse) {
+        return { request in
 
-        self.responder = responder
+            let assetPath = path.dropFirstCharacter()
+
+            if let asset = Asset(path: assetPath) {
+
+                return HTTPResponse(status: .OK, body: DataBody(asset: asset))
+
+            } else {
+                
+                return HTTPResponse(status: .NotFound)
+                
+            }
+
+        }
 
     }
 
-    func respond(request: HTTPRequest) throws -> HTTPResponse {
-
-        return try responder(request)
-        
-    }
-    
 }

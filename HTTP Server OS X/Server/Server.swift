@@ -35,13 +35,13 @@ struct Server {
 
             Middleware.logRequest >>> [
 
-                "/":         Responder.index.respond,
-                "/login":    Responder.login.respond,
-                "/user/:id": Responder.user.respond,
-                "/json":     Responder.json.respond,
-                "/database": Responder.database.respond,
-                "/redirect": Responder.redirect("http://www.google.com"),
-                "/routes":   Middleware.authenticate >>> Responder.routes.respond
+                "/"         =| Responder.index.respond,
+                "/login"    =| Responder.login.respond,
+                "/user/:id" =| Responder.user.respond,
+                "/json"     =| Responder.json.respond,
+                "/database" =| Responder.database.respond,
+                "/redirect" =| Responder.redirect("http://www.google.com"),
+                "/routes"   =| Middleware.authenticate >>> Responder.routes.respond
 
             ] >>> Middleware.logResponse
 

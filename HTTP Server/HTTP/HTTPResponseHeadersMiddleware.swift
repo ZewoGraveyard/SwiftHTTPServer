@@ -1,4 +1,4 @@
-// HTTPRouter.swift
+// HTTPResponseHeaderMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,19 +22,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPRouter {
+extension Middleware {
 
-    static func routes(routes: [HTTPRoute])(path: String) -> RequestResponder? {
+    static func headers(headers: [String: String]) -> (HTTPResponse -> HTTPResponse) {
 
-        if let route = routes.find({$0.matchesPath(path)}) {
+        return { response in
 
-            let parameters = route.parametersForPath(path)
-            return Middleware.parameters(parameters) >>> route.responder
+            return HTTPResponse(
+                status: response.status,
+                version: response.version,
+                headers: response.headers + headers,
+                body: response.body
+            )
 
         }
-
-        return nil
-
+        
     }
-
+    
 }

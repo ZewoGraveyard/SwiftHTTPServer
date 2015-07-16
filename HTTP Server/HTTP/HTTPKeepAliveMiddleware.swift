@@ -22,23 +22,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPKeepAliveMiddleware: HTTPResponseMiddleware {
+extension Middleware {
 
-    let keepAlive: Bool
+    static func keepAlive(keepAlive: Bool) -> HTTPResponse -> HTTPResponse {
 
-    func mediate(response: HTTPResponse) -> HTTPResponse {
+        return { response in
 
-        if keepAlive {
+            if keepAlive {
 
-            return HTTPResponse(
-                status: response.status,
-                headers: response.headers + ["connection": "keep-alive"],
-                body: response.body
-            )
+                return HTTPResponse(
+                    status: response.status,
+                    headers: response.headers + ["connection": "keep-alive"],
+                    body: response.body
+                )
+                
+            }
+            
+            return response
 
         }
-
-        return response
         
     }
     

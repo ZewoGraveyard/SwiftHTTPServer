@@ -26,9 +26,20 @@ typealias RequestMiddleware = HTTPRequest throws -> HTTPRequestMiddlewareResult
 typealias RequestResponder = HTTPRequest throws -> HTTPResponse
 typealias ResponseMiddleware = HTTPResponse throws -> HTTPResponse
 
+
+infix operator =| { associativity right precedence 80 }
+
+// MARK: (RequestMiddleware, RequestMiddleware) -> RequestMiddleware
+
+func =|(path: String, responder: RequestResponder) -> HTTPRoute {
+
+    return HTTPRoute(path: path, responder: responder)
+    
+}
+
 infix operator >>> { associativity left }
 
-func >>> <A, B, C>(f: A throws -> B, g: B throws -> C) -> A throws -> C {
+func >>> <A, B, C>(f: (A throws -> B), g: (B throws -> C)) -> (A throws -> C) {
 
     return { x in try g(f(x)) }
 
@@ -56,17 +67,25 @@ func >>>(middlewareA: RequestMiddleware, middlewareB: RequestMiddleware) -> Requ
 
 // MARK: (RequestMiddleware, RequestResponder) -> RequestResponder
 
-func >>>(middleware: RequestMiddleware, responder: RequestResponder) -> RequestResponder {
+func >>>(middleware: RequestMiddleware?, responder: RequestResponder) -> RequestResponder {
 
     return { (request: HTTPRequest) -> HTTPResponse in
 
-        switch try middleware(request) {
+        if let middleware = middleware {
 
-        case .Request(let request):
+            switch try middleware(request) {
+
+            case .Request(let request):
+                return try responder(request)
+
+            case .Response(let response):
+                return response
+
+            }
+
+        } else {
+
             return try responder(request)
-
-        case .Response(let response):
-            return response
 
         }
 
@@ -74,31 +93,59 @@ func >>>(middleware: RequestMiddleware, responder: RequestResponder) -> RequestR
 
 }
 
+// MARK: (RequestResponder, ResponseMiddleware) -> RequestResponder
+
+func >>>(responder: RequestResponder, middleware: ResponseMiddleware?) -> RequestResponder {
+
+    return { request in
+
+        if let middleware = middleware {
+
+            return try middleware(responder(request))
+
+        } else {
+
+            return try responder(request)
+
+        }
+
+    }
+    
+}
+
 // MARK: (RequestMiddleware, [String: RequestResponder]) -> HTTPServerConfiguration
 
-func >>>(inMiddlewares: RequestMiddleware, routes: [String: RequestResponder]) -> HTTPServerConfiguration {
+func >>>(requestMiddlewares: RequestMiddleware, responseMiddlewares: ResponseMiddleware) -> HTTPServerConfiguration {
 
-    return HTTPServerConfiguration(inMiddlewares: inMiddlewares, routes: routes)
+    return HTTPServerConfiguration(requestMiddlewares: requestMiddlewares, responseMiddlewares: responseMiddlewares)
+    
+}
+
+// MARK: (RequestMiddleware, [String: RequestResponder]) -> HTTPServerConfiguration
+
+func >>>(requestMiddlewares: RequestMiddleware, routes: [HTTPRoute]) -> HTTPServerConfiguration {
+
+    return HTTPServerConfiguration(requestMiddlewares: requestMiddlewares, routes: routes)
 
 }
 
 // MARK: (HTTPServerConfiguration, ResponseMiddleware) -> HTTPServerConfiguration
 
-func >>>(configuration: HTTPServerConfiguration, outMiddlewares: ResponseMiddleware) -> HTTPServerConfiguration {
+func >>>(configuration: HTTPServerConfiguration, responseMiddlewares: ResponseMiddleware) -> HTTPServerConfiguration {
 
-    if let inMiddlewares = configuration.inMiddlewares {
+    if let requestMiddlewares = configuration.requestMiddlewares {
 
         return HTTPServerConfiguration(
-            inMiddlewares: inMiddlewares,
+            requestMiddlewares: requestMiddlewares,
             routes: configuration.routes,
-            outMiddlewares: outMiddlewares
+            responseMiddlewares: responseMiddlewares
         )
 
     } else {
 
         return HTTPServerConfiguration(
             routes: configuration.routes,
-            outMiddlewares: outMiddlewares
+            responseMiddlewares: responseMiddlewares
         )
 
     }
@@ -107,8 +154,45 @@ func >>>(configuration: HTTPServerConfiguration, outMiddlewares: ResponseMiddlew
 
 // MARK: ([String: RequestResponder], ResponseMiddleware) -> HTTPServerConfiguration
 
-func >>>(routes: [String: RequestResponder], outMiddlewares: ResponseMiddleware) -> HTTPServerConfiguration {
+func >>>(routes: [HTTPRoute], responseMiddlewares: ResponseMiddleware) -> HTTPServerConfiguration {
 
-    return HTTPServerConfiguration(routes: routes, outMiddlewares: outMiddlewares)
+    return HTTPServerConfiguration(routes: routes, responseMiddlewares: responseMiddlewares)
     
 }
+
+// MARK: (RequestResponder, ErrorType -> Void) -> (HTTPRequest -> HTTPResponse)
+
+func >>>(responder: RequestResponder, failureHandler: ErrorType -> Void) -> (HTTPRequest -> HTTPResponse) {
+
+    return { request in
+
+        do {
+
+            return try responder(request)
+
+        } catch {
+
+            failureHandler(error)
+            return HTTPResponse(status: .InternalServerError, body: TextBody(text: "\(error)"))
+
+        }
+        
+    }
+        
+}
+
+// MARK: 
+
+
+func ??(responderA: RequestResponder?, responderB: RequestResponder) -> RequestResponder {
+
+    if let responder = responderA {
+
+        return responder
+
+    }
+
+    return responderB
+
+}
+

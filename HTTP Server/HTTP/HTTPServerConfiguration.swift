@@ -24,15 +24,15 @@
 
 struct HTTPServerConfiguration {
 
-    let inMiddlewares: RequestMiddleware?
-    let routes: [String: RequestResponder]
-    let outMiddlewares: ResponseMiddleware?
+    let requestMiddlewares: RequestMiddleware?
+    let routes: [HTTPRoute]
+    let responseMiddlewares: ResponseMiddleware?
 
-    init(inMiddlewares: RequestMiddleware? = nil, routes: [String: RequestResponder], outMiddlewares: ResponseMiddleware? = nil) {
+    init(requestMiddlewares: RequestMiddleware? = nil, routes: [HTTPRoute] = [], responseMiddlewares: ResponseMiddleware? = nil) {
 
-        self.inMiddlewares = inMiddlewares
+        self.requestMiddlewares = requestMiddlewares
         self.routes = routes
-        self.outMiddlewares = outMiddlewares
+        self.responseMiddlewares = responseMiddlewares
 
     }
 
