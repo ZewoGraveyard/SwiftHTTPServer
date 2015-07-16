@@ -1,4 +1,4 @@
-// JSONController.swift
+// LoginResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,50 +22,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct JSONController: HTTPRequestController {
+extension Responder {
+
+    static let login = LoginResponder()
+    
+}
+
+struct LoginResponder: HTTPMethodResponder {
 
     func get(request: HTTPRequest) -> HTTPResponse {
-        
-        let json: JSON = [
 
-            "null": nil,
-            "string": "Foo Bar",
-            "boolean": true,
-            "array": [
-                "1",
-                2,
-                nil,
-                true,
-                ["1", 2, nil, false],
-                ["a": "b"]
-            ],
-            "object": [
-                "a": "1",
-                "b": 2,
-                "c": nil,
-                "d": false,
-                "e": ["1", 2, nil, false],
-                "f": ["a": "b"]
-            ],
-            "number": 1969
+        if let body = DataBody(assetAtPath: "login.html") {
 
-        ]
+            return HTTPResponse(status: .OK, body: body)
 
-        return HTTPResponse(status: .OK, body: JSONBody(json: json))
+        } else {
+
+            return HTTPResponse(status: .NotFound)
+
+        }
 
     }
 
     func post(request: HTTPRequest) -> HTTPResponse {
 
-        guard var body = request.body as? JSONBody
-        else { return HTTPResponse(status: .BadRequest, body: TextBody(text: "Expected JSON body")) }
+        guard let body = request.body as? FormURLEncodedBody
+        else { return HTTPResponse(status: .BadRequest) }
 
-        body.json["number"] = 321
-        body.json["array"][0] = 3
-        body.json["array"][2] = 1
+        guard let email = body.parameters["email"],
+               password = body.parameters["password"] else {
 
-        return HTTPResponse(status: .OK, body: body)
+            return HTTPResponse(status: .BadRequest)
 
+        }
+
+        if email == "regis@regis.com" && password == "123" {
+
+            return HTTPResponse(status: .OK, body: HTMLBody(body: "logou"))
+
+        } else {
+
+            return HTTPResponse(status: .Unauthorized)
+
+        }
+        
     }
 
 }

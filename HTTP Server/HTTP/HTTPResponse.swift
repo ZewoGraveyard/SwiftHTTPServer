@@ -25,32 +25,20 @@
 struct HTTPResponse {
 
     let status: HTTPStatus
+    let version: HTTPVersion
     let headers: [String: String]
     let body: HTTPBody
 
-    init(status: HTTPStatus, var headers: [String: String] = [:], body: HTTPBody = EmptyBody()) {
-
-        headers = HTTPResponse.headersByAddingContentTypeFromBody(body, toHeaders: headers)
-        // TODO: Think about the name of the server
-        headers = HTTPResponse.headersByAddingServer("Server", toHeaders: headers)
+    init(status: HTTPStatus, version: HTTPVersion = .HTTP_1_1, headers: [String: String] = [:], body: HTTPBody = EmptyBody()) {
 
         self.status = status
-        self.headers = headers
+        self.version = version
+        self.headers = HTTPResponse.headersByAddingContentInfoFromBody(body, headers: headers)
         self.body = body
 
     }
 
-    func responseByAddingHeaders(headers: [String: String]) -> HTTPResponse {
-
-        return HTTPResponse(
-            status: self.status,
-            headers: self.headers + headers,
-            body: self.body
-        )
-        
-    }
-
-    static func headersByAddingContentTypeFromBody(body: HTTPBody, var toHeaders headers: [String: String]) -> [String: String] {
+    static func headersByAddingContentInfoFromBody(body: HTTPBody, var headers: [String: String]) -> [String: String] {
 
         if let contentType = body.contentType {
         
@@ -72,20 +60,13 @@ struct HTTPResponse {
 
     }
 
-    static func headersByAddingServer(server: String, var toHeaders headers: [String: String]) -> [String: String] {
-
-        headers["server"] = server
-        return headers
-        
-    }
-
 }
 
 extension HTTPResponse: CustomStringConvertible {
 
     var description: String {
 
-        var string = "\(status.statusCode) \(status.reasonPhrase) \(status.HTTPVersion)\n"
+        var string = "\(status.statusCode) \(status.reasonPhrase) \(version)\n"
 
         for (index, (header, value)) in headers.enumerate() {
 
@@ -117,7 +98,7 @@ extension HTTPResponse: CustomColorLogStringConvertible {
 
         var string = Log.lightPurple
         
-        string += "\(status.statusCode) \(status.reasonPhrase) \(status.HTTPVersion)\n"
+        string += "\(status.statusCode) \(status.reasonPhrase) \(version)\n"
 
         string += Log.darkPurple
 

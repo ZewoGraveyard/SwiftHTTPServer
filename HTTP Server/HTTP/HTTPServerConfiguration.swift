@@ -1,4 +1,4 @@
-// HTTPResponder.swift
+// HTTPServerConfiguration.swift
 //
 // The MIT License (MIT)
 //
@@ -22,8 +22,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HTTPResponder {
+struct HTTPServerConfiguration {
 
-    func respond(request: HTTPRequest) throws -> HTTPResponse
-    
+    let inMiddlewares: RequestMiddleware?
+    let routes: [String: RequestResponder]
+    let outMiddlewares: ResponseMiddleware?
+
+    init(inMiddlewares: RequestMiddleware? = nil, routes: [String: RequestResponder], outMiddlewares: ResponseMiddleware? = nil) {
+
+        self.inMiddlewares = inMiddlewares
+        self.routes = routes
+        self.outMiddlewares = outMiddlewares
+
+    }
+
 }

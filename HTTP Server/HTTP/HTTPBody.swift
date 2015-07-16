@@ -28,3 +28,38 @@ protocol HTTPBody {
     var data: Data? { get }
 
 }
+
+struct HTTPBodyFactory {
+
+    static func bodyFromData(data: Data?, headers: [String: String]) throws -> HTTPBody {
+
+        guard let data = data
+            else { return EmptyBody() }
+
+        guard let contentType = headers["content-type"]
+            else { return DataBody(data: data) }
+
+        let mediaType = InternetMediaType(string: contentType)
+
+        switch mediaType {
+
+        case .ApplicationJSON:
+            return try JSONBody(data: data)
+
+        case .ApplicationXWWWFormURLEncoded:
+            return try FormURLEncodedBody(data: data)
+
+        case .MultipartFormData(let boundary):
+            return MultipartFormDataBody(data: data, boundary: boundary)
+
+        case .TextPlain:
+            return try TextBody(data: data)
+
+        case (let contentType):
+            return DataBody(data: data, contentType: contentType)
+            
+        }
+        
+    }
+
+}

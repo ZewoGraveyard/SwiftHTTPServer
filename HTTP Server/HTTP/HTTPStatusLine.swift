@@ -1,4 +1,4 @@
-// HTTPResponder.swift
+// HTTPRequestLine.swift
 //
 // The MIT License (MIT)
 //
@@ -22,8 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HTTPResponder {
+struct HTTPStatusLine {
 
-    func respond(request: HTTPRequest) throws -> HTTPResponse
+    let status: HTTPStatus
+    let version: HTTPVersion
     
 }

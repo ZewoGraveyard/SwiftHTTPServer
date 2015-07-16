@@ -1,4 +1,4 @@
-// HTTPResponder.swift
+// HTTPVersion.swift
 //
 // The MIT License (MIT)
 //
@@ -22,8 +22,44 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HTTPResponder {
+enum HTTPVersion {
 
-    func respond(request: HTTPRequest) throws -> HTTPResponse
+    case HTTP_1_0
+    case HTTP_1_1
+
+    init(string: String) throws {
+
+        switch string {
+
+        case "HTTP/1.0":
+            self = HTTP_1_0
+
+        case "HTTP/1.1":
+            self = HTTP_1_1
+
+        default:
+            throw Error.Generic("Impossible to create HTTP Version", "Invalid version \(string)")
+            
+        }
+        
+    }
     
+}
+
+extension HTTPVersion: CustomStringConvertible {
+
+    var description: String {
+
+        switch self {
+
+        case HTTP_1_0:
+            return "HTTP/1.0"
+
+        case HTTP_1_1:
+            return "HTTP/1.1"
+
+        }
+
+    }
+
 }

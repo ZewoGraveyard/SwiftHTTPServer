@@ -22,32 +22,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+struct Middleware {}
+struct Responder {}
+
 struct Server {
 
-    private let server = HTTPServer()
+    private let server: HTTPServer
 
     init() {
 
-        server.route("/", responder: IndexController())
-        server.route("/login", responder: LoginController())
-        server.route("/user/:id", responder: UserController())
-        server.route("/json", responder: JSONController())
-        server.route("/database", responder: DatabaseController())
-        server.route("/redirect", responder: RedirectController())
-        server.route("/routes", responder: RoutesController(server: server))
+        self.server = HTTPServer(
 
+            Middleware.logRequest >>> [
+
+                "/":         Responder.index.respond,
+                "/login":    Responder.login.respond,
+                "/user/:id": Responder.user.respond,
+                "/json":     Responder.json.respond,
+                "/database": Responder.database.respond,
+                "/redirect": Responder.redirect("http://www.google.com"),
+                "/routes":   Middleware.authenticate >>> Responder.routes.respond
+
+            ] >>> Middleware.logResponse
+
+        )
+
+        Responder.routes.server = server
+        
     }
-
-}
-
-// MARK: - Public
-
-extension Server {
-
+    
     func start() {
-
+        
         server.start()
-
+        
+    }
+    
+    func stop() {
+        
+        server.stop()
+        
     }
     
 }

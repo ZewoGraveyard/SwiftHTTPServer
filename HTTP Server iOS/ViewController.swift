@@ -24,5 +24,21 @@
 
 import UIKit
 
-class ViewController: UIViewController {}
+class ViewController: UIViewController {
+
+    let server = Server()
+
+    @IBAction func startServerButtonTouched(sender: UIButton) {
+
+        server.start()
+
+    }
+
+    @IBAction func stopServerButtonTouched(sender: UIButton) {
+
+        server.stop()
+
+    }
+
+}
 

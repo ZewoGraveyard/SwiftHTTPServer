@@ -23,3 +23,4 @@
 // SOFTWARE.
 
 Client().send()
+Dispatch.main()

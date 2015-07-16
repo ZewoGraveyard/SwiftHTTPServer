@@ -33,24 +33,58 @@ final class HTTPServer {
 
     }
 
-}
+    init(inMiddlewares: RequestMiddleware? = nil, routes: [String: RequestResponder], outMiddlewares: ResponseMiddleware? = nil) {
 
-// MARK: - Public
+        for (path, responder) in routes {
 
-extension HTTPServer {
+            let responderChain: RequestResponder
 
-    func route(path: String, responder: HTTPRequest throws -> HTTPResponse) {
+            if let inMiddlewares = inMiddlewares,
+                  outMiddlewares = outMiddlewares {
 
-        let simpleResponder = HTTPSimpleRequestResponder(responder: responder)
-        router.addRoute(path, responder: simpleResponder)
+                responderChain = inMiddlewares >>> responder >>> outMiddlewares
 
-    }
+            } else if let inMiddlewares = inMiddlewares {
 
-    func route(path: String, responder: HTTPRequestResponder) {
+                responderChain = inMiddlewares >>> responder
 
-        router.addRoute(path, responder: responder)
+            } else if let outMiddlewares = outMiddlewares {
+
+                responderChain = responder >>> outMiddlewares
+
+            } else {
+
+                responderChain = responder
+                
+            }
+
+            router.addRoute(path, responder: responderChain)
+            
+        }
         
     }
+
+    convenience init(_ serverConfiguration: HTTPServerConfiguration) {
+
+        self.init(
+            inMiddlewares: serverConfiguration.inMiddlewares,
+            routes: serverConfiguration.routes,
+            outMiddlewares: serverConfiguration.outMiddlewares
+        )
+
+    }
+
+    convenience init(_ routes: [String: RequestResponder]) {
+
+        self.init(routes: routes)
+        
+    }
+
+}
+
+// MARK: - Start / Stop
+
+extension HTTPServer {
 
     func start(port port: TCPPort = 8080, failure: ErrorType -> Void = HTTPServer.defaultFailure)   {
 
@@ -59,9 +93,9 @@ extension HTTPServer {
             socket?.release()
             socket = try Socket(port: port, maxConnections: 1000)
 
-            Log.info("HTTP Server connected at port \(port).")
+            Log.info("HTTP Server listening at port \(port).")
 
-            Dispatch.async(queue: backgroundQueue) {
+            Dispatch.async {
 
                 self.waitForClients(failure)
 
@@ -72,6 +106,12 @@ extension HTTPServer {
             failure(error)
 
         }
+
+    }
+
+    func stop() {
+
+        socket?.release()
 
     }
 
@@ -95,7 +135,7 @@ extension HTTPServer {
 
                 let clientSocket = try socket!.acceptClient()
 
-                Dispatch.async(queue: backgroundQueue) {
+                Dispatch.async {
 
                     self.processClientSocket(clientSocket, failure: failure)
 
@@ -118,17 +158,11 @@ extension HTTPServer {
 
             while true {
 
-                let request = try HTTPServerParser.receiveHTTPRequest(clientSocket)
+                let request =  try HTTPServerParser.receiveHTTPRequest(clientSocket)
+                let response = responseForRequest(request, failure: failure)
+                try HTTPServerSerializer.sendHTTPResponse(clientSocket, response: response)
 
-                Log.info(request)
-
-                try processRequest(request, clientSocket: clientSocket, failure: failure)
-
-                if request.keepAlive == false {
-
-                    break
-                    
-                }
+                if !request.keepAlive { break }
 
             }
 
@@ -142,42 +176,27 @@ extension HTTPServer {
 
     }
 
-    private func processRequest(request: HTTPRequest, clientSocket: Socket, failure: ErrorType -> Void) throws {
-
-        var response: HTTPResponse
+    private func responseForRequest(request: HTTPRequest, failure: ErrorType -> Void) -> HTTPResponse {
 
         if let routeMatch = router.match(request.path) {
 
-            response = responseForRouteMatch(routeMatch, request: request, failure: failure)
+            return responseForRouteMatch(routeMatch, request: request, failure: failure)
 
         } else {
 
-            response = responseForAssetAtPath(request.path)
-
+            return responseForAssetAtPath(request.path)
+            
         }
-
-        if request.keepAlive {
-
-            response = response.responseByAddingHeaders(["Connection": "keep-alive"])
-
-        }
-
-        Log.info(response)
-
-        try HTTPServerSerializer.sendHTTPResponse(clientSocket, response: response)
 
     }
 
-    private func responseForRouteMatch(routeMatch: HTTPRouter.RouteMatch, var request: HTTPRequest, failure: ErrorType -> Void) -> HTTPResponse {
-
-        let pathParameters = routeMatch.pathParameters
-        let responder = routeMatch.responder
-
-        request.pathParameters = pathParameters
+    private func responseForRouteMatch(routeMatch: HTTPRouter.RouteMatch, request: HTTPRequest, failure: ErrorType -> Void) -> HTTPResponse {
 
         do {
 
-            return try responder.respondRequest(request)
+            let keepAliveMiddleware = HTTPKeepAliveMiddleware(keepAlive: request.keepAlive).mediate
+            let responder = routeMatch.responder >>> keepAliveMiddleware
+            return try responder(request)
 
         } catch {
 

@@ -46,27 +46,15 @@ struct Socket {
 
         try setReuseAddressOption()
         try setNoSigPipeOption()
-        try connectToAddress(address, port: port)
+        try connectToHost(address, port: port)
 
     }
 
-    func connectToAddress(address: String, port: TCPPort) throws {
+    func connectToHost(host: String, port: TCPPort) throws {
 
-        var serverAddress = sockaddr_in(
-            sin_len: __uint8_t(sizeof(sockaddr_in)),
-            sin_family: sa_family_t(AF_INET),
-            sin_port: port_htons(port),
-            sin_addr: in_addr(s_addr: inet_addr(address)),
-            sin_zero: (0, 0, 0, 0, 0, 0, 0, 0)
-        )
+        let addresses = try addressesFromDNSHost(host, port: port)
 
-        var address = sockaddr(
-            sa_len: 0,
-            sa_family: 0,
-            sa_data: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-        )
-
-        memcpy(&address, &serverAddress, Int(sizeof(sockaddr_in)))
+        var address = addresses.first!
 
         if connect(socketHandler, &address, socklen_t(sizeof(sockaddr_in))) == -1 {
 
@@ -236,6 +224,53 @@ struct Socket {
         let isLittleEndian = Int(OSHostByteOrder()) == OSLittleEndian
         return isLittleEndian ? _OSSwapInt16(port) : port
         
+    }
+
+    private func addressesFromDNSHost(host: String, port: TCPPort) throws -> [sockaddr] {
+
+        var addresses: [sockaddr] = []
+
+        var hints = addrinfo(
+            ai_flags: 0,
+            ai_family: AF_INET,
+            ai_socktype: SOCK_STREAM,
+            ai_protocol: IPPROTO_TCP,
+            ai_addrlen: 0,
+            ai_canonname: nil,
+            ai_addr: nil,
+            ai_next: nil
+        )
+
+        var results = UnsafeMutablePointer<addrinfo>()
+
+        let portString = "\(port)"
+
+        if getaddrinfo(host, portString, &hints, &results) == -1 {
+
+            release()
+            throw Error.lastSystemError(reason: "getaddrinfo() failed")
+
+        }
+
+        for var resultPointer = results; resultPointer != nil; resultPointer = resultPointer.memory.ai_next {
+
+            let result = resultPointer.memory
+            let address = result.ai_addr.memory
+            addresses.append(address)
+            
+        }
+        
+        freeaddrinfo(results)
+
+        if addresses.count == 0 {
+
+            release()
+            throw Error.Generic("DNS solve error", "No addresses returned from DNS query")
+            
+        }
+
+        return addresses
+
     }
 
     private func listenWithMaxConnections(maxConnections: Int) throws {

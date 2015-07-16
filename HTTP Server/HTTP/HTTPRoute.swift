@@ -27,9 +27,9 @@ struct HTTPRoute {
     let path: String
     let pathParameterKeys: [String]
     let regularExpression: RegularExpression
-    let responder: HTTPRequestResponder
+    var responder: RequestResponder
 
-    init(path: String, responder: HTTPRequestResponder) {
+    init(path: String, responder: RequestResponder) {
 
         let pathParameterRegularExpression = try! RegularExpression(pattern: ":([[:alnum:]]+)")
         let finalPattern = try! pathParameterRegularExpression.replace(path, withTemplate: "([[:alnum:]]+)")
@@ -38,7 +38,7 @@ struct HTTPRoute {
         self.pathParameterKeys = try! pathParameterRegularExpression.groups(path)
         self.regularExpression = try! RegularExpression(pattern: "^" + finalPattern + "$")
         self.responder = responder
-            
+
     }
-    
+
 }

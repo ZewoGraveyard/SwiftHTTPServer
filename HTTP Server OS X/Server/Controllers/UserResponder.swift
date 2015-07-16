@@ -1,4 +1,4 @@
-// LoginController.swift
+// UserResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,44 +22,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct LoginController: HTTPRequestController {
+extension Responder {
 
-    func get(request: HTTPRequest) -> HTTPResponse {
+    static let user = UserResponder()
 
-        if let body = DataBody(assetAtPath: "login.html") {
+}
 
-            return HTTPResponse(status: .OK, body: body)
+struct UserResponder: HTTPMethodResponder {
 
-        } else {
+    func any(request: HTTPRequest) throws -> HTTPResponse {
 
-            return HTTPResponse(status: .NotFound)
+//        print(request.pathParameters)
+//        print(request.queryParameters)
+//        print(request.bodyParameters)
 
-        }
+        let info: [String: MustacheBoxable] = [
+            "URI": request.URI,
+            "method": request.method.description,
+            "headers": request.headers,
+            "params": request.parameters
+        ]
 
-    }
-
-    func post(request: HTTPRequest) -> HTTPResponse {
-
-        guard let body = request.body as? FormURLEncodedBody
-        else { return HTTPResponse(status: .BadRequest) }
-
-        guard let email = body.parameters["email"],
-               password = body.parameters["password"] else {
-
-            return HTTPResponse(status: .BadRequest)
-
-        }
-
-        if email == "regis@regis.com" && password == "123" {
-
-            return HTTPResponse(status: .OK, body: HTMLBody(body: "logou"))
-
-        } else {
-
-            return HTTPResponse(status: .Unauthorized)
-
-        }
+        return HTTPResponse(status: .OK, body: try TemplateBody(template: "user.html", data: info))
         
     }
-
+    
 }

@@ -163,10 +163,10 @@ public struct Dispatch {
 
     The target queue determines whether the closure will be invoked serially or concurrently with respect to other closures submitted to that same queue. Serial queues are processed concurrently with respect to each other.
 
-    :param: queue   The target dispatch queue to which the closure is submitted. The system will hold a reference on the target queue until the closure has finished. The default parameter is the **main queue**.
+    :param: queue   The target dispatch queue to which the closure is submitted. The system will hold a reference on the target queue until the closure has finished. The default parameter is the **default queue**.
     :param: closure The closure to submit to the target dispatch queue.
     */
-    public static func async(queue queue: Queue = mainQueue, closure: Void -> Void) {
+    public static func async(queue queue: Queue = defaultQueue, closure: Void -> Void) {
 
         dispatch_async(queue, closure)
 

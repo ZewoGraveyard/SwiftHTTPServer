@@ -24,7 +24,7 @@
 
 public protocol JSONSerializer {
 
-    func serialize(JSON) -> String
+    func serialize(JSONValue: JSON) -> String
 
 }
 

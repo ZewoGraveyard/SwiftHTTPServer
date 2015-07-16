@@ -1,4 +1,4 @@
-// RedirectController.swift
+// HTTPRequest+HTTPServer.swift
 //
 // The MIT License (MIT)
 //
@@ -22,12 +22,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct RedirectController: HTTPRequestController {
+extension HTTPRequest {
 
-    func any(request: HTTPRequest) -> HTTPResponse {
+    var queryParameters: [String: String] {
 
-        return HTTPResponse(status: .MovedPermanently, headers: ["location": "http://www.google.com"])
+        if let query = URI.splitBy("?").last {
 
+            return query.queryParameters
+
+        }
+
+        return [:]
+
+    }
+
+    var path: String {
+
+        return URI.splitBy("?").first!
+
+    }
+
+    var keepAlive: Bool {
+
+        if let value = headers["connection"] {
+
+            return "keep-alive" == value.trim().lowercaseString
+            
+        }
+        
+        return false
+        
     }
     
 }

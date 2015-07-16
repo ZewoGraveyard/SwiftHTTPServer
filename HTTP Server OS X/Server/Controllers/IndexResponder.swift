@@ -1,4 +1,4 @@
-// HTTPResponder.swift
+// IndexResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,8 +22,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HTTPResponder {
+extension Responder {
 
-    func respond(request: HTTPRequest) throws -> HTTPResponse
+    static let index = IndexResponder()
+
+}
+
+struct IndexResponder: HTTPMethodResponder {
+
+    func get(request: HTTPRequest) -> HTTPResponse {
+
+        if let body = DataBody(assetAtPath: "index.html") {
+
+            return HTTPResponse(status: .OK, body: body)
+
+        } else {
+
+            return HTTPResponse(status: .NotFound)
+
+        }
+
+    }
     
 }

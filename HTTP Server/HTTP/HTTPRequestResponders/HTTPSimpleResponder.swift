@@ -1,4 +1,4 @@
-// HTTPResponder.swift
+// HTTPSimpleResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,8 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HTTPResponder {
+struct HTTPSimpleResponder: HTTPResponder {
 
-    func respond(request: HTTPRequest) throws -> HTTPResponse
+    private let responder: HTTPRequest throws -> HTTPResponse
+
+    init(responder: HTTPRequest throws -> HTTPResponse) {
+
+        self.responder = responder
+
+    }
+
+    func respond(request: HTTPRequest) throws -> HTTPResponse {
+
+        return try responder(request)
+        
+    }
     
 }

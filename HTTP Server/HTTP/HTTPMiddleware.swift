@@ -1,4 +1,4 @@
-// HTTPResponder.swift
+// HTTPMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,8 +22,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HTTPResponder {
+enum HTTPRequestMiddlewareResult {
 
-    func respond(request: HTTPRequest) throws -> HTTPResponse
+    case Request(HTTPRequest)
+    case Response(HTTPResponse)
+
+}
+
+protocol HTTPRequestMiddleware {
+
+    func mediate(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
+
+}
+
+protocol HTTPResponseMiddleware {
+
+    func mediate(response: HTTPResponse) throws -> HTTPResponse
     
 }

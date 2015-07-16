@@ -26,39 +26,26 @@ struct HTTPRequest {
 
     let method: HTTPMethod
     let URI: String
+    let version: HTTPVersion
     let headers: [String: String]
     let body: HTTPBody
+    let parameters: [String: String]
 
-    var pathParameters: [String: String]
-    let queryParameters: [String: String]
+    init(
+        method: HTTPMethod,
+        URI: String,
+        version: HTTPVersion = .HTTP_1_1,
+        headers: [String: String] = [:],
+        body: HTTPBody = EmptyBody(),
+        parameters: [String: String] = [:]) {
 
-    init(method: String, URI: String, headers: [String: String] = [:], body: Data? = nil, pathParameters: [String: String] = [:]) throws {
-
-        self.method = HTTPMethod(string: method)
+        self.method = method
         self.URI = URI
+        self.version = version
         self.headers = headers
-        self.body = try HTTPRequest.bodyFromData(body, headers: headers)
-        self.pathParameters = pathParameters
-        self.queryParameters = HTTPRequest.queryParametersFromURI(URI)
+        self.body = body
+        self.parameters = parameters
 
-    }
-
-    var path: String {
-
-        return URI.splitBy("?").first!
-
-    }
-
-    var keepAlive: Bool {
-
-        if let value = headers["connection"] {
-
-            return "keep-alive" == value.trim().lowercaseString
-
-        }
-        
-        return false
-        
     }
 
 }
@@ -126,53 +113,6 @@ extension HTTPRequest: CustomColorLogStringConvertible {
         string += Log.reset
         
         return string
-        
-    }
-    
-}
-
-extension HTTPRequest {
-
-    private static func bodyFromData(data: Data?, headers: [String: String]) throws -> HTTPBody {
-
-        guard let data = data
-        else { return EmptyBody() }
-
-        guard let contentType = headers["content-type"]
-        else { return DataBody(data: data) }
-
-        let mediaType = InternetMediaType(string: contentType)
-
-        switch mediaType {
-
-        case .ApplicationJSON:
-            return try JSONBody(data: data)
-
-        case .ApplicationXWWWFormURLEncoded:
-            return try FormURLEncodedBody(data: data)
-
-        case .MultipartFormData(let boundary):
-            return MultipartFormDataBody(data: data, boundary: boundary)
-
-        case .TextPlain:
-            return try TextBody(data: data)
-
-        case (let contentType):
-            return DataBody(data: data, contentType: contentType)
-
-        }
-        
-    }
-
-    private static func queryParametersFromURI(path: String) -> [String: String] {
-
-        if let query = path.splitBy("?").last {
-
-            return query.queryParameters
-
-        }
-        
-        return [:]
         
     }
     

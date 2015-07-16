@@ -1,4 +1,4 @@
-// RoutesController.swift
+// HTTPKeepAliveMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,20 +22,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct RoutesController: HTTPRequestController {
+struct HTTPKeepAliveMiddleware: HTTPResponseMiddleware {
 
-    let server: HTTPServer
+    let keepAlive: Bool
 
-    func any(request: HTTPRequest) throws -> HTTPResponse {
+    func mediate(response: HTTPResponse) -> HTTPResponse {
 
-        let routes = [
+        if keepAlive {
 
-            "routes": server.routes
+            return HTTPResponse(
+                status: response.status,
+                headers: response.headers + ["connection": "keep-alive"],
+                body: response.body
+            )
 
-        ]
+        }
 
-        return HTTPResponse(status: .OK, body: try TemplateBody(template: "routes.html", data: routes))
-
+        return response
+        
     }
     
 }

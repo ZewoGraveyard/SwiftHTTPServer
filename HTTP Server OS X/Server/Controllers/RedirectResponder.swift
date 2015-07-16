@@ -1,4 +1,4 @@
-// HTTPResponder.swift
+// RedirectResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,8 +22,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HTTPResponder {
+extension Responder {
 
-    func respond(request: HTTPRequest) throws -> HTTPResponse
-    
+    static func redirect(location: String) -> RequestResponder {
+
+        return { request in
+
+            return HTTPResponse(status: .MovedPermanently, headers: ["location": location])
+            
+        }
+
+    }
+
 }

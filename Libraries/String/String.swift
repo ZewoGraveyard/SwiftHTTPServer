@@ -409,7 +409,7 @@ extension String {
                 let s = "\(unicodeA)\(unicodeB)"
                 let z = hexToInt(s)
 
-                decodedArray.append(z)
+                decodedArray.append(UInt8(z))
 
                 index += 3
 
@@ -460,11 +460,23 @@ extension String {
 
     func dropFirstCharacter() -> String {
 
+        if self.characters.count == 1 || self.characters.count == 0 {
+
+            return ""
+
+        }
+
         return String(dropFirst(self.characters))
 
     }
 
     func dropLastCharacter() -> String {
+
+        if self.characters.count == 1 || self.characters.count == 0 {
+
+            return ""
+            
+        }
 
         return String(dropLast(self.characters))
         
@@ -686,7 +698,7 @@ struct CharacterSet {
 
 }
 
-func hexToInt(hex: String) -> UInt8 {
+func hexToInt(hex: String) -> Int {
 
     let map = [
 
@@ -710,13 +722,14 @@ func hexToInt(hex: String) -> UInt8 {
     ]
     
     let total = hex.uppercaseString.unicodeScalars.reduce(0) { $0 * 16 + (map[String($1)] ?? 0xff) }
-    
-    if total > 0xFF {
-        
-        assertionFailure("Input char was wrong")
-        
-    }
-    
-    return UInt8(total)
+
+    // TODO: check for failures
+//    if total > 0xFF {
+//        
+//        assertionFailure("Input char was wrong")
+//        
+//    }
+
+    return Int(total)
     
 }

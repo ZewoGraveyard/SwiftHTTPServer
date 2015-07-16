@@ -1,4 +1,4 @@
-// UserController.swift
+// RoutesResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,25 +22,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-typealias TemplateData = MustacheBoxable
+extension Responder {
 
-struct UserController: HTTPRequestController {
+    static let routes = RoutesResponder()
 
-    func any(request: HTTPRequest) throws -> HTTPResponse {
+}
 
-//        print(request.pathParameters)
-//        print(request.queryParameters)
-//        print(request.bodyParameters)
+class RoutesResponder: HTTPResponder {
 
-        let info: [String: TemplateData] = [
-            "URI": request.URI,
-            "method": request.method.description,
-            "headers": request.headers,
-            "params": request.pathParameters
+    var server: HTTPServer?
+
+    func respond(request: HTTPRequest) throws -> HTTPResponse {
+
+        let routes = [
+
+            "routes": server?.routes
+
         ]
 
-        return HTTPResponse(status: .OK, body: try TemplateBody(template: "user.html", data: info))
-        
+        return HTTPResponse(status: .OK, body: try TemplateBody(template: "routes.html", data: routes))
+
     }
-    
+
 }

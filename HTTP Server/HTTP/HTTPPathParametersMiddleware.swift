@@ -1,4 +1,4 @@
-// HTTPSimpleRequestResponder.swift
+// HTTPPathParametersMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,20 +22,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPSimpleRequestResponder: HTTPRequestResponder {
+struct HTTPPathParametersMiddleware: HTTPRequestMiddleware {
 
-    let responder: HTTPRequest throws -> HTTPResponse
+    let pathParameters: [String: String]
 
-    init(responder: HTTPRequest throws -> HTTPResponse) {
+    func mediate(var request: HTTPRequest) -> HTTPRequestMiddlewareResult {
 
-        self.responder = responder
+        if pathParameters.count == 0 {
+
+            return .Request(request)
+
+        }
+
+        request = HTTPRequest(
+            method: request.method,
+            URI: request.URI,
+            version: request.version,
+            headers: request.headers,
+            body: request.body,
+            parameters: request.parameters + pathParameters
+        )
+
+        return .Request(request)
 
     }
 
-    func respondRequest(request: HTTPRequest) throws -> HTTPResponse {
-
-        return try responder(request)
-        
-    }
-    
 }

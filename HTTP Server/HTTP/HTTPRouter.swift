@@ -28,8 +28,8 @@ struct HTTPRouter {
 
     struct RouteMatch {
 
-        let pathParameters: [String: String]
-        let responder: HTTPRequestResponder
+        let path: String
+        let responder: RequestResponder
         
     }
 
@@ -39,10 +39,24 @@ struct HTTPRouter {
 
 extension HTTPRouter {
 
-    mutating func addRoute(path: String, responder: HTTPRequestResponder) {
+    mutating func addRoute(path: String, responder: RequestResponder) {
 
-        let route = HTTPRoute(path: path, responder: responder)
-        routes.append(route)
+        if findRouteWithPath(path) != nil {
+
+            Log.warning("Route \"\(path)\" already exists. The new route will be ignored")
+
+        } else {
+
+            let route = HTTPRoute(path: path, responder: responder)
+            routes.append(route)
+
+        }
+
+    }
+
+    func findRouteWithPath(path: String) -> HTTPRoute? {
+
+        return routes.filter{ $0.path == path }.first
 
     }
 
@@ -64,12 +78,14 @@ extension HTTPRouter {
 
         if let route = matches.first {
 
-            let responder = route.responder
             let groups = try! route.regularExpression.groups(path)
             let pathParameters = dictionaryFromKeys(route.pathParameterKeys, values: groups)
+            let pathParametersMiddleware = HTTPPathParametersMiddleware(pathParameters: pathParameters)
+
+            let responder = pathParametersMiddleware >>> route.responder
 
             return RouteMatch(
-                pathParameters: pathParameters,
+                path: route.path,
                 responder: responder
             )
 

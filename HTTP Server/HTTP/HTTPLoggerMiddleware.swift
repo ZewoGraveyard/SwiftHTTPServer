@@ -1,4 +1,4 @@
-// IndexController.swift
+// HTTPLoggerMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,20 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct IndexController: HTTPRequestController {
+extension Middleware {
 
-    func get(request: HTTPRequest) -> HTTPResponse {
+    static func logRequest(request: HTTPRequest) -> HTTPRequestMiddlewareResult {
 
-        if let body = DataBody(assetAtPath: "index.html") {
-
-            return HTTPResponse(status: .OK, body: body)
-
-        } else {
-
-            return HTTPResponse(status: .NotFound)
-
-        }
+        Log.info(request)
+        return .Request(request)
 
     }
-    
+        
+    static func logResponse(response: HTTPResponse) -> HTTPResponse {
+
+        Log.info(response)
+        return response
+            
+    }
+
 }

@@ -26,14 +26,15 @@ struct HTTPClientParser {
     
     static func receiveHTTPResponse(socket: Socket) throws -> HTTPResponse {
         
-        let status = try getStatus(socket)
-        let headers = try getHeaders(socket)
-        let body = try getBody(socket, headers: headers)
+        let statusLine = try getStatusLine(socket)
+        let headers = try HTTPParser.getHeaders(socket)
+        let body = try HTTPParser.getBody(socket, headers: headers)
         
         return HTTPResponse(
-            status: status,
+            status: statusLine.status,
+            version: statusLine.version,
             headers: headers,
-            body: body != nil ? DataBody(data: body!) : EmptyBody()
+            body: body
         )
         
     }
@@ -44,109 +45,28 @@ struct HTTPClientParser {
 
 extension HTTPClientParser {
     
-    private static func getStatus(socket: Socket) throws -> HTTPStatus {
+    private static func getStatusLine(socket: Socket) throws -> HTTPStatusLine {
         
-        let statusLine = try getLine(socket)
+        let statusLine = try HTTPParser.getLine(socket)
         let statusLineTokens = statusLine.splitBy(" ")
+
+        let version = try HTTPVersion(string: statusLineTokens[0])
         
-        if statusLineTokens.count != 3 {
-            
-            throw Error.Generic("Impossible to create HTTP Request", "Invalid request line")
-            
+        guard let statusCode = Int(statusLineTokens[1]) else {
+
+            throw Error.Generic("Impossible to create HTTP Request", "Invalid status code \(statusLineTokens[1])")
+
         }
         
-        guard let statusCode = Int(statusLineTokens[1])
-        else { throw Error.Generic("Impossible to create HTTP Request", "Invalid status code") }
+        let reasonPhrase = " ".join(statusLineTokens[2 ..< statusLineTokens.count])
         
-        let reasonPhrase = statusLineTokens[2]
-        
-        return HTTPStatus(statusCode: statusCode, reasonPhrase: reasonPhrase)
-    }
-    
-    private static func getHeaders(socket: Socket) throws -> [String: String] {
-        
-        var headers: [String: String] = [:]
-        
-        while true {
-            
-            let headerLine = try getLine(socket)
-            
-            if headerLine.isEmpty {
-                
-                return headers
-                
-            }
-            
-            let headerTokens = headerLine.splitBy(":")
-            
-            if headerTokens.count >= 2 {
-                
-                let key = headerTokens[0].lowercaseString
-                let value = headerTokens[1].trim()
-                
-                if !key.isEmpty && !value.isEmpty {
-                    
-                    headers[key] = value
-                    
-                }
-                
-            }
-            
-        }
+        let status = HTTPStatus(statusCode: statusCode, reasonPhrase: reasonPhrase)
+
+        return HTTPStatusLine(
+            status: status,
+            version: version
+        )
         
     }
-    
-    private static func getBody(socket: Socket, headers: [String: String]) throws -> Data? {
-        
-        if let contentLenght = headers["content-length"], contentSize = Int(contentLenght) where contentSize > 0 {
-            
-            return try getBody(socket, size: contentSize)
-            
-        }
-        
-        return .None
-        
-    }
-    
-    private static func getBody(socket: Socket, size: Int) throws -> Data {
-        
-        var bytes: [UInt8] = []
-        var counter = 0
-        
-        while counter < size {
-            
-            let byte = try socket.receiveByte()
-            bytes.append(byte)
-            counter++
-            
-        }
-        
-        return Data(bytes: bytes)
-        
-    }
-    
-    private static func getLine(socket: Socket) throws -> String {
-        
-        let CR: UInt8 = 13
-        let NL: UInt8 = 10
-        
-        var characters: String = ""
-        var byte: UInt8 = 0
-        
-        repeat {
-            
-            byte = try socket.receiveByte()
-            
-            if byte > CR {
-                
-                characters.append(Character(UnicodeScalar(byte)))
-                
-            }
-            
-        } while byte != NL
-        
-        return characters
-        
-    }
-    
+
 }

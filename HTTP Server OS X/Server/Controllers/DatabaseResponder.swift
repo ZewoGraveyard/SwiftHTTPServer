@@ -1,4 +1,4 @@
-// DatabaseController.swift
+// DatabaseResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,9 +22,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct DatabaseController: HTTPRequestController {
+extension Responder {
 
-    func any(request: HTTPRequest) throws -> HTTPResponse {
+    static let database = DatabaseResponder()
+
+}
+
+struct DatabaseResponder: HTTPResponder {
+
+    func respond(request: HTTPRequest) throws -> HTTPResponse {
 
         #if os(OSX)
 

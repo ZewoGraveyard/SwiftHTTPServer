@@ -26,23 +26,14 @@ struct HTTPServerParser {
 
     static func receiveHTTPRequest(socket: Socket) throws -> HTTPRequest {
 
-        let requestLine = try getLine(socket)
-        let requestLineTokens = requestLine.splitBy(" ")
+        let requestLine = try getRequestLine(socket)
+        let headers = try HTTPParser.getHeaders(socket)
+        let body = try HTTPParser.getBody(socket, headers: headers)
 
-        if requestLineTokens.count != 3 {
-
-            throw Error.Generic("Impossible to create HTTP Request", "Invalid request line")
-
-        }
-
-        let method = requestLineTokens[0]
-        let URI = requestLineTokens[1]
-        let headers = try getHeaders(socket)
-        let body = try getBody(socket, headers: headers)
-
-        return try HTTPRequest(
-            method: method,
-            URI: URI,
+        return HTTPRequest(
+            method: requestLine.method,
+            URI: requestLine.URI,
+            version: requestLine.version,
             headers: headers,
             body: body
         )
@@ -55,90 +46,27 @@ struct HTTPServerParser {
 
 extension HTTPServerParser {
 
-    private static func getHeaders(socket: Socket) throws -> [String: String] {
+    private static func getRequestLine(socket: Socket) throws -> HTTPRequestLine {
 
-        var headers: [String: String] = [:]
+        let requestLine = try HTTPParser.getLine(socket)
+        let requestLineTokens = requestLine.splitBy(" ")
 
-        while true {
+        if requestLineTokens.count != 3 {
 
-            let headerLine = try getLine(socket)
-
-            if headerLine.isEmpty {
-
-                return headers
-
-            }
-
-            let headerTokens = headerLine.splitBy(":")
-
-            if headerTokens.count >= 2 {
-
-                let key = headerTokens[0].lowercaseString
-                let value = headerTokens[1].trim()
-
-                if !key.isEmpty && !value.isEmpty {
-
-                    headers[key] = value
-                    
-                }
-                
-            }
-            
-        }
-        
-    }
-
-    private static func getBody(socket: Socket, headers: [String: String]) throws -> Data? {
-
-        if let contentLenght = headers["content-length"], contentSize = Int(contentLenght) where contentSize > 0 {
-
-            return try getBody(socket, size: contentSize)
+            throw Error.Generic("Impossible to create HTTP Request", "Invalid request line")
 
         }
 
-        return .None
-        
-    }
+        let method = HTTPMethod(string: requestLineTokens[0])
+        let URI = requestLineTokens[1]
+        let version = try HTTPVersion(string: requestLineTokens[2])
 
-    private static func getBody(socket: Socket, size: Int) throws -> Data {
+        return HTTPRequestLine(
+            method: method,
+            URI: URI,
+            version: version
+        )
 
-        var bytes: [UInt8] = []
-        var counter = 0
-
-        while counter < size {
-
-            let byte = try socket.receiveByte()
-            bytes.append(byte)
-            counter++
-
-        }
-
-        return Data(bytes: bytes)
-
-    }
-
-    private static func getLine(socket: Socket) throws -> String {
-
-        let CR: UInt8 = 13
-        let NL: UInt8 = 10
-
-        var characters: String = ""
-        var byte: UInt8 = 0
-
-        repeat {
-
-            byte = try socket.receiveByte()
-
-            if byte > CR {
-
-                characters.append(Character(UnicodeScalar(byte)))
-
-            }
-
-        } while byte != NL
-        
-        return characters
-        
     }
 
 }

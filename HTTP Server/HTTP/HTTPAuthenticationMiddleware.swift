@@ -1,4 +1,4 @@
-// HTTPResponder.swift
+// HTTPAuthenticationMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,8 +22,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HTTPResponder {
+extension Middleware {
 
-    func respond(request: HTTPRequest) throws -> HTTPResponse
-    
+    static func authenticate(request: HTTPRequest) -> HTTPRequestMiddlewareResult {
+
+        if let authorization = request.headers["authorization"] where authorization == "password" {
+
+            return .Request(request)
+
+        } else {
+
+            let response = HTTPResponse(status: .Unauthorized, body: TextBody(text: "Unauthorized"))
+            return .Response(response)
+
+        }
+
+    }
+
 }

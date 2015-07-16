@@ -25,15 +25,38 @@
 struct Client {
 
     private let client = HTTPClient()
-    private let address: String = "10.100.101.221"
+    private let address: String = "localhost"
     private let port: TCPPort = 8080
     
     func send() {
         
         do {
         
-            let request = try HTTPRequest(method: "GET", URI: "/json")
+            let request =  HTTPRequest(
+                method: .GET,
+                URI: "/",
+                headers: [
+                    "host": "localhost",
+                    "accept": "*/*",
+                    "user-agent": "HTTP Client",
+                    "csp": "active",
+                    "accept-encoding": "gzip, deflate, sdch",
+                    "accept-language": "pt-BR,pt;q=0.8,en-US;q=0.6,en;q=0.4,en-GB;q=0.2,de;q=0.2",
+                    "cache-control": "no-cache",
+                    "connection": "close"
+                ]
+            )
+
+            Log.info(request)
+
             let response = try client.sendRequest(request, address: address, port: port)
+
+            if let jsonBody = response.body as? JSONBody {
+
+                print(jsonBody.json.debugDescription)
+
+            }
+
             Log.info(response)
         
         } catch {

@@ -1,4 +1,4 @@
-// HTTPRequestController.swift
+// HTTPMethodMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,95 +22,95 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HTTPRequestController: HTTPRequestResponder {
+protocol HTTPMethodMiddleware: HTTPRequestMiddleware {
 
-    func any(request: HTTPRequest) throws -> HTTPResponse
-    func get(request: HTTPRequest) throws -> HTTPResponse
-    func head(request: HTTPRequest) throws -> HTTPResponse
-    func post(request: HTTPRequest) throws -> HTTPResponse
-    func put(request: HTTPRequest) throws -> HTTPResponse
-    func delete(request: HTTPRequest) throws -> HTTPResponse
-    func trace(request: HTTPRequest) throws -> HTTPResponse
-    func options(request: HTTPRequest) throws -> HTTPResponse
-    func connect(request: HTTPRequest) throws -> HTTPResponse
-    func patch(request: HTTPRequest) throws -> HTTPResponse
-    func unrecognizedMethod(method: String, request: HTTPRequest) throws -> HTTPResponse
-
-}
-
-extension HTTPRequestController {
-
-    func any(request: HTTPRequest) throws -> HTTPResponse {
-
-        return HTTPResponse(status: .MethodNotAllowed)
-
-    }
-
-    func get(request: HTTPRequest) throws -> HTTPResponse {
-
-        return try any(request)
-
-    }
-
-    func head(request: HTTPRequest) throws -> HTTPResponse {
-
-        return try any(request)
-        
-    }
-
-    func post(request: HTTPRequest) throws -> HTTPResponse {
-
-        return try any(request)
-
-    }
-
-    func put(request: HTTPRequest) throws -> HTTPResponse {
-
-        return try any(request)
-        
-    }
-
-    func delete(request: HTTPRequest) throws -> HTTPResponse {
-
-        return try any(request)
-
-    }
-
-    func trace(request: HTTPRequest) throws -> HTTPResponse {
-
-        return try any(request)
-        
-    }
-
-    func options(request: HTTPRequest) throws -> HTTPResponse {
-
-        return try any(request)
-
-    }
-
-    func connect(request: HTTPRequest) throws -> HTTPResponse {
-
-        return try any(request)
-        
-    }
-
-    func patch(request: HTTPRequest) throws -> HTTPResponse {
-
-        return try any(request)
-
-    }
-
-    func unrecognizedMethod(method: String, request: HTTPRequest) throws -> HTTPResponse {
-
-        return try any(request)
-
-    }
+    func any(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
+    func get(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
+    func head(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
+    func post(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
+    func put(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
+    func delete(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
+    func trace(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
+    func options(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
+    func connect(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
+    func patch(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
+    func unrecognizedMethod(method: String, request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
 
 }
 
-extension HTTPRequestController {
+extension HTTPMethodMiddleware {
 
-    func respondRequest(request: HTTPRequest) throws -> HTTPResponse {
+    func any(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        return .Request(request)
+
+    }
+
+    func get(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        return try any(request)
+
+    }
+
+    func head(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        return try any(request)
+        
+    }
+
+    func post(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        return try any(request)
+
+    }
+    
+    func put(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        return try any(request)
+
+    }
+
+    func delete(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        return try any(request)
+
+    }
+
+    func trace(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        return try any(request)
+
+    }
+
+    func options(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        return try any(request)
+
+    }
+
+    func connect(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        return try any(request)
+
+    }
+
+    func patch(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        return try any(request)
+
+    }
+
+    func unrecognizedMethod(method: String, request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        return try any(request)
+
+    }
+
+}
+
+extension HTTPMethodMiddleware {
+
+    func mediate(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
         switch request.method {
 
@@ -126,7 +126,7 @@ extension HTTPRequestController {
         case .Unrecognized(let method): return try unrecognizedMethod(method, request: request)
 
         }
-        
+
     }
-    
+
 }

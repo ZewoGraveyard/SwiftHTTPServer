@@ -24,12 +24,6 @@
 
 enum HTTPStatus {
 
-    var HTTPVersion: String {
-
-        return "HTTP/1.1"
-
-    }
-
     // MARK: Informational
     case Continue
     case SwitchingProtocols
