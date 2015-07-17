@@ -25,30 +25,114 @@
 struct Middleware {}
 struct Responder {}
 
+struct RParser: ServerParser {
+
+    typealias Request = HTTPRequest
+
+    static func receiveRequest(socket socket: Socket) throws -> HTTPRequest {
+
+        let requestLine = try getRequestLine(socket: socket)
+        let headers = try HTTPParser.getHeaders(socket: socket)
+        let body = try HTTPParser.getBody(socket: socket, headers: headers)
+
+        return HTTPRequest(
+            method: requestLine.method,
+            URI: requestLine.URI,
+            version: requestLine.version,
+            headers: headers,
+            body: body
+        )
+
+    }
+
+}
+
+// MARK: - Private
+
+extension RParser {
+
+    private static func getRequestLine(socket socket: Socket) throws -> HTTPRequestLine {
+
+        let requestLine = try HTTPParser.getLine(socket: socket)
+        let requestLineTokens = requestLine.splitBy(" ")
+
+        if requestLineTokens.count != 3 {
+
+            throw Error.Generic("Impossible to create HTTP Request", "Invalid request line")
+
+        }
+
+        let method = HTTPMethod(string: requestLineTokens[0])
+        let URI = requestLineTokens[1]
+        let version = try HTTPVersion(string: requestLineTokens[2])
+
+        return HTTPRequestLine(
+            method: method,
+            URI: URI,
+            version: version
+        )
+        
+    }
+    
+}
+
+struct RSerializer: ServerSerializer {
+
+    typealias Response = HTTPResponse
+
+    static func sendResponse(socket socket: Socket, response: HTTPResponse) throws {
+
+        try socket.writeString("\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+
+        for (name, value) in response.headers {
+
+            try socket.writeString("\(name): \(value)\r\n")
+
+        }
+
+        try socket.writeString("\r\n")
+
+        if let data = response.body.data {
+
+            try socket.writeData(data)
+            
+        }
+        
+    }
+    
+}
+
 struct Server {
 
-    private let server: HTTPServer
+//    private let server: HTTPServer
+    private let server: RServer<RParser, RSerializer>
 
     init() {
 
-        self.server = HTTPServer(
+//        self.server = HTTPServer(
+//
+//            Middleware.logRequest >>> [
+//
+//                "/"         =| Responder.index.respond,
+//                "/login"    =| Responder.login.respond,
+//                "/user/:id" =| Responder.user.respond,
+//                "/json"     =| Responder.json.respond,
+//                "/database" =| Responder.database.respond,
+//                "/redirect" =| Responder.redirect("http://www.google.com"),
+//                "/routes"   =| Middleware.authenticate >>> Responder.routes.respond
+//
+//            ] >>> Middleware.logResponse
+//
+//        )
+//
+//        Responder.routes.server = server
 
-            Middleware.logRequest >>> [
+        self.server = RServer(responder: Responder.index.respond) { error in
 
-                "/"         =| Responder.index.respond,
-                "/login"    =| Responder.login.respond,
-                "/user/:id" =| Responder.user.respond,
-                "/json"     =| Responder.json.respond,
-                "/database" =| Responder.database.respond,
-                "/redirect" =| Responder.redirect("http://www.google.com"),
-                "/routes"   =| Middleware.authenticate >>> Responder.routes.respond
+            HTTPResponse(status: .InternalServerError, body: TextBody(text: "\(error)"))
 
-            ] >>> Middleware.logResponse
+        }
 
-        )
-
-        Responder.routes.server = server
-        
     }
     
     func start() {

@@ -28,7 +28,7 @@ extension Responder {
 
 }
 
-struct DatabaseResponder: HTTPResponder {
+struct DatabaseResponder: HTTPResponderType {
 
     func respond(request: HTTPRequest) throws -> HTTPResponse {
 

@@ -28,7 +28,7 @@ extension Responder {
 
 }
 
-class RoutesResponder: HTTPResponder {
+class RoutesResponder: HTTPResponderType {
 
     var server: HTTPServer?
 

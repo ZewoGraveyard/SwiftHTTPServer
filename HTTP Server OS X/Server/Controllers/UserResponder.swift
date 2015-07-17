@@ -32,10 +32,6 @@ struct UserResponder: HTTPMethodResponder {
 
     func any(request: HTTPRequest) throws -> HTTPResponse {
 
-//        print(request.pathParameters)
-//        print(request.queryParameters)
-//        print(request.bodyParameters)
-
         let info: [String: MustacheBoxable] = [
             "URI": request.URI,
             "method": request.method.description,

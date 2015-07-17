@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HTTPMethodResponder: HTTPResponder {
+protocol HTTPMethodResponder: HTTPResponderType {
 
     func any(request: HTTPRequest) throws -> HTTPResponse
     func get(request: HTTPRequest) throws -> HTTPResponse

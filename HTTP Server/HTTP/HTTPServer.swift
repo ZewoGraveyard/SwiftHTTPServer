@@ -24,16 +24,17 @@
 
 final class HTTPServer {
 
-    private let requestMiddlewares: RequestMiddleware?
-    private let router: (path: String) -> RequestResponder?
-    private let responseMiddlewares: ResponseMiddleware?
+    private let requestMiddlewares: HTTPRequestMiddleware?
+    private let router: (path: String) -> HTTPResponder?
+    private let responseMiddlewares: HTTPResponseMiddleware?
+
     private var socket: Socket?
 
     let routes: [String]
 
-    init(requestMiddlewares: RequestMiddleware? = nil,
+    init(requestMiddlewares: HTTPRequestMiddleware? = nil,
         routes: [HTTPRoute] = [],
-        responseMiddlewares: ResponseMiddleware? = nil) {
+        responseMiddlewares: HTTPResponseMiddleware? = nil) {
 
         self.requestMiddlewares = requestMiddlewares
         self.router = HTTPRouter.routes(routes)
@@ -52,7 +53,7 @@ final class HTTPServer {
 
     }
 
-    convenience init(_ requestMiddlewares: RequestMiddleware) {
+    convenience init(_ requestMiddlewares: HTTPRequestMiddleware) {
 
         self.init(requestMiddlewares: requestMiddlewares)
 
@@ -64,7 +65,7 @@ final class HTTPServer {
         
     }
 
-    convenience init(_ responseMiddlewares: ResponseMiddleware) {
+    convenience init(_ responseMiddlewares: HTTPResponseMiddleware) {
 
         self.init(responseMiddlewares: responseMiddlewares)
 
@@ -82,14 +83,8 @@ extension HTTPServer {
 
             socket?.release()
             socket = try Socket(port: port, maxConnections: 1000)
-
+            Dispatch.async { self.waitForClients(failureHandler: failureHandler) }
             Log.info("HTTP Server listening at port \(port).")
-
-            Dispatch.async {
-
-                self.waitForClients(failureHandler: failureHandler)
-
-            }
 
         } catch {
 
@@ -124,12 +119,7 @@ extension HTTPServer {
             while true {
 
                 let clientSocket = try socket!.acceptClient()
-
-                Dispatch.async {
-
-                    self.processClientSocket(clientSocket, failureHandler: failureHandler)
-
-                }
+                Dispatch.async { self.processClient(clientSocket: clientSocket, failureHandler: failureHandler) }
 
             }
 
@@ -142,13 +132,13 @@ extension HTTPServer {
 
     }
 
-    private func processClientSocket(clientSocket: Socket, failureHandler: ErrorType -> Void) {
+    private func processClient(clientSocket clientSocket: Socket, failureHandler: ErrorType -> Void) {
 
         do {
 
             while true {
 
-                let request =  try HTTPServerParser.receiveHTTPRequest(socket: clientSocket)
+                let request = try HTTPServerParser.receiveHTTPRequest(socket: clientSocket)
 
                 let responder = requestMiddlewares >>>
                                 router(path: request.path) ?? Responder.assetAtPath(request.path) >>>

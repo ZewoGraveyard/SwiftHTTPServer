@@ -24,14 +24,6 @@
 
 final class HTTPClient {
 
-
-    
-}
-
-// MARK: - Public
-
-extension HTTPClient {
-
     func sendRequest(request: HTTPRequest, address: String, port: TCPPort) throws -> HTTPResponse {
 
         let socket = try Socket(address: address, port: port)

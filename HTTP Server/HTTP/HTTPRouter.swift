@@ -24,7 +24,7 @@
 
 struct HTTPRouter {
 
-    static func routes(routes: [HTTPRoute])(path: String) -> RequestResponder? {
+    static func routes(routes: [HTTPRoute])(path: String) -> HTTPResponder? {
 
         if let route = routes.find({$0.matchesPath(path)}) {
 

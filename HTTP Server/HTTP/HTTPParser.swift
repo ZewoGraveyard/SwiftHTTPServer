@@ -24,13 +24,37 @@
 
 struct HTTPParser {
 
-    static func getHeaders(socket: Socket) throws -> [String: String] {
+    static func getLine(socket socket: Socket) throws -> String {
+
+        let CR: UInt8 = 13
+        let NL: UInt8 = 10
+
+        var characters: String = ""
+        var byte: UInt8 = 0
+
+        repeat {
+
+            byte = try socket.receiveByte()
+
+            if byte > CR {
+
+                characters.append(Character(UnicodeScalar(byte)))
+
+            }
+            
+        } while byte != NL
+        
+        return characters
+        
+    }
+
+    static func getHeaders(socket socket: Socket) throws -> [String: String] {
 
         var headers: [String: String] = [:]
 
         while true {
 
-            let headerLine = try getLine(socket)
+            let headerLine = try getLine(socket: socket)
 
             if headerLine.isEmpty {
 
@@ -57,7 +81,7 @@ struct HTTPParser {
 
     }
 
-    static func getBody(socket: Socket, headers: [String: String]) throws -> HTTPBody {
+    static func getBody(socket socket: Socket, headers: [String: String]) throws -> HTTPBody {
 
         // TODO: support chunked data
         if let contentLenght = headers["content-length"],
@@ -85,14 +109,13 @@ struct HTTPParser {
 
         while true {
 
-            let chunkSizeString = try getLine(socket)
+            let chunkSizeString = try getLine(socket: socket)
 
-            let chunkSize = hexToInt(chunkSizeString)
-            //else { throw Error.Generic("Chunked transfer encondig error", "Chunk size is not valid: \(chunkSizeString)") }
+            let chunkSize = try chunkSizeString.integerFromHexadecimalString()
 
             if chunkSize == 0 {
 
-                try getLine(socket)
+                try getLine(socket: socket)
                 break
 
             }
@@ -107,7 +130,7 @@ struct HTTPParser {
                 
             }
 
-            try getLine(socket)
+            try getLine(socket: socket)
 
         }
 
@@ -130,30 +153,6 @@ struct HTTPParser {
 
         return Data(bytes: bytes)
 
-    }
-
-    static func getLine(socket: Socket) throws -> String {
-
-        let CR: UInt8 = 13
-        let NL: UInt8 = 10
-
-        var characters: String = ""
-        var byte: UInt8 = 0
-
-        repeat {
-
-            byte = try socket.receiveByte()
-
-            if byte > CR {
-
-                characters.append(Character(UnicodeScalar(byte)))
-
-            }
-
-        } while byte != NL
-
-        return characters
-        
     }
 
 }

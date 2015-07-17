@@ -394,40 +394,53 @@ extension String {
 
     var URLDecoded: String? {
 
-        var encodedArray: [UInt8] = bytes
-        var decodedArray: [UInt8] = []
+        do {
 
-        for var index = 0; index < encodedArray.count; {
+            let space: UInt8 = 32
+            let percent: UInt8 = 37
+            let plus: UInt8 = 43
 
-            let codeUnit = encodedArray[index]
+            var encodedArray: [UInt8] = bytes
+            var decodedArray: [UInt8] = []
 
-            if codeUnit == 37 {
+            for var index = 0; index < encodedArray.count; {
 
-                let unicodeA = UnicodeScalar(encodedArray[index+1])
-                let unicodeB = UnicodeScalar(encodedArray[index+2])
+                let codeUnit = encodedArray[index]
 
-                let s = "\(unicodeA)\(unicodeB)"
-                let z = hexToInt(s)
+                if codeUnit == percent {
 
-                decodedArray.append(UInt8(z))
+                    let unicodeA = UnicodeScalar(encodedArray[index + 1])
+                    let unicodeB = UnicodeScalar(encodedArray[index + 2])
 
-                index += 3
+                    let hexadecimalString = "\(unicodeA)\(unicodeB)"
+                    let character = try hexadecimalString.integerFromHexadecimalString()
 
-            } else if codeUnit == 43 {
+                    decodedArray.append(UInt8(character))
 
-                decodedArray.append(32)
-                index++
+                    index += 3
 
-            } else {
+                } else if codeUnit == plus {
 
-                decodedArray.append(codeUnit)
-                index++
+                    decodedArray.append(space)
+                    index++
+
+                } else {
+
+                    decodedArray.append(codeUnit)
+                    index++
+
+                }
 
             }
 
-        }
+            return String(bytes: decodedArray)
 
-        return String(bytes: decodedArray)
+        } catch {
+
+            Log.error(error)
+            return .None
+
+        }
 
     }
 
@@ -698,38 +711,69 @@ struct CharacterSet {
 
 }
 
-func hexToInt(hex: String) -> Int {
+extension SequenceType {
 
-    let map = [
+    /// Return the result of repeatedly calling `combine` with an
+    /// accumulated value initialized to `initial` and each element of
+    /// `self`, in turn, i.e. return
+    /// `combine(combine(...combine(combine(initial, self[0]),
+    /// self[1]),...self[count-2]), self[count-1])`.
+    func throwingReduce<T>(initial: T, @noescape combine: (T, Self.Generator.Element) throws -> T) throws -> T {
 
-        "0": 0,
-        "1": 1,
-        "2": 2,
-        "3": 3,
-        "4": 4,
-        "5": 5,
-        "6": 6,
-        "7": 7,
-        "8": 8,
-        "9": 9,
-        "A": 10,
-        "B": 11,
-        "C": 12,
-        "D": 13,
-        "E": 14,
-        "F": 15
+        var current = initial
+
+        for element in self {
+
+            current = try combine(current, element)
+
+        }
+
+        return current
+
+    }
+
+}
+
+extension String {
+
+    func integerFromHexadecimalString() throws -> Int {
+
+        let map = [
+
+            "0": 0,
+            "1": 1,
+            "2": 2,
+            "3": 3,
+            "4": 4,
+            "5": 5,
+            "6": 6,
+            "7": 7,
+            "8": 8,
+            "9": 9,
+            "A": 10,
+            "B": 11,
+            "C": 12,
+            "D": 13,
+            "E": 14,
+            "F": 15
+            
+        ]
         
-    ]
-    
-    let total = hex.uppercaseString.unicodeScalars.reduce(0) { $0 * 16 + (map[String($1)] ?? 0xff) }
+        let total = try uppercaseString.unicodeScalars.throwingReduce(0) {
 
-    // TODO: check for failures
-//    if total > 0xFF {
-//        
-//        assertionFailure("Input char was wrong")
-//        
-//    }
+            guard let digit = map[String($1)]
+            else {
 
-    return Int(total)
-    
+                throw Error.Generic("Could not convert hexadecimal string \"\(self)\" to Int.", "\(String($1)) is not a valid hexadecimal digit.")
+
+            }
+
+            return $0 * 16 + digit
+
+        }
+
+        return Int(total)
+        
+    }
+
 }

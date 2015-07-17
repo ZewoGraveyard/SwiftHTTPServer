@@ -22,16 +22,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-typealias RequestMiddleware = HTTPRequest throws -> HTTPRequestMiddlewareResult
-typealias RequestResponder = HTTPRequest throws -> HTTPResponse
-typealias ResponseMiddleware = HTTPResponse throws -> HTTPResponse
-
-
 infix operator =| { associativity right precedence 80 }
 
 // MARK: (RequestMiddleware, RequestMiddleware) -> RequestMiddleware
 
-func =|(path: String, responder: RequestResponder) -> HTTPRoute {
+func =|(path: String, responder: HTTPResponder) -> HTTPRoute {
 
     return HTTPRoute(path: path, responder: responder)
     
@@ -47,7 +42,7 @@ func >>> <A, B, C>(f: (A throws -> B), g: (B throws -> C)) -> (A throws -> C) {
 
 // MARK: (RequestMiddleware, RequestMiddleware) -> RequestMiddleware
 
-func >>>(middlewareA: RequestMiddleware, middlewareB: RequestMiddleware) -> RequestMiddleware {
+func >>>(middlewareA: HTTPRequestMiddleware, middlewareB: HTTPRequestMiddleware) -> HTTPRequestMiddleware {
 
     return { (request: HTTPRequest) -> HTTPRequestMiddlewareResult in
 
@@ -67,7 +62,7 @@ func >>>(middlewareA: RequestMiddleware, middlewareB: RequestMiddleware) -> Requ
 
 // MARK: (RequestMiddleware, RequestResponder) -> RequestResponder
 
-func >>>(middleware: RequestMiddleware?, responder: RequestResponder) -> RequestResponder {
+func >>>(middleware: HTTPRequestMiddleware?, responder: HTTPResponder) -> HTTPResponder {
 
     return { (request: HTTPRequest) -> HTTPResponse in
 
@@ -95,7 +90,7 @@ func >>>(middleware: RequestMiddleware?, responder: RequestResponder) -> Request
 
 // MARK: (RequestResponder, ResponseMiddleware) -> RequestResponder
 
-func >>>(responder: RequestResponder, middleware: ResponseMiddleware?) -> RequestResponder {
+func >>>(responder: HTTPResponder, middleware: HTTPResponseMiddleware?) -> HTTPResponder {
 
     return { request in
 
@@ -115,7 +110,7 @@ func >>>(responder: RequestResponder, middleware: ResponseMiddleware?) -> Reques
 
 // MARK: (RequestMiddleware, [String: RequestResponder]) -> HTTPServerConfiguration
 
-func >>>(requestMiddlewares: RequestMiddleware, responseMiddlewares: ResponseMiddleware) -> HTTPServerConfiguration {
+func >>>(requestMiddlewares: HTTPRequestMiddleware, responseMiddlewares: HTTPResponseMiddleware) -> HTTPServerConfiguration {
 
     return HTTPServerConfiguration(requestMiddlewares: requestMiddlewares, responseMiddlewares: responseMiddlewares)
     
@@ -123,7 +118,7 @@ func >>>(requestMiddlewares: RequestMiddleware, responseMiddlewares: ResponseMid
 
 // MARK: (RequestMiddleware, [String: RequestResponder]) -> HTTPServerConfiguration
 
-func >>>(requestMiddlewares: RequestMiddleware, routes: [HTTPRoute]) -> HTTPServerConfiguration {
+func >>>(requestMiddlewares: HTTPRequestMiddleware, routes: [HTTPRoute]) -> HTTPServerConfiguration {
 
     return HTTPServerConfiguration(requestMiddlewares: requestMiddlewares, routes: routes)
 
@@ -131,7 +126,7 @@ func >>>(requestMiddlewares: RequestMiddleware, routes: [HTTPRoute]) -> HTTPServ
 
 // MARK: (HTTPServerConfiguration, ResponseMiddleware) -> HTTPServerConfiguration
 
-func >>>(configuration: HTTPServerConfiguration, responseMiddlewares: ResponseMiddleware) -> HTTPServerConfiguration {
+func >>>(configuration: HTTPServerConfiguration, responseMiddlewares: HTTPResponseMiddleware) -> HTTPServerConfiguration {
 
     if let requestMiddlewares = configuration.requestMiddlewares {
 
@@ -154,7 +149,7 @@ func >>>(configuration: HTTPServerConfiguration, responseMiddlewares: ResponseMi
 
 // MARK: ([String: RequestResponder], ResponseMiddleware) -> HTTPServerConfiguration
 
-func >>>(routes: [HTTPRoute], responseMiddlewares: ResponseMiddleware) -> HTTPServerConfiguration {
+func >>>(routes: [HTTPRoute], responseMiddlewares: HTTPResponseMiddleware) -> HTTPServerConfiguration {
 
     return HTTPServerConfiguration(routes: routes, responseMiddlewares: responseMiddlewares)
     
@@ -162,7 +157,7 @@ func >>>(routes: [HTTPRoute], responseMiddlewares: ResponseMiddleware) -> HTTPSe
 
 // MARK: (RequestResponder, ErrorType -> Void) -> (HTTPRequest -> HTTPResponse)
 
-func >>>(responder: RequestResponder, failureHandler: ErrorType -> Void) -> (HTTPRequest -> HTTPResponse) {
+func >>>(responder: HTTPResponder, failureHandler: ErrorType -> Void) -> (HTTPRequest -> HTTPResponse) {
 
     return { request in
 
@@ -181,10 +176,9 @@ func >>>(responder: RequestResponder, failureHandler: ErrorType -> Void) -> (HTT
         
 }
 
-// MARK: 
+// MARK:(RequestResponder?, RequestResponder) -> RequestResponder
 
-
-func ??(responderA: RequestResponder?, responderB: RequestResponder) -> RequestResponder {
+func ??(responderA: HTTPResponder?, responderB: HTTPResponder) -> HTTPResponder {
 
     if let responder = responderA {
 

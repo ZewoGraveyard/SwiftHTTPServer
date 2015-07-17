@@ -275,12 +275,15 @@
 		B049563F1B56889800AA2A54 /* HTTPServerOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = B049563E1B56889800AA2A54 /* HTTPServerOperators.swift */; };
 		B04956401B56889800AA2A54 /* HTTPServerOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = B049563E1B56889800AA2A54 /* HTTPServerOperators.swift */; };
 		B0599F4E1B56E44900D8D90C /* HTTPServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0599F4D1B56E44900D8D90C /* HTTPServerConfiguration.swift */; };
+		B0B51EDB1B5895040007A0A3 /* RServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B51EDA1B5895040007A0A3 /* RServer.swift */; };
+		B0B51EDC1B5895A80007A0A3 /* RServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B51EDA1B5895040007A0A3 /* RServer.swift */; };
 		B0E3C4341B573EEA001E8A6A /* AssetResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E3C4331B573EEA001E8A6A /* AssetResponder.swift */; };
 		B0E3C4351B573EEA001E8A6A /* AssetResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E3C4331B573EEA001E8A6A /* AssetResponder.swift */; };
 		B0E3C43B1B57FEEB001E8A6A /* CollectionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E3C43A1B57FEEB001E8A6A /* CollectionType.swift */; };
 		B0E3C43C1B57FEEB001E8A6A /* CollectionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E3C43A1B57FEEB001E8A6A /* CollectionType.swift */; };
 		B0E3C43E1B581AFB001E8A6A /* HTTPResponseHeadersMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E3C43D1B581AFB001E8A6A /* HTTPResponseHeadersMiddleware.swift */; };
 		B0E3C43F1B581AFB001E8A6A /* HTTPResponseHeadersMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E3C43D1B581AFB001E8A6A /* HTTPResponseHeadersMiddleware.swift */; };
+		B0E3C4451B5829D2001E8A6A /* HTTPServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0599F4D1B56E44900D8D90C /* HTTPServerConfiguration.swift */; };
 		B0EC72961B4CC46C00D2D1D9 /* DatabaseResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC72951B4CC46C00D2D1D9 /* DatabaseResponder.swift */; };
 		B0EC72971B4CC4EA00D2D1D9 /* DatabaseResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC72951B4CC46C00D2D1D9 /* DatabaseResponder.swift */; };
 		B0EC72A01B4CCFE700D2D1D9 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAC2B6F1B4C5C6200CDB7C9 /* Log.swift */; };
@@ -471,6 +474,10 @@
 		3AAC2C711B4C606E00CDB7C9 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		3AAC2D721B4C6BE500CDB7C9 /* Media */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Media; path = ../../Media; sourceTree = "<group>"; };
 		3AAC2D731B4C6BE500CDB7C9 /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Assets; path = ../../Assets; sourceTree = "<group>"; };
+		B039B8DB1B5847930097DA29 /* Server OS X */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Server OS X"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B039B8DC1B5847930097DA29 /* Client OS X */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Client OS X"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B039B8DD1B5847930097DA29 /* Server iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Server iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B039B8DE1B5847930097DA29 /* Client iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Client iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B04956031B516A3C00AA2A54 /* HTTPRequestLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPRequestLine.swift; path = HTTP/HTTPRequestLine.swift; sourceTree = "<group>"; };
 		B04956051B516D5200AA2A54 /* HTTPVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPVersion.swift; path = HTTP/HTTPVersion.swift; sourceTree = "<group>"; };
 		B049560D1B51715700AA2A54 /* HTTPParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPParser.swift; path = HTTP/HTTPParser.swift; sourceTree = "<group>"; };
@@ -484,13 +491,10 @@
 		B049563B1B532F5C00AA2A54 /* HTTPAuthenticationMiddleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPAuthenticationMiddleware.swift; sourceTree = "<group>"; };
 		B049563E1B56889800AA2A54 /* HTTPServerOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPServerOperators.swift; sourceTree = "<group>"; };
 		B0599F4D1B56E44900D8D90C /* HTTPServerConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPServerConfiguration.swift; sourceTree = "<group>"; };
+		B0B51EDA1B5895040007A0A3 /* RServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RServer.swift; sourceTree = "<group>"; };
 		B0E3C4331B573EEA001E8A6A /* AssetResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetResponder.swift; sourceTree = "<group>"; };
 		B0E3C43A1B57FEEB001E8A6A /* CollectionType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CollectionType.swift; path = Array/CollectionType.swift; sourceTree = "<group>"; };
 		B0E3C43D1B581AFB001E8A6A /* HTTPResponseHeadersMiddleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPResponseHeadersMiddleware.swift; sourceTree = "<group>"; };
-		B0E3C4411B582574001E8A6A /* Client OS X */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "Client OS X"; path = "/Users/paulofaria/Development/HTTP Server/build/Debug/Client OS X"; sourceTree = "<absolute>"; };
-		B0E3C4421B58257C001E8A6A /* Server iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Server iOS.app"; path = "/Users/paulofaria/Development/HTTP Server/build/Debug-iphoneos/Server iOS.app"; sourceTree = "<absolute>"; };
-		B0E3C4431B582582001E8A6A /* Client iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Client iOS.app"; path = "/Users/paulofaria/Development/HTTP Server/build/Debug-iphoneos/Client iOS.app"; sourceTree = "<absolute>"; };
-		B0E3C4441B5825F3001E8A6A /* Server OS X */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "Server OS X"; path = "/Users/paulofaria/Development/HTTP Server/build/Debug/Server OS X"; sourceTree = "<absolute>"; };
 		B0EC72951B4CC46C00D2D1D9 /* DatabaseResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseResponder.swift; sourceTree = "<group>"; };
 		B0EC72991B4CC8B300D2D1D9 /* Socket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Socket.h; sourceTree = "<group>"; };
 		B0EC729A1B4CC90500D2D1D9 /* RegularExpression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RegularExpression.h; sourceTree = "<group>"; };
@@ -584,10 +588,7 @@
 				B0599F4D1B56E44900D8D90C /* HTTPServerConfiguration.swift */,
 				B0E3C4321B573ED1001E8A6A /* Responders */,
 				B0E3C4311B5733DF001E8A6A /* Middlewares */,
-				B04956291B52E9B700AA2A54 /* HTTPMiddleware.swift */,
-				B04956381B532ACD00AA2A54 /* HTTPMethodMiddleware.swift */,
-				3AAC2B431B4C5C6100CDB7C9 /* HTTPResponder.swift */,
-				3AAC2B421B4C5C6100CDB7C9 /* HTTPMethodResponder.swift */,
+				B0B51EDA1B5895040007A0A3 /* RServer.swift */,
 			);
 			name = "HTTP Server";
 			path = "HTTP Server/HTTP";
@@ -918,12 +919,18 @@
 				B0EC72F71B4CD06D00D2D1D9 /* HTTP Client OS X */,
 				3AAC2C031B4C5DA600CDB7C9 /* HTTP Server iOS */,
 				3A4DEFF41B4DB1D300E6F465 /* HTTP Client iOS */,
+				B039B8DB1B5847930097DA29 /* Server OS X */,
+				B039B8DC1B5847930097DA29 /* Client OS X */,
+				B039B8DD1B5847930097DA29 /* Server iOS.app */,
+				B039B8DE1B5847930097DA29 /* Client iOS.app */,
 			);
 			sourceTree = "<group>";
 		};
 		B0E3C4311B5733DF001E8A6A /* Middlewares */ = {
 			isa = PBXGroup;
 			children = (
+				B04956291B52E9B700AA2A54 /* HTTPMiddleware.swift */,
+				B04956381B532ACD00AA2A54 /* HTTPMethodMiddleware.swift */,
 				B049561D1B52C38C00AA2A54 /* HTTPParametersMiddleware.swift */,
 				B04956261B52CDFE00AA2A54 /* HTTPKeepAliveMiddleware.swift */,
 				B04956201B52C86400AA2A54 /* HTTPLoggerMiddleware.swift */,
@@ -936,6 +943,8 @@
 		B0E3C4321B573ED1001E8A6A /* Responders */ = {
 			isa = PBXGroup;
 			children = (
+				3AAC2B431B4C5C6100CDB7C9 /* HTTPResponder.swift */,
+				3AAC2B421B4C5C6100CDB7C9 /* HTTPMethodResponder.swift */,
 				3AAC2C1D1B4C5E0900CDB7C9 /* RedirectResponder.swift */,
 				B0E3C4331B573EEA001E8A6A /* AssetResponder.swift */,
 			);
@@ -999,7 +1008,7 @@
 			);
 			name = "Client iOS";
 			productName = "HTTP Server iOS";
-			productReference = B0E3C4431B582582001E8A6A /* Client iOS.app */;
+			productReference = B039B8DE1B5847930097DA29 /* Client iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 		3AAC2C011B4C5DA600CDB7C9 /* Server iOS */ = {
@@ -1016,7 +1025,7 @@
 			);
 			name = "Server iOS";
 			productName = "HTTP Server iOS";
-			productReference = B0E3C4421B58257C001E8A6A /* Server iOS.app */;
+			productReference = B039B8DD1B5847930097DA29 /* Server iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 		7CA4813A19A2EA8D0030B30D /* Server OS X */ = {
@@ -1034,7 +1043,7 @@
 			);
 			name = "Server OS X";
 			productName = SwifterOSX;
-			productReference = B0E3C4441B5825F3001E8A6A /* Server OS X */;
+			productReference = B039B8DB1B5847930097DA29 /* Server OS X */;
 			productType = "com.apple.product-type.tool";
 		};
 		B0EC729E1B4CCFE700D2D1D9 /* Client OS X */ = {
@@ -1050,7 +1059,7 @@
 			);
 			name = "Client OS X";
 			productName = SwifterOSX;
-			productReference = B0E3C4411B582574001E8A6A /* Client OS X */;
+			productReference = B039B8DC1B5847930097DA29 /* Client OS X */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -1239,6 +1248,7 @@
 				3AAC2C4F1B4C5E9100CDB7C9 /* Tag.swift in Sources */,
 				B049563D1B532F5C00AA2A54 /* HTTPAuthenticationMiddleware.swift in Sources */,
 				3AAC2C771B4C617300CDB7C9 /* RoutesResponder.swift in Sources */,
+				B0E3C4451B5829D2001E8A6A /* HTTPServerConfiguration.swift in Sources */,
 				B04956401B56889800AA2A54 /* HTTPServerOperators.swift in Sources */,
 				3AAC2C2C1B4C5E4D00CDB7C9 /* HTTPServerParser.swift in Sources */,
 				3AAC2C051B4C5DA600CDB7C9 /* AppDelegate.swift in Sources */,
@@ -1255,6 +1265,7 @@
 				3AAC2C2F1B4C5E4D00CDB7C9 /* HTTPMethodResponder.swift in Sources */,
 				3AAC2C361B4C5E5200CDB7C9 /* EmptyBody.swift in Sources */,
 				3AAC2C311B4C5E4D00CDB7C9 /* HTTPResponse.swift in Sources */,
+				B0B51EDC1B5895A80007A0A3 /* RServer.swift in Sources */,
 				3AAC2C641B4C5E9100CDB7C9 /* CoreFunctions.swift in Sources */,
 				3AAC2C6D1B4C5E9100CDB7C9 /* Socket.swift in Sources */,
 				3AAC2C601B4C5E9100CDB7C9 /* TemplateParser.swift in Sources */,
@@ -1356,6 +1367,7 @@
 				3AAC2C251B4C5E0900CDB7C9 /* RedirectResponder.swift in Sources */,
 				3AAC2BBF1B4C5C6200CDB7C9 /* HTTPServer.swift in Sources */,
 				3AAC2BEB1B4C5C6200CDB7C9 /* CoreFunctions.swift in Sources */,
+				B0B51EDB1B5895040007A0A3 /* RServer.swift in Sources */,
 				3AAC2BF41B4C5C6200CDB7C9 /* Socket.swift in Sources */,
 				3AAC2BE71B4C5C6200CDB7C9 /* TemplateParser.swift in Sources */,
 				3AAC2BB51B4C5C6200CDB7C9 /* HTTPMethod.swift in Sources */,

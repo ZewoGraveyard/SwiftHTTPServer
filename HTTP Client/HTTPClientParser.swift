@@ -26,9 +26,9 @@ struct HTTPClientParser {
     
     static func receiveHTTPResponse(socket: Socket) throws -> HTTPResponse {
         
-        let statusLine = try getStatusLine(socket)
-        let headers = try HTTPParser.getHeaders(socket)
-        let body = try HTTPParser.getBody(socket, headers: headers)
+        let statusLine = try getStatusLine(socket: socket)
+        let headers = try HTTPParser.getHeaders(socket: socket)
+        let body = try HTTPParser.getBody(socket: socket, headers: headers)
         
         return HTTPResponse(
             status: statusLine.status,
@@ -45,9 +45,9 @@ struct HTTPClientParser {
 
 extension HTTPClientParser {
     
-    private static func getStatusLine(socket: Socket) throws -> HTTPStatusLine {
+    private static func getStatusLine(socket socket: Socket) throws -> HTTPStatusLine {
         
-        let statusLine = try HTTPParser.getLine(socket)
+        let statusLine = try HTTPParser.getLine(socket: socket)
         let statusLineTokens = statusLine.splitBy(" ")
 
         let version = try HTTPVersion(string: statusLineTokens[0])

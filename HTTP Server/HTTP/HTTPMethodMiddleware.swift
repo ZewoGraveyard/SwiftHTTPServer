@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HTTPMethodMiddleware: HTTPRequestMiddleware {
+protocol HTTPMethodMiddleware: HTTPRequestMiddlewareType {
 
     func any(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
     func get(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult

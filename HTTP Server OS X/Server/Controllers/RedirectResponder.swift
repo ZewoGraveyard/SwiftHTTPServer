@@ -24,7 +24,7 @@
 
 extension Responder {
 
-    static func redirect(location: String) -> RequestResponder {
+    static func redirect(location: String) -> HTTPResponder {
 
         return { request in
 

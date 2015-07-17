@@ -26,9 +26,9 @@ struct HTTPServerParser {
 
     static func receiveHTTPRequest(socket socket: Socket) throws -> HTTPRequest {
 
-        let requestLine = try getRequestLine(socket)
-        let headers = try HTTPParser.getHeaders(socket)
-        let body = try HTTPParser.getBody(socket, headers: headers)
+        let requestLine = try getRequestLine(socket: socket)
+        let headers = try HTTPParser.getHeaders(socket: socket)
+        let body = try HTTPParser.getBody(socket: socket, headers: headers)
 
         return HTTPRequest(
             method: requestLine.method,
@@ -46,9 +46,9 @@ struct HTTPServerParser {
 
 extension HTTPServerParser {
 
-    private static func getRequestLine(socket: Socket) throws -> HTTPRequestLine {
+    private static func getRequestLine(socket socket: Socket) throws -> HTTPRequestLine {
 
-        let requestLine = try HTTPParser.getLine(socket)
+        let requestLine = try HTTPParser.getLine(socket: socket)
         let requestLineTokens = requestLine.splitBy(" ")
 
         if requestLineTokens.count != 3 {

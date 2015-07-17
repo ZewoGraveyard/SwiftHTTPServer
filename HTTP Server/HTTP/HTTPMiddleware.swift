@@ -22,6 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+typealias HTTPRequestMiddleware = HTTPRequest throws -> HTTPRequestMiddlewareResult
+typealias HTTPResponseMiddleware = HTTPResponse throws -> HTTPResponse
+
 enum HTTPRequestMiddlewareResult {
 
     case Request(HTTPRequest)
@@ -29,13 +32,13 @@ enum HTTPRequestMiddlewareResult {
 
 }
 
-protocol HTTPRequestMiddleware {
+protocol HTTPRequestMiddlewareType {
 
     func mediate(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
 
 }
 
-protocol HTTPResponseMiddleware {
+protocol HTTPResponseMiddlewareType {
 
     func mediate(response: HTTPResponse) throws -> HTTPResponse
     
