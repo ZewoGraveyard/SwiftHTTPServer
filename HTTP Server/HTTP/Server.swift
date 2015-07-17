@@ -36,24 +36,19 @@ protocol ResponseSerializer {
 
 }
 
-final class Server<Parser: RequestParser, Serializer: ResponseSerializer> {
+class Server<Parser: RequestParser, Serializer: ResponseSerializer> {
 
-    typealias Request = Parser.Request
-    typealias Response = Serializer.Response
-    typealias Responder = (request: Request) -> Response
-    typealias ResponderForRequest = (request: Request) -> Responder
-    typealias KeepConnectionForRequest = (request: Request) -> Bool
+    let responderForRequest: (request: Parser.Request) -> ((request: Parser.Request) -> Serializer.Response)
+    let keepConnectionForRequest: ((request: Parser.Request) -> Bool)?
 
-    private let responderForRequest: ResponderForRequest
-    private let keepConnectionForRequest: KeepConnectionForRequest?
+    var socket: Socket?
 
-    private var socket: Socket?
+    init(responderForRequest: (request: Parser.Request) -> ((request: Parser.Request) -> Serializer.Response),
+        keepConnectionForRequest: ((request: Parser.Request) -> Bool)? = nil) {
 
-    init(responderForRequest: ResponderForRequest, keepConnectionForRequest: KeepConnectionForRequest? = nil) {
+            self.responderForRequest = responderForRequest
+            self.keepConnectionForRequest = keepConnectionForRequest
 
-        self.responderForRequest = responderForRequest
-        self.keepConnectionForRequest = keepConnectionForRequest
-            
     }
 
 }

@@ -22,32 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-final class RoutableServer<Parser: RequestParser, Serializer: ResponseSerializer where Parser.Request: ServerRoutable> {
+class RoutableServer<Parser: RequestParser, Serializer: ResponseSerializer where Parser.Request: ServerRoutable>: Server<Parser, Serializer> {
 
-    typealias Request = Parser.Request
-    typealias Response = Serializer.Response
-    typealias Route = ServerRoute<Request, Response>
-    typealias RequestMiddleware = Request throws -> RequestMiddlewareResult<Request, Response>
-    typealias ResponseMiddleware = (request: Request) -> (Response throws -> Response)
-    typealias Responder = (request: Request) -> Response
-    typealias DefaultResponder = (path: String) -> (Request throws -> Response)
-    typealias FailureResponder = (error: ErrorType) -> Response
-    typealias ResponderForRequest = (request: Request) -> Responder
-    typealias KeepConnectionForRequest = (request: Request) -> Bool
-
-    private let server: Server<Parser, Serializer>
     let routes: [String]
 
-    init(requestMiddlewares: RequestMiddleware? = nil,
-        routes: [Route] = [],
-        responseMiddlewares: ResponseMiddleware? = nil,
-        defaultResponder: DefaultResponder,
-        failureResponder: FailureResponder,
-        keepConnectionForRequest: KeepConnectionForRequest? = nil) {
+    init(requestMiddlewares: (Parser.Request throws -> RequestMiddlewareResult<Parser.Request, Serializer.Response>)? = nil,
+        routes: [ServerRoute<Parser.Request, Serializer.Response>] = [],
+        responseMiddlewares: ((request: Parser.Request) -> (Serializer.Response throws -> Serializer.Response))? = nil,
+        defaultResponder: (path: String) -> (Parser.Request throws -> Serializer.Response),
+        failureResponder: (error: ErrorType) -> Serializer.Response,
+        keepConnectionForRequest: ((request: Parser.Request) -> Bool)? = nil) {
 
             let router = ServerRouter.responderForRoutes(routes: routes)
 
-            let responderForRequest = { (request: Request) -> Responder in
+            let responderForRequest = { (request: Parser.Request) -> (Parser.Request -> Serializer.Response) in
 
                 return requestMiddlewares >>>
                        router(path: request.path) ?? defaultResponder(path: request.path) >>>
@@ -56,25 +44,12 @@ final class RoutableServer<Parser: RequestParser, Serializer: ResponseSerializer
 
             }
 
+            self.routes = routes.map { $0.path }
 
-        self.server = Server<Parser, Serializer>(
-            responderForRequest: responderForRequest,
-            keepConnectionForRequest: keepConnectionForRequest
-        )
-
-        self.routes = routes.map { $0.path }
-
-    }
-
-    func start(port port: TCPPort = 8080, failureHandler: ErrorType -> Void = Error.defaultFailureHandler)   {
-
-        server.start(port: port, failureHandler: failureHandler)
-
-    }
-
-    func stop() {
-
-        server.stop()
+            super.init(
+                responderForRequest: responderForRequest,
+                keepConnectionForRequest: keepConnectionForRequest
+            )
 
     }
 

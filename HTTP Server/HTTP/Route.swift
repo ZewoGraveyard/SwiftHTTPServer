@@ -24,15 +24,13 @@
 
 struct ServerRoute<Request, Response> {
 
-    typealias Responder = Request throws -> Response
-
     let path: String
-    let responder: Responder
+    let responder: Request throws -> Response
 
     private let parameterKeys: [String]
     private let regularExpression: RegularExpression
 
-    init(path: String, responder: Responder) {
+    init(path: String, responder: Request throws -> Response) {
 
         let parameterRegularExpression = try! RegularExpression(pattern: ":([[:alnum:]]+)")
         let pattern = try! parameterRegularExpression.replace(path, withTemplate: "([[:alnum:]]+)")

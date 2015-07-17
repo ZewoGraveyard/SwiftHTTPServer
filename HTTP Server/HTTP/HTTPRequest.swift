@@ -24,6 +24,19 @@
 
 struct HTTPRequest: ServerRoutable {
 
+    func copyWithParameters(parameters: [String: String]) -> HTTPRequest {
+
+        return HTTPRequest(
+            method:     self.method,
+            URI:        self.URI,
+            version:    self.version,
+            headers:    self.headers,
+            body:       self.body,
+            parameters: self.parameters + parameters
+        )
+
+    }
+
     let method: HTTPMethod
     let URI: String
     let version: HTTPVersion
@@ -31,8 +44,7 @@ struct HTTPRequest: ServerRoutable {
     let body: HTTPBody
     let parameters: [String: String]
 
-    init(
-        method: HTTPMethod,
+    init(method: HTTPMethod,
         URI: String,
         version: HTTPVersion = .HTTP_1_1,
         headers: [String: String] = [:],
@@ -45,19 +57,6 @@ struct HTTPRequest: ServerRoutable {
         self.headers = headers
         self.body = body
         self.parameters = parameters
-
-    }
-
-    func copyWithParameters(parameters: [String: String]) -> HTTPRequest {
-
-        return HTTPRequest(
-            method:     self.method,
-            URI:        self.URI,
-            version:    self.version,
-            headers:    self.headers,
-            body:       self.body,
-            parameters: self.parameters + parameters
-        )
 
     }
 

@@ -22,15 +22,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-final class HTTPServer {
-
-    typealias Route = ServerRoute<HTTPRequest, HTTPResponse>
-
-    private let server: RoutableServer<HTTPRequestParser, HTTPResponseSerializer>
-    let routes: [String]
+final class HTTPServer: RoutableServer<HTTPRequestParser, HTTPResponseSerializer> {
 
     init(requestMiddlewares: HTTPRequestMiddleware? = nil,
-        routes: [Route] = [],
+        routes: [ServerRoute<HTTPRequest, HTTPResponse>] = [],
         responseMiddlewares: HTTPResponseMiddleware? = nil) {
 
             let responseMiddlewares = { (request: HTTPRequest) in
@@ -41,28 +36,14 @@ final class HTTPServer {
 
             }
 
-            self.server = RoutableServer<HTTPRequestParser, HTTPResponseSerializer>(
+            super.init(
                 requestMiddlewares: requestMiddlewares,
                 routes: routes,
                 responseMiddlewares: responseMiddlewares,
                 defaultResponder: Responder.assetAtPath,
-                failureResponder: Responder.failureResponder,
+                failureResponder: HTTPServer.failureResponder,
                 keepConnectionForRequest: HTTPServer.keepConnectionForRequest
             )
-
-            self.routes = server.routes
-
-    }
-
-    func start(port port: TCPPort = 8080, failureHandler: ErrorType -> Void = HTTPServer.defaultFailureHandler)   {
-
-        server.start(port: port, failureHandler: failureHandler)
-
-    }
-
-    func stop() {
-
-        server.stop()
 
     }
 
@@ -76,6 +57,12 @@ extension HTTPServer {
 
         Log.error("Server error: \(error)")
 
+    }
+
+    private static func failureResponder(error: ErrorType) -> HTTPResponse {
+
+        return HTTPResponse(status: .InternalServerError, body: TextBody(text: "\(error)"))
+        
     }
 
     private static func keepConnectionForRequest(request: HTTPRequest) -> Bool {
