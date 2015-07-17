@@ -1,4 +1,4 @@
-// HTTPServerSerializer.swift
+// ExampleServer.h
 //
 // The MIT License (MIT)
 //
@@ -22,27 +22,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPServerSerializer {
+#ifndef Server_h
+#define Server_h
 
-    static func sendHTTPResponse(socket socket: Socket, response: HTTPResponse) throws {
+#include "HTTPServer.h"
+#include "PostgreSQL.h"
 
-        try socket.writeString("\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+#endif /* Server_h */
 
-        for (name, value) in response.headers {
-
-            try socket.writeString("\(name): \(value)\r\n")
-
-        }
-
-        try socket.writeString("\r\n")
-        
-        if let data = response.body.data {
-            
-            try socket.writeData(data)
-            
-        }
-        
-    }
-    
-}
 

@@ -1,4 +1,4 @@
-// HTTPRoute.swift
+// HTTPRedirectResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,36 +22,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPRoute {
+extension Responder {
 
-    let path: String
-    let responder: HTTPResponder
+    static func redirect(location: String) -> HTTPResponder {
 
-    private let parameterKeys: [String]
-    private let regularExpression: RegularExpression
+        return { request in
 
-    init(path: String, responder: HTTPResponder) {
-
-        let parameterRegularExpression = try! RegularExpression(pattern: ":([[:alnum:]]+)")
-        let pattern = try! parameterRegularExpression.replace(path, withTemplate: "([[:alnum:]]+)")
-
-        self.path = path
-        self.parameterKeys = try! parameterRegularExpression.groups(path)
-        self.regularExpression = try! RegularExpression(pattern: "^" + pattern + "$")
-        self.responder = responder
-
-    }
-
-    func matchesPath(path: String) -> Bool {
-
-        return try! regularExpression.matches(path)
-
-    }
-
-    func parametersForPath(path: String) -> [String: String] {
-
-        let values = try! regularExpression.groups(path)
-        return dictionaryFromKeys(parameterKeys, values: values)
+            return HTTPResponse(status: .MovedPermanently, headers: ["location": location])
+            
+        }
 
     }
 

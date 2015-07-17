@@ -1,4 +1,4 @@
-// AssetResponder.swift
+// HTTPServerSerializer.swift
 //
 // The MIT License (MIT)
 //
@@ -22,26 +22,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension Responder {
+struct HTTPResponseSerializer: ResponseSerializer {
 
-    static func assetAtPath(path: String) -> HTTPResponder {
+    static func sendResponse(socket socket: Socket, response: HTTPResponse) throws {
 
-        return { request in
+        try socket.writeString("\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
 
-            let assetPath = path.dropFirstCharacter()
+        for (name, value) in response.headers {
 
-            if let asset = Asset(path: assetPath) {
+            try socket.writeString("\(name): \(value)\r\n")
 
-                return HTTPResponse(status: .OK, body: DataBody(asset: asset))
+        }
 
-            } else {
-                
-                return HTTPResponse(status: .NotFound)
-                
-            }
+        try socket.writeString("\r\n")
+
+        if let data = response.body.data {
+
+            try socket.writeData(data)
 
         }
 
     }
 
 }
+

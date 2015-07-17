@@ -1,4 +1,4 @@
-// HTTPRouter.swift
+// ParametersMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,19 +22,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPRouter {
+protocol Parameterizable {
 
-    static func routes(routes: [HTTPRoute])(path: String) -> HTTPResponder? {
+    var parameters: [String: String] { get }
+    func copyWithParameters(parameters: [String: String]) -> Self
 
-        if let route = routes.find({$0.matchesPath(path)}) {
+}
 
-            let parameters = route.parametersForPath(path)
-            return Middleware.parameters(parameters) >>> route.responder
+extension Middleware {
 
+    static func parameters<Request: Parameterizable, Response>(parameters: [String: String]) -> Request -> RequestMiddlewareResult<Request, Response> {
+
+        return { request in
+
+            return .Request(request.copyWithParameters(parameters))
+            
         }
-
-        return nil
-
+        
     }
 
 }

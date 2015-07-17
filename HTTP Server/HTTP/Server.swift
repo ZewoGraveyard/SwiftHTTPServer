@@ -22,52 +22,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-func defaultFailureHandler(error: ErrorType) {
+protocol RequestParser {
 
-    Log.error("Server error: \(error)")
-
-}
-
-protocol RequestType {
-
-    var keepAlive: Bool { get }
-
-}
-
-protocol ServerParser {
-
-    typealias Request: RequestType
+    typealias Request
     static func receiveRequest(socket socket: Socket) throws -> Request
 
 }
 
-protocol ServerSerializer {
+protocol ResponseSerializer {
 
     typealias Response
     static func sendResponse(socket socket: Socket, response: Response) throws
 
 }
 
-final class RServer<Parser: ServerParser, Serializer: ServerSerializer> {
+final class Server<Parser: RequestParser, Serializer: ResponseSerializer> {
 
-    private let responder: Parser.Request throws -> Serializer.Response
-    private let failureResponse: ErrorType -> Serializer.Response
+    typealias Request = Parser.Request
+    typealias Response = Serializer.Response
+    typealias Responder = (request: Request) -> Response
+    typealias ResponderForRequest = (request: Request) -> Responder
+    typealias KeepConnectionForRequest = (request: Request) -> Bool
+
+    private let responderForRequest: ResponderForRequest
+    private let keepConnectionForRequest: KeepConnectionForRequest?
+
     private var socket: Socket?
 
-    init(responder: Parser.Request throws -> Serializer.Response, failureResponse: ErrorType -> Serializer.Response) {
+    init(responderForRequest: ResponderForRequest, keepConnectionForRequest: KeepConnectionForRequest? = nil) {
 
-        self.responder = responder
-        self.failureResponse = failureResponse
-
+        self.responderForRequest = responderForRequest
+        self.keepConnectionForRequest = keepConnectionForRequest
+            
     }
 
 }
 
 // MARK: - Start / Stop
 
-extension RServer {
+extension Server {
 
-    func start(port port: TCPPort = 8080, failureHandler: ErrorType -> Void = defaultFailureHandler)   {
+    func start(port port: TCPPort = 8080, failureHandler: ErrorType -> Void = Error.defaultFailureHandler)   {
 
         do {
 
@@ -94,7 +89,7 @@ extension RServer {
 
 // MARK: - Private
 
-extension RServer {
+extension Server {
 
     private func waitForClients(failureHandler failureHandler: ErrorType -> Void) {
 
@@ -123,14 +118,11 @@ extension RServer {
             while true {
 
                 let request = try Parser.receiveRequest(socket: clientSocket)
-
-                let responderChain = responder >>> failureHandler >>> failureResponse
-
-                let response = responderChain(request)
-                
+                let respond = responderForRequest(request: request)
+                let response = respond(request: request)
                 try Serializer.sendResponse(socket: clientSocket, response: response)
-                
-                if !request.keepAlive { break }
+
+                if keepConnectionForRequest?(request: request) ?? false { break }
                 
             }
             
@@ -144,29 +136,4 @@ extension RServer {
         
     }
     
-}
-
-func >>><Request, Response>(responder: Request throws -> Response, failureHandler: ErrorType -> Void)(failureResponse: ErrorType -> Response) -> (Request -> Response) {
-
-    return { request in
-
-        do {
-
-            return try responder(request)
-
-        } catch {
-
-            failureHandler(error)
-            return failureResponse(error)
-            
-        }
-        
-    }
-    
-}
-
-func >>><Request, Response>(responder: (ErrorType -> Response) -> (Request -> Response), failureResponse: ErrorType -> Response) -> (Request -> Response) {
-
-    return responder(failureResponse)
-
 }

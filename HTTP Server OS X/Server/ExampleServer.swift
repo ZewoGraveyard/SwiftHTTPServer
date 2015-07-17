@@ -1,4 +1,4 @@
-// main.h
+// ExampleServer.swift
 //
 // The MIT License (MIT)
 //
@@ -22,9 +22,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BridgingHeader_h
-#define BridgingHeader_h
+struct Middleware {}
+struct Responder {}
 
-#include "ExampleServer.h"
+struct ExampleServer {
 
-#endif
+    private let server: HTTPServer
+
+    init() {
+
+        self.server = HTTPServer(
+            requestMiddlewares: Middleware.logRequest,
+            routes: [
+                "/"         =| Responder.index.respond,
+                "/login"    =| Responder.login.respond,
+                "/user/:id" =| Responder.user.respond,
+                "/json"     =| Responder.json.respond,
+                "/database" =| Responder.database.respond,
+                "/redirect" =| Responder.redirect("http://www.google.com"),
+                "/routes"   =| Middleware.authenticate >>> Responder.routes.respond
+
+            ],
+            responseMiddlewares: Middleware.logResponse
+
+        )
+
+        Responder.routes.server = server
+
+    }
+    
+    func start() {
+        
+        server.start()
+        
+    }
+    
+    func stop() {
+        
+        server.stop()
+        
+    }
+    
+}

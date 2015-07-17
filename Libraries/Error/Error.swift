@@ -41,4 +41,10 @@ enum Error: ErrorType {
 
     }
 
+    static func defaultFailureHandler(error: ErrorType) {
+
+        Log.error("Error: \(error)")
+        
+    }
+
 }

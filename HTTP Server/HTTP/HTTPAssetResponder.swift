@@ -1,4 +1,4 @@
-// HTTPServerConfiguration.swift
+// HTTPAssetResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,19 +22,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPServerConfiguration {
+extension Responder {
 
-    let requestMiddlewares: HTTPRequestMiddleware?
-    let routes: [HTTPRoute]
-    let responseMiddlewares: HTTPResponseMiddleware?
+    static func assetAtPath(path: String) -> HTTPResponder {
 
-    init(requestMiddlewares: HTTPRequestMiddleware? = nil,
-        routes: [HTTPRoute] = [],
-        responseMiddlewares: HTTPResponseMiddleware? = nil) {
+        return { request in
 
-        self.requestMiddlewares = requestMiddlewares
-        self.routes = routes
-        self.responseMiddlewares = responseMiddlewares
+            let assetPath = path.dropFirstCharacter()
+
+            if let asset = Asset(path: assetPath) {
+
+                return HTTPResponse(status: .OK, body: DataBody(asset: asset))
+
+            } else {
+                
+                return HTTPResponse(status: .NotFound)
+                
+            }
+
+        }
 
     }
 

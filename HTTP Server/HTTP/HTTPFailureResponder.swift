@@ -1,4 +1,4 @@
-// Server.h
+// HTTPFailureResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,12 +22,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef Server_h
-#define Server_h
+extension Responder {
 
-#include "HTTPServer.h"
-#include "PostgreSQL.h"
+    static func failureResponder(error: ErrorType) -> HTTPResponse {
 
-#endif /* Server_h */
+        return HTTPResponse(status: .InternalServerError, body: TextBody(text: "\(error)"))
 
+    }
 
+}

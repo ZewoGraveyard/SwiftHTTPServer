@@ -22,15 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-typealias HTTPRequestMiddleware = HTTPRequest throws -> HTTPRequestMiddlewareResult
+typealias HTTPRequestMiddlewareResult = RequestMiddlewareResult<HTTPRequest, HTTPResponse>
+typealias HTTPRequestMiddleware = HTTPRequest throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse>
 typealias HTTPResponseMiddleware = HTTPResponse throws -> HTTPResponse
-
-enum HTTPRequestMiddlewareResult {
-
-    case Request(HTTPRequest)
-    case Response(HTTPResponse)
-
-}
 
 protocol HTTPRequestMiddlewareType {
 

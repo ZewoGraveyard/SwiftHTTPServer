@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPRequest {
+struct HTTPRequest: ServerRoutable {
 
     let method: HTTPMethod
     let URI: String
@@ -45,6 +45,19 @@ struct HTTPRequest {
         self.headers = headers
         self.body = body
         self.parameters = parameters
+
+    }
+
+    func copyWithParameters(parameters: [String: String]) -> HTTPRequest {
+
+        return HTTPRequest(
+            method:     self.method,
+            URI:        self.URI,
+            version:    self.version,
+            headers:    self.headers,
+            body:       self.body,
+            parameters: self.parameters + parameters
+        )
 
     }
 

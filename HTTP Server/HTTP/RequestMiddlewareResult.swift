@@ -1,4 +1,4 @@
-// RedirectResponder.swift
+// HTTPMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,16 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension Responder {
+enum RequestMiddlewareResult<RequestType, ResponderType> {
 
-    static func redirect(location: String) -> HTTPResponder {
-
-        return { request in
-
-            return HTTPResponse(status: .MovedPermanently, headers: ["location": location])
-            
-        }
-
-    }
-
+    case Request(RequestType)
+    case Response(ResponderType)
+    
 }

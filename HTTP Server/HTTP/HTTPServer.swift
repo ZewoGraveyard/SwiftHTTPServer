@@ -24,79 +24,45 @@
 
 final class HTTPServer {
 
-    private let requestMiddlewares: HTTPRequestMiddleware?
-    private let router: (path: String) -> HTTPResponder?
-    private let responseMiddlewares: HTTPResponseMiddleware?
+    typealias Route = ServerRoute<HTTPRequest, HTTPResponse>
 
-    private var socket: Socket?
-
+    private let server: RoutableServer<HTTPRequestParser, HTTPResponseSerializer>
     let routes: [String]
 
     init(requestMiddlewares: HTTPRequestMiddleware? = nil,
-        routes: [HTTPRoute] = [],
+        routes: [Route] = [],
         responseMiddlewares: HTTPResponseMiddleware? = nil) {
 
-        self.requestMiddlewares = requestMiddlewares
-        self.router = HTTPRouter.routes(routes)
-        self.responseMiddlewares = responseMiddlewares
-        self.routes = routes.map { $0.path }
+            let responseMiddlewares = { (request: HTTPRequest) in
+
+                return responseMiddlewares >>>
+                       Middleware.keepAlive(request.keepAlive) >>>
+                       Middleware.headers(["server": "HTTP Server"])
+
+            }
+
+            self.server = RoutableServer<HTTPRequestParser, HTTPResponseSerializer>(
+                requestMiddlewares: requestMiddlewares,
+                routes: routes,
+                responseMiddlewares: responseMiddlewares,
+                defaultResponder: Responder.assetAtPath,
+                failureResponder: Responder.failureResponder,
+                keepConnectionForRequest: HTTPServer.keepConnectionForRequest
+            )
+
+            self.routes = server.routes
 
     }
-
-    convenience init(_ configuration: HTTPServerConfiguration) {
-
-        self.init(
-            requestMiddlewares: configuration.requestMiddlewares,
-            routes: configuration.routes,
-            responseMiddlewares: configuration.responseMiddlewares
-        )
-
-    }
-
-    convenience init(_ requestMiddlewares: HTTPRequestMiddleware) {
-
-        self.init(requestMiddlewares: requestMiddlewares)
-
-    }
-
-    convenience init(_ routes: [HTTPRoute] = []) {
-
-        self.init(routes: routes)
-        
-    }
-
-    convenience init(_ responseMiddlewares: HTTPResponseMiddleware) {
-
-        self.init(responseMiddlewares: responseMiddlewares)
-
-    }
-
-}
-
-// MARK: - Start / Stop
-
-extension HTTPServer {
 
     func start(port port: TCPPort = 8080, failureHandler: ErrorType -> Void = HTTPServer.defaultFailureHandler)   {
 
-        do {
-
-            socket?.release()
-            socket = try Socket(port: port, maxConnections: 1000)
-            Dispatch.async { self.waitForClients(failureHandler: failureHandler) }
-            Log.info("HTTP Server listening at port \(port).")
-
-        } catch {
-
-            failureHandler(error)
-
-        }
+        server.start(port: port, failureHandler: failureHandler)
 
     }
 
     func stop() {
 
-        socket?.release()
+        server.stop()
 
     }
 
@@ -109,60 +75,13 @@ extension HTTPServer {
     private static func defaultFailureHandler(error: ErrorType) {
 
         Log.error("Server error: \(error)")
+
+    }
+
+    private static func keepConnectionForRequest(request: HTTPRequest) -> Bool {
+        
+        return request.keepAlive
         
     }
-
-    private func waitForClients(failureHandler failureHandler: ErrorType -> Void) {
-
-        do {
-
-            while true {
-
-                let clientSocket = try socket!.acceptClient()
-                Dispatch.async { self.processClient(clientSocket: clientSocket, failureHandler: failureHandler) }
-
-            }
-
-        } catch {
-
-            socket?.release()
-            failureHandler(error)
-            
-        }
-
-    }
-
-    private func processClient(clientSocket clientSocket: Socket, failureHandler: ErrorType -> Void) {
-
-        do {
-
-            while true {
-
-                let request = try HTTPServerParser.receiveHTTPRequest(socket: clientSocket)
-
-                let responder = requestMiddlewares >>>
-                                router(path: request.path) ?? Responder.assetAtPath(request.path) >>>
-                                responseMiddlewares >>>
-                                Middleware.keepAlive(request.keepAlive) >>>
-                                Middleware.headers(["server": "HTTP Server"]) >>>
-                                failureHandler
-
-                let response = responder(request)
-
-                try HTTPServerSerializer.sendHTTPResponse(socket: clientSocket, response: response)
-
-                if !request.keepAlive { break }
-
-            }
-
-            clientSocket.release()
-
-        } catch {
-
-            failureHandler(error)
-
-        }
-
-    }
-
+    
 }

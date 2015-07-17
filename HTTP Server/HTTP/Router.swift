@@ -1,4 +1,4 @@
-// main.h
+// Router.swift
 //
 // The MIT License (MIT)
 //
@@ -22,9 +22,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BridgingHeader_h
-#define BridgingHeader_h
+protocol ServerRoutable: Parameterizable {
 
-#include "ExampleServer.h"
+    var path: String { get }
 
-#endif
+}
+
+struct ServerRouter<Request: ServerRoutable, Response> {
+
+    typealias Route = ServerRoute<Request, Response>
+
+    static func responderForRoutes(routes routes: [Route])(path: String) -> (Request throws -> Response)? {
+
+        if let route = routes.find({$0.matchesPath(path)}) {
+
+            let parameters = route.parametersForPath(path)
+            return Middleware.parameters(parameters) >>> route.responder
+
+        }
+
+        return nil
+
+    }
+
+}

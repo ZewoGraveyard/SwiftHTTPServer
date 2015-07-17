@@ -1,4 +1,4 @@
-// HTTPParametersMiddleware.swift
+// Route.swift
 //
 // The MIT License (MIT)
 //
@@ -22,23 +22,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension Middleware {
+struct ServerRoute<Request, Response> {
 
-    static func parameters(parameters: [String: String]) -> HTTPRequest -> HTTPRequestMiddlewareResult {
+    typealias Responder = Request throws -> Response
 
-        return { request in
+    let path: String
+    let responder: Responder
 
-            return .Request(HTTPRequest(
-                method: request.method,
-                URI: request.URI,
-                version: request.version,
-                headers: request.headers,
-                body: request.body,
-                parameters: request.parameters + parameters
-            ))
-            
-        }
-        
+    private let parameterKeys: [String]
+    private let regularExpression: RegularExpression
+
+    init(path: String, responder: Responder) {
+
+        let parameterRegularExpression = try! RegularExpression(pattern: ":([[:alnum:]]+)")
+        let pattern = try! parameterRegularExpression.replace(path, withTemplate: "([[:alnum:]]+)")
+
+        self.path = path
+        self.parameterKeys = try! parameterRegularExpression.groups(path)
+        self.regularExpression = try! RegularExpression(pattern: "^" + pattern + "$")
+        self.responder = responder
+
+    }
+
+    func matchesPath(path: String) -> Bool {
+
+        return try! regularExpression.matches(path)
+
+    }
+
+    func parametersForPath(path: String) -> [String: String] {
+
+        let values = try! regularExpression.groups(path)
+        return dictionaryFromKeys(parameterKeys, values: values)
+
     }
 
 }

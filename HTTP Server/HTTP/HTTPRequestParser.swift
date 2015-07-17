@@ -22,9 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPServerParser {
+struct HTTPRequestParser: RequestParser {
 
-    static func receiveHTTPRequest(socket socket: Socket) throws -> HTTPRequest {
+    static func receiveRequest(socket socket: Socket) throws -> HTTPRequest {
 
         let requestLine = try getRequestLine(socket: socket)
         let headers = try HTTPParser.getHeaders(socket: socket)
@@ -44,7 +44,7 @@ struct HTTPServerParser {
 
 // MARK: - Private
 
-extension HTTPServerParser {
+extension HTTPRequestParser {
 
     private static func getRequestLine(socket socket: Socket) throws -> HTTPRequestLine {
 
@@ -66,7 +66,7 @@ extension HTTPServerParser {
             URI: URI,
             version: version
         )
-
+        
     }
-
+    
 }
