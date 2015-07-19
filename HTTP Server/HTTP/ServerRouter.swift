@@ -1,4 +1,4 @@
-// ParametersMiddleware.swift
+// ServerRouter.swift
 //
 // The MIT License (MIT)
 //
@@ -22,30 +22,54 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol ParameterizableRequest {
+protocol RoutableRequest {
 
-    func copyWithParameters(parameters: [String: String]) -> Self
+    var path: String { get }
 
 }
 
-extension Middleware {
+class ServerRouter<Request: RoutableRequest, Response>: DictionaryLiteralConvertible {
 
-    static func parameters<Request, Response>(parameters: [String: String]) -> Request -> RequestMiddlewareResult<Request, Response> {
+    let routes: [ServerRoute<Request, Response>]
+    let paths: [String]
 
-        return { request in
+    init(routes: [ServerRoute<Request, Response>]) {
+x
+        self.routes = routes
+        self.paths = routes.map { $0.path }
 
-            if let request = request as? ParameterizableRequest {
+    }
 
-                return .Request(request.copyWithParameters(parameters) as! Request)
+    convenience required init(dictionaryLiteral responders: (String, Request throws -> Response)...) {
 
-            } else {
+        var routes: [ServerRoute<Request, Response>] = []
 
-                return .Request(request)
+        for (path, responder) in responders {
+
+            let route = ServerRoute(path: path, responder: responder)
+            routes.append(route)
+
+        }
+
+        self.init(routes: routes)
+
+    }
+
+    var responder: (path: String) -> (Request throws -> Response)? {
+
+        return { (path: String) in
+
+            if let route = self.routes.find({$0.matchesPath(path)}) {
+
+                let parameters = route.parametersForPath(path)
+                return Middleware.parameters(parameters) >>> route.responder
 
             }
-            
+
+            return nil
+
         }
-        
+
     }
 
 }

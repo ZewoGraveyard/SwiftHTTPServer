@@ -22,21 +22,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension Responder {
+struct RoutesResponder {
 
-    static let routes = RoutesResponder()
+    static var server: HTTPServer?
 
-}
-
-class RoutesResponder: HTTPResponderType {
-
-    var server: HTTPServer?
-
-    func respond(request: HTTPRequest) throws -> HTTPResponse {
+    static func get(request: HTTPRequest) throws -> HTTPResponse {
 
         let routes = [
 
-            "routes": server?.routes
+            "routes": server?.paths ?? []
 
         ]
 

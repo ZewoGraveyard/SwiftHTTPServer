@@ -1,4 +1,4 @@
-// Router.swift
+// ServerRoute.swift
 //
 // The MIT License (MIT)
 //
@@ -22,26 +22,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol ServerRoutable: Parameterizable {
+struct ServerRoute<Request, Response> {
 
-    var path: String { get }
+    let path: String
+    let responder: Request throws -> Response
 
-}
+    private let parameterKeys: [String]
+    private let regularExpression: RegularExpression
 
-struct ServerRouter<Request: ServerRoutable, Response> {
+    init(path: String, responder: Request throws -> Response) {
 
-    typealias Route = ServerRoute<Request, Response>
+        let parameterRegularExpression = try! RegularExpression(pattern: ":([[:alnum:]]+)")
+        let pattern = try! parameterRegularExpression.replace(path, withTemplate: "([[:alnum:]]+)")
 
-    static func responderForRoutes(routes routes: [Route])(path: String) -> (Request throws -> Response)? {
+        self.path = path
+        self.parameterKeys = try! parameterRegularExpression.groups(path)
+        self.regularExpression = try! RegularExpression(pattern: "^" + pattern + "$")
+        self.responder = responder
 
-        if let route = routes.find({$0.matchesPath(path)}) {
+    }
 
-            let parameters = route.parametersForPath(path)
-            return Middleware.parameters(parameters) >>> route.responder
+    func matchesPath(path: String) -> Bool {
 
-        }
+        return try! regularExpression.matches(path)
 
-        return nil
+    }
+
+    func parametersForPath(path: String) -> [String: String] {
+
+        let values = try! regularExpression.groups(path)
+        return dictionaryFromKeys(parameterKeys, values: values)
 
     }
 

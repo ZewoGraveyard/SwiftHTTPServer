@@ -77,6 +77,12 @@ struct File {
 
             let element = fgetc(file)
 
+            if element == -1 {
+
+                break
+
+            }
+
             if feof(file) != 0 {
 
                 break

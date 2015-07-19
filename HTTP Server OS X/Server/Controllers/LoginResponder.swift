@@ -22,15 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension Responder {
+struct LoginResponder {
 
-    static let login = LoginResponder()
-    
-}
-
-struct LoginResponder: HTTPMethodResponder {
-
-    func get(request: HTTPRequest) -> HTTPResponse {
+    static func get(request: HTTPRequest) -> HTTPResponse {
 
         if let body = DataBody(assetAtPath: "login.html") {
 
@@ -44,7 +38,7 @@ struct LoginResponder: HTTPMethodResponder {
 
     }
 
-    func post(request: HTTPRequest) -> HTTPResponse {
+    static func post(request: HTTPRequest) -> HTTPResponse {
 
         guard let body = request.body as? FormURLEncodedBody
         else { return HTTPResponse(status: .BadRequest) }

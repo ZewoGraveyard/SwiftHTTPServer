@@ -22,45 +22,54 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct Middleware {}
-struct Responder {}
-
-struct ExampleServer {
-
-    private let server: HTTPServer
+class ExampleServer: HTTPServer {
 
     init() {
 
-        self.server = HTTPServer(
+        super.init(
             requestMiddlewares: Middleware.logRequest,
-            routes: [
-                "/"         =| Responder.index.respond,
-                "/login"    =| Responder.login.respond,
-                "/user/:id" =| Responder.user.respond,
-                "/json"     =| Responder.json.respond,
-                "/database" =| Responder.database.respond,
-                "/redirect" =| Responder.redirect("http://www.google.com"),
-                "/routes"   =| Middleware.authenticate >>> Responder.routes.respond
+            router: [
 
+                "/login": [
+                    .GET  : LoginResponder.get,
+                    .POST : LoginResponder.post
+                ],
+
+                "/users/": [
+                    .GET  : UserResponder.index,
+                    .POST : UserResponder.create
+                ],
+
+                "/users/:id": [
+                    .GET    : UserResponder.show,
+                    .PATCH  : UserResponder.update,
+                    .PUT    : UserResponder.update,
+                    .DELETE : UserResponder.destroy
+                ],
+
+                "/json": [
+                    .GET  : JSONResponder.get,
+                    .POST : JSONResponder.post
+                ],
+
+                "/database": [
+                    .GET: Middleware.authenticate >>> DatabaseResponder.get
+                ],
+
+                "/redirect": [
+                    .GET: Responder.redirect("http://www.google.com")
+                ],
+
+                "/routes": [
+                    .GET: RoutesResponder.get
+                ]
+                
             ],
             responseMiddlewares: Middleware.logResponse
-
         )
 
-        Responder.routes.server = server
+        RoutesResponder.server = self
 
-    }
-    
-    func start() {
-        
-        server.start()
-        
-    }
-    
-    func stop() {
-        
-        server.stop()
-        
     }
     
 }

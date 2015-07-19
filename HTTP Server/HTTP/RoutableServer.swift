@@ -1,4 +1,4 @@
-// HTTPServer.swift
+// RoutableServer.swift
 //
 // The MIT License (MIT)
 //
@@ -22,33 +22,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class RoutableServer<Parser: RequestParser, Serializer: ResponseSerializer where Parser.Request: ServerRoutable>: Server<Parser, Serializer> {
+class RoutableServer<Parser: RequestParser, Serializer: ResponseSerializer where Parser.Request: RoutableRequest>: Server<Parser, Serializer> {
 
-    let routes: [String]
+    let paths: [String]
 
     init(requestMiddlewares: (Parser.Request throws -> RequestMiddlewareResult<Parser.Request, Serializer.Response>)? = nil,
-        routes: [ServerRoute<Parser.Request, Serializer.Response>] = [],
-        responseMiddlewares: ((request: Parser.Request) -> (Serializer.Response throws -> Serializer.Response))? = nil,
+        router: ServerRouter<Parser.Request, Serializer.Response>,
         defaultResponder: (path: String) -> (Parser.Request throws -> Serializer.Response),
-        failureResponder: (error: ErrorType) -> Serializer.Response,
-        keepConnectionForRequest: ((request: Parser.Request) -> Bool)? = nil) {
+        responseMiddlewares: (Serializer.Response throws -> Serializer.Response)? = nil,
+        failureResponder: (error: ErrorType) -> Serializer.Response) {
 
-            let router = ServerRouter.responderForRoutes(routes: routes)
+            self.paths = router.paths
 
-            let responderForRequest = { (request: Parser.Request) -> (Parser.Request -> Serializer.Response) in
+            let responderForRequest = { (request: Parser.Request) in
 
                 return requestMiddlewares >>>
-                       router(path: request.path) ?? defaultResponder(path: request.path) >>>
-                       responseMiddlewares?(request: request) >>>
-                       failureResponder
+                       router.responder(path: request.path) ?? defaultResponder(path: request.path) >>>
+                       responseMiddlewares
 
             }
 
-            self.routes = routes.map { $0.path }
-
             super.init(
                 responderForRequest: responderForRequest,
-                keepConnectionForRequest: keepConnectionForRequest
+                failureResponder: failureResponder
             )
 
     }

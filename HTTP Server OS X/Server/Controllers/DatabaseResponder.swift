@@ -22,15 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension Responder {
+struct DatabaseResponder {
 
-    static let database = DatabaseResponder()
-
-}
-
-struct DatabaseResponder: HTTPResponderType {
-
-    func respond(request: HTTPRequest) throws -> HTTPResponse {
+    static func get(request: HTTPRequest) throws -> HTTPResponse {
 
         #if os(OSX)
 

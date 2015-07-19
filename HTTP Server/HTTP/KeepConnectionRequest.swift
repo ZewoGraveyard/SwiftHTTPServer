@@ -1,4 +1,4 @@
-// HTTPKeepAliveMiddleware.swift
+// KeepConnectionRequest.swift
 //
 // The MIT License (MIT)
 //
@@ -22,26 +22,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension Middleware {
+protocol KeepConnectionRequest {
 
-    static func keepAlive(keepAlive: Bool) -> HTTPResponse -> HTTPResponse {
-
-        return { response in
-
-            if keepAlive {
-
-                return HTTPResponse(
-                    status: response.status,
-                    headers: response.headers + ["connection": "keep-alive"],
-                    body: response.body
-                )
-                
-            }
-            
-            return response
-
-        }
-        
-    }
+    var keepConnection: Bool { get }
     
 }

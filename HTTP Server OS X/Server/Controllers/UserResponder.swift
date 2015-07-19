@@ -22,25 +22,64 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension Responder {
+struct UserResponder {
 
-    static let user = UserResponder()
+    static var users: [String: String] = [:]
+    static var usersId = 0
 
-}
+    static func index(request: HTTPRequest) throws -> HTTPResponse {
 
-struct UserResponder: HTTPMethodResponder {
+        return HTTPResponse(status: .OK, body: TextBody(text: "\(users)"))
 
-    func any(request: HTTPRequest) throws -> HTTPResponse {
+    }
 
-        let info: [String: MustacheBoxable] = [
-            "URI": request.URI,
-            "method": request.method.description,
-            "headers": request.headers,
-            "params": request.parameters
-        ]
+    static func create(request: HTTPRequest) throws -> HTTPResponse {
 
-        return HTTPResponse(status: .OK, body: try TemplateBody(template: "user.html", data: info))
+        guard let body = request.body as? FormURLEncodedBody,
+                  user = body.parameters["user"]
+        else { return HTTPResponse(status: .BadRequest) }
+
+        users["\(usersId)"] = user
+        usersId++
+
+        return HTTPResponse(status: .OK)
+
+    }
+
+    static func show(request: HTTPRequest) throws -> HTTPResponse {
+
+        guard let id = request.parameters["id"],
+                user = users[id]
+        else { return HTTPResponse(status: .NotFound) }
+
+        return HTTPResponse(status: .OK, body: TextBody(text: "\(user)"))
         
     }
-    
+
+    static func update(request: HTTPRequest) throws -> HTTPResponse {
+
+        guard let id = request.parameters["id"],
+                body = request.body as? FormURLEncodedBody,
+                user = body.parameters["user"]
+        where users[id] != nil
+        else { return HTTPResponse(status: .BadRequest) }
+
+        users[id] = user
+
+        return HTTPResponse(status: .OK, body: TextBody(text: "\(user)"))
+
+    }
+
+    static func destroy(request: HTTPRequest) throws -> HTTPResponse {
+
+        guard let id = request.parameters["id"]
+        else { return HTTPResponse(status: .BadRequest) }
+
+        users.removeValueForKey(id)
+
+        return HTTPResponse(status: .OK)
+
+
+    }
+
 }

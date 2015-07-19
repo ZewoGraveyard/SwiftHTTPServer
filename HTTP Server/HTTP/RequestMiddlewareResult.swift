@@ -1,4 +1,4 @@
-// HTTPMiddleware.swift
+// RequestMiddlewareResult.swift
 //
 // The MIT License (MIT)
 //

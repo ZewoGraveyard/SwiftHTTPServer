@@ -24,7 +24,9 @@
 
 extension Responder {
 
-    static func assetAtPath(path: String) -> HTTPResponder {
+    static func assetAtPath(var path: String) -> HTTPResponder {
+
+        if path == "/" { path = "/index.html" }
 
         return { request in
 

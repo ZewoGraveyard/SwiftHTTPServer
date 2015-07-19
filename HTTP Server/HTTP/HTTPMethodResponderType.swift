@@ -1,4 +1,4 @@
-// HTTPMethodResponder.swift
+// HTTPMethodResponderType.swift
 //
 // The MIT License (MIT)
 //
@@ -22,9 +22,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HTTPMethodResponder: HTTPResponderType {
+protocol HTTPMethodResponderType: HTTPResponderType {
 
-    func any(request: HTTPRequest) throws -> HTTPResponse
     func get(request: HTTPRequest) throws -> HTTPResponse
     func head(request: HTTPRequest) throws -> HTTPResponse
     func post(request: HTTPRequest) throws -> HTTPResponse
@@ -38,77 +37,71 @@ protocol HTTPMethodResponder: HTTPResponderType {
 
 }
 
-extension HTTPMethodResponder {
+extension HTTPMethodResponderType {
 
-    func any(request: HTTPRequest) throws -> HTTPResponse {
+    func get(request: HTTPRequest) throws -> HTTPResponse {
 
         return HTTPResponse(status: .MethodNotAllowed)
 
     }
 
-    func get(request: HTTPRequest) throws -> HTTPResponse {
-
-        return try any(request)
-
-    }
-
     func head(request: HTTPRequest) throws -> HTTPResponse {
 
-        return try any(request)
+        return HTTPResponse(status: .MethodNotAllowed)
         
     }
 
     func post(request: HTTPRequest) throws -> HTTPResponse {
 
-        return try any(request)
+        return HTTPResponse(status: .MethodNotAllowed)
 
     }
 
     func put(request: HTTPRequest) throws -> HTTPResponse {
 
-        return try any(request)
+        return HTTPResponse(status: .MethodNotAllowed)
         
     }
 
     func delete(request: HTTPRequest) throws -> HTTPResponse {
 
-        return try any(request)
+        return HTTPResponse(status: .MethodNotAllowed)
 
     }
 
     func trace(request: HTTPRequest) throws -> HTTPResponse {
 
-        return try any(request)
+        return HTTPResponse(status: .MethodNotAllowed)
         
     }
 
     func options(request: HTTPRequest) throws -> HTTPResponse {
 
-        return try any(request)
+        return HTTPResponse(status: .MethodNotAllowed)
 
     }
 
     func connect(request: HTTPRequest) throws -> HTTPResponse {
 
-        return try any(request)
+        return HTTPResponse(status: .MethodNotAllowed)
         
     }
 
     func patch(request: HTTPRequest) throws -> HTTPResponse {
 
-        return try any(request)
+        return HTTPResponse(status: .MethodNotAllowed)
 
     }
 
     func unrecognizedMethod(method: String, request: HTTPRequest) throws -> HTTPResponse {
 
-        return try any(request)
+        return HTTPResponse(status: .MethodNotAllowed)
 
     }
 
 }
 
-extension HTTPMethodResponder {
+extension HTTPMethodResponderType {
 
     func respond(request: HTTPRequest) throws -> HTTPResponse {
 

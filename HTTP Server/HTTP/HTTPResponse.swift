@@ -62,6 +62,26 @@ struct HTTPResponse {
 
 }
 
+extension HTTPResponse: KeepConnectionResponse {
+
+    func copyKeepingConnection(keepConnection: Bool) -> HTTPResponse {
+
+        if keepConnection {
+
+            return HTTPResponse(
+                status: status,
+                headers: headers + ["connection": "keep-alive"],
+                body: body
+            )
+
+        }
+
+        return self
+
+    }
+
+}
+
 extension HTTPResponse: CustomStringConvertible {
 
     var description: String {

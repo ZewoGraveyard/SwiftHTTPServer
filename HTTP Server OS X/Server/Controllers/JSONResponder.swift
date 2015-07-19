@@ -22,15 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension Responder {
+struct JSONResponder {
 
-    static let json = JSONResponder()
-
-}
-
-struct JSONResponder: HTTPMethodResponder {
-
-    func get(request: HTTPRequest) -> HTTPResponse {
+    static func get(request: HTTPRequest) -> HTTPResponse {
         
         let json: JSON = [
 
@@ -61,7 +55,7 @@ struct JSONResponder: HTTPMethodResponder {
 
     }
 
-    func post(request: HTTPRequest) -> HTTPResponse {
+    static func post(request: HTTPRequest) -> HTTPResponse {
 
         guard var body = request.body as? JSONBody
         else { return HTTPResponse(status: .BadRequest, body: TextBody(text: "Expected JSON body")) }

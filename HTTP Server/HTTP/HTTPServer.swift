@@ -22,40 +22,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-final class HTTPServer: RoutableServer<HTTPRequestParser, HTTPResponseSerializer> {
+class HTTPServer: RoutableServer<HTTPRequestParser, HTTPResponseSerializer> {
 
     init(requestMiddlewares: HTTPRequestMiddleware? = nil,
-        routes: [ServerRoute<HTTPRequest, HTTPResponse>] = [],
+        router: HTTPServerRouter,
         responseMiddlewares: HTTPResponseMiddleware? = nil) {
-
-            let responseMiddlewares = { (request: HTTPRequest) in
-
-                return responseMiddlewares >>>
-                       Middleware.keepAlive(request.keepAlive) >>>
-                       Middleware.headers(["server": "HTTP Server"])
-
-            }
 
             super.init(
                 requestMiddlewares: requestMiddlewares,
-                routes: routes,
-                responseMiddlewares: responseMiddlewares,
+                router: router.router,
                 defaultResponder: Responder.assetAtPath,
-                failureResponder: HTTPServer.failureResponder,
-                keepConnectionForRequest: HTTPServer.keepConnectionForRequest
+                responseMiddlewares: responseMiddlewares >>> Middleware.headers(["server": "HTTP Server"]),
+                failureResponder: HTTPServer.failureResponder
             )
-
-    }
-
-}
-
-// MARK: - Private
-
-extension HTTPServer {
-
-    private static func defaultFailureHandler(error: ErrorType) {
-
-        Log.error("Server error: \(error)")
 
     }
 
@@ -65,10 +44,4 @@ extension HTTPServer {
         
     }
 
-    private static func keepConnectionForRequest(request: HTTPRequest) -> Bool {
-        
-        return request.keepAlive
-        
-    }
-    
 }

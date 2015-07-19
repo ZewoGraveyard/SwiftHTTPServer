@@ -1,4 +1,4 @@
-// HTTPLoggerMiddleware.swift
+// HTTPKeepAliveMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,20 +22,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+protocol KeepConnectionResponse {
+
+    func copyKeepingConnection(keepConnection: Bool) -> Self
+    
+}
+
 extension Middleware {
 
-    static func logRequest(request: HTTPRequest) -> HTTPRequestMiddlewareResult {
+    static func keepConnection<Request, Response>(request request: Request) -> (Response -> Response) {
 
-        Log.info(request)
-        return .Request(request)
+        return { response in
 
-    }
-        
-    static func logResponse(response: HTTPResponse) -> HTTPResponse {
+            if let request = request as? KeepConnectionRequest,
+                  response = response as? KeepConnectionResponse {
 
-        Log.info(response)
-        return response
+                return response.copyKeepingConnection(request.keepConnection) as! Response
+                
+            }
             
-    }
+            return response
 
+        }
+        
+    }
+    
 }

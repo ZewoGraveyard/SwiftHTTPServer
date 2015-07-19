@@ -1,4 +1,4 @@
-// IndexResponder.swift
+// LoggerMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,26 +22,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension Responder {
+extension Middleware {
 
-    static let index = IndexResponder()
+    static func logRequest<Request: CustomColorLogStringConvertible, Response>(request: Request) -> RequestMiddlewareResult<Request, Response> {
 
-}
+        Log.info(request)
+        return .Request(request)
+        
+    }
 
-struct IndexResponder: HTTPMethodResponder {
+    static func logResponse<Response: CustomColorLogStringConvertible>(response: Response) -> Response {
 
-    func get(request: HTTPRequest) -> HTTPResponse {
+        Log.info(response)
+        return response
+        
+    }
 
-        if let body = DataBody(assetAtPath: "index.html") {
+    static func logRequest<Request, Response>(request: Request) -> RequestMiddlewareResult<Request, Response> {
 
-            return HTTPResponse(status: .OK, body: body)
-
-        } else {
-
-            return HTTPResponse(status: .NotFound)
-
-        }
+        Log.info(request)
+        return .Request(request)
 
     }
-    
+
+    static func logResponse<Response>(response: Response) -> Response {
+
+        Log.info(response)
+        return response
+            
+    }
+
 }

@@ -59,6 +59,22 @@ enum HTTPMethod {
 
 }
 
+extension HTTPMethod: Hashable {
+
+    var hashValue: Int {
+
+        return description.hashValue
+
+    }
+
+}
+
+func ==(lhs: HTTPMethod, rhs: HTTPMethod) -> Bool {
+
+    return lhs.hashValue == rhs.hashValue
+
+}
+
 extension HTTPMethod: CustomStringConvertible {
     
     var description: String {

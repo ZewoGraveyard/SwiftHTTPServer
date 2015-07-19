@@ -1,4 +1,4 @@
-// HTTPMethodMiddleware.swift
+// HTTPMethodMiddlewareType.swift
 //
 // The MIT License (MIT)
 //
@@ -22,9 +22,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HTTPMethodMiddleware: HTTPRequestMiddlewareType {
+protocol HTTPMethodMiddlewareType: HTTPRequestMiddlewareType {
 
-    func any(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
     func get(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
     func head(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
     func post(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult
@@ -38,77 +37,71 @@ protocol HTTPMethodMiddleware: HTTPRequestMiddlewareType {
 
 }
 
-extension HTTPMethodMiddleware {
+extension HTTPMethodMiddlewareType {
 
-    func any(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+    func get(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
         return .Request(request)
 
     }
 
-    func get(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
-
-        return try any(request)
-
-    }
-
     func head(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        return try any(request)
-        
+        return .Request(request)
+
     }
 
     func post(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        return try any(request)
+        return .Request(request)
 
     }
     
     func put(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        return try any(request)
+        return .Request(request)
 
     }
 
     func delete(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        return try any(request)
+        return .Request(request)
 
     }
 
     func trace(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        return try any(request)
+        return .Request(request)
 
     }
 
     func options(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        return try any(request)
+        return .Request(request)
 
     }
 
     func connect(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        return try any(request)
+        return .Request(request)
 
     }
 
     func patch(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        return try any(request)
+        return .Request(request)
 
     }
 
     func unrecognizedMethod(method: String, request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        return try any(request)
+        return .Request(request)
 
     }
 
 }
 
-extension HTTPMethodMiddleware {
+extension HTTPMethodMiddlewareType {
 
     func mediate(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 

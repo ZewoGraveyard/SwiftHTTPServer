@@ -24,6 +24,33 @@
 
 extension HTTPRequest {
 
+    var path: String {
+
+        return URI.splitBy("?").first!
+
+    }
+    
+}
+
+extension HTTPRequest {
+
+    func copyWithParameters(parameters: [String: String]) -> HTTPRequest {
+
+        return HTTPRequest(
+            method:     self.method,
+            URI:        self.URI,
+            version:    self.version,
+            headers:    self.headers,
+            body:       self.body,
+            parameters: self.parameters + parameters
+        )
+
+    }
+
+}
+
+extension HTTPRequest {
+
     var queryParameters: [String: String] {
 
         if let query = URI.splitBy("?").last {
@@ -36,13 +63,11 @@ extension HTTPRequest {
 
     }
 
-    var path: String {
+}
 
-        return URI.splitBy("?").first!
+extension HTTPRequest {
 
-    }
-
-    var keepAlive: Bool {
+    var keepConnection: Bool {
 
         if let value = headers["connection"] {
 

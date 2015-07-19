@@ -1,4 +1,4 @@
-// HTTPServer.swift
+// Server.swift
 //
 // The MIT License (MIT)
 //
@@ -22,40 +22,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol RequestParser {
-
-    typealias Request
-    static func receiveRequest(socket socket: Socket) throws -> Request
-
-}
-
-protocol ResponseSerializer {
-
-    typealias Response
-    static func sendResponse(socket socket: Socket, response: Response) throws
-
-}
+struct Middleware {}
+struct Responder {}
 
 class Server<Parser: RequestParser, Serializer: ResponseSerializer> {
 
-    let responderForRequest: (request: Parser.Request) -> ((request: Parser.Request) -> Serializer.Response)
-    let keepConnectionForRequest: ((request: Parser.Request) -> Bool)?
+    let responderForRequest: (request: Parser.Request) -> (Parser.Request throws -> Serializer.Response)
+    let failureResponder: (error: ErrorType) -> Serializer.Response
 
     var socket: Socket?
 
-    init(responderForRequest: (request: Parser.Request) -> ((request: Parser.Request) -> Serializer.Response),
-        keepConnectionForRequest: ((request: Parser.Request) -> Bool)? = nil) {
+    init(responderForRequest: (request: Parser.Request) -> (Parser.Request throws -> Serializer.Response),
+        failureResponder: (error: ErrorType) -> Serializer.Response) {
 
             self.responderForRequest = responderForRequest
-            self.keepConnectionForRequest = keepConnectionForRequest
+            self.failureResponder = failureResponder
 
     }
-
-}
-
-// MARK: - Start / Stop
-
-extension Server {
 
     func start(port port: TCPPort = 8080, failureHandler: ErrorType -> Void = Error.defaultFailureHandler)   {
 
@@ -113,21 +96,29 @@ extension Server {
             while true {
 
                 let request = try Parser.receiveRequest(socket: clientSocket)
-                let respond = responderForRequest(request: request)
-                let response = respond(request: request)
+                let respond = responderForRequest(request: request) >>>
+                              failureResponder >>>
+                              Middleware.keepConnection(request: request)
+                let response = respond(request)
                 try Serializer.sendResponse(socket: clientSocket, response: response)
 
-                if keepConnectionForRequest?(request: request) ?? false { break }
-                
+                if !keepConnectionForRequest(request) { break }
+
             }
-            
+
             clientSocket.release()
-            
+
         } catch {
             
             failureHandler(error)
             
         }
+        
+    }
+    
+    private func keepConnectionForRequest(request: Parser.Request) -> Bool {
+        
+        return (request as? KeepConnectionRequest)?.keepConnection ?? false
         
     }
     

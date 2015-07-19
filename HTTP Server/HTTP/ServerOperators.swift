@@ -32,6 +32,12 @@ func =|<Request, Response>(path: String, responder: Request throws -> Response) 
 
 infix operator >>> { associativity left }
 
+func >>> <A, B, C>(f: (A -> B), g: (B -> C)) -> (A -> C) {
+
+    return { x in g(f(x)) }
+    
+}
+
 func >>> <A, B, C>(f: (A throws -> B), g: (B throws -> C)) -> (A throws -> C) {
 
     return { x in try g(f(x)) }
@@ -130,7 +136,7 @@ func ??<Request, Response>(responderA: (Request throws -> Response)?, responderB
 
 }
 
-func >>><Request, Response>(responder: Request throws -> Response, failureResponder: ErrorType -> Response) -> (Request -> Response) {
+func >>><Request, Response>(responder: Request throws -> Response, failureResponder: ErrorType -> Response) -> ((request: Request) -> Response) {
 
     return { request in
 

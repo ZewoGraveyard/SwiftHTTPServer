@@ -1,4 +1,4 @@
-// ParametersMiddleware.swift
+// RequestParser.swift
 //
 // The MIT License (MIT)
 //
@@ -22,30 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol ParameterizableRequest {
+protocol RequestParser {
 
-    func copyWithParameters(parameters: [String: String]) -> Self
-
-}
-
-extension Middleware {
-
-    static func parameters<Request, Response>(parameters: [String: String]) -> Request -> RequestMiddlewareResult<Request, Response> {
-
-        return { request in
-
-            if let request = request as? ParameterizableRequest {
-
-                return .Request(request.copyWithParameters(parameters) as! Request)
-
-            } else {
-
-                return .Request(request)
-
-            }
-            
-        }
-        
-    }
-
+    typealias Request
+    static func receiveRequest(socket socket: Socket) throws -> Request
+    
 }
