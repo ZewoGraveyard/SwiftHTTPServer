@@ -277,6 +277,8 @@
 		B085B8181B595126007F9612 /* RequestMiddlewareResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B085B8171B595126007F9612 /* RequestMiddlewareResult.swift */; };
 		B0A75C5F1B5C0EED00340DD8 /* HTTPServerRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A75C5E1B5C0EED00340DD8 /* HTTPServerRouter.swift */; };
 		B0A75C601B5C0EED00340DD8 /* HTTPServerRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A75C5E1B5C0EED00340DD8 /* HTTPServerRouter.swift */; };
+		B0A75C621B5D834A00340DD8 /* ParametersResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A75C611B5D834A00340DD8 /* ParametersResponder.swift */; };
+		B0A75C631B5D834A00340DD8 /* ParametersResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A75C611B5D834A00340DD8 /* ParametersResponder.swift */; };
 		B0B51EDB1B5895040007A0A3 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B51EDA1B5895040007A0A3 /* Server.swift */; };
 		B0B51EDC1B5895A80007A0A3 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B51EDA1B5895040007A0A3 /* Server.swift */; };
 		B0E3C4341B573EEA001E8A6A /* HTTPAssetResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E3C4331B573EEA001E8A6A /* HTTPAssetResponder.swift */; };
@@ -496,6 +498,7 @@
 		B06319AA1B59BC6E00E65C7D /* ResponderSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponderSerializer.swift; sourceTree = "<group>"; };
 		B085B8171B595126007F9612 /* RequestMiddlewareResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestMiddlewareResult.swift; sourceTree = "<group>"; };
 		B0A75C5E1B5C0EED00340DD8 /* HTTPServerRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPServerRouter.swift; sourceTree = "<group>"; };
+		B0A75C611B5D834A00340DD8 /* ParametersResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParametersResponder.swift; sourceTree = "<group>"; };
 		B0B51EDA1B5895040007A0A3 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		B0E3C4331B573EEA001E8A6A /* HTTPAssetResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPAssetResponder.swift; sourceTree = "<group>"; };
 		B0E3C43A1B57FEEB001E8A6A /* CollectionType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CollectionType.swift; path = Array/CollectionType.swift; sourceTree = "<group>"; };
@@ -901,6 +904,7 @@
 				3AAC2C1E1B4C5E0900CDB7C9 /* RoutesResponder.swift */,
 				3AAC2C1F1B4C5E0900CDB7C9 /* UserResponder.swift */,
 				B0EC72951B4CC46C00D2D1D9 /* DatabaseResponder.swift */,
+				B0A75C611B5D834A00340DD8 /* ParametersResponder.swift */,
 			);
 			name = Responders;
 			path = Controllers;
@@ -1266,6 +1270,7 @@
 				3AAC2C751B4C617300CDB7C9 /* LoginResponder.swift in Sources */,
 				3AAC2C501B4C5E9100CDB7C9 /* TemplateAST.swift in Sources */,
 				3AAC2C761B4C617300CDB7C9 /* HTTPRedirectResponder.swift in Sources */,
+				B0A75C631B5D834A00340DD8 /* ParametersResponder.swift in Sources */,
 				3AAC2C481B4C5E9100CDB7C9 /* JSONParser.swift in Sources */,
 				3AAC2C3D1B4C5E5C00CDB7C9 /* Media.swift in Sources */,
 				3AAC2C531B4C5E9100CDB7C9 /* TemplateCompiler.swift in Sources */,
@@ -1380,6 +1385,7 @@
 				3AAC2C211B4C5E0900CDB7C9 /* main.swift in Sources */,
 				3AAC2BDB1B4C5C6200CDB7C9 /* Configuration.swift in Sources */,
 				3AAC2BC91B4C5C6200CDB7C9 /* Error.swift in Sources */,
+				B0A75C621B5D834A00340DD8 /* ParametersResponder.swift in Sources */,
 				3AAC2BCD1B4C5C6200CDB7C9 /* JSONParseError.swift in Sources */,
 				B04956271B52CDFE00AA2A54 /* KeepConnectionMiddleware.swift in Sources */,
 				3AAC2BBC1B4C5C6200CDB7C9 /* ServerRoute.swift in Sources */,

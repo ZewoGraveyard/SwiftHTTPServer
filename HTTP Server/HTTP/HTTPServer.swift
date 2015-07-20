@@ -24,29 +24,20 @@
 
 class HTTPServer: Server<HTTPRequestParser, HTTPResponseSerializer> {
 
-    let paths: [String]
+    init(router: HTTPRouter) {
 
-    init(processRequest: HTTPRequestMiddleware? = nil,
-        routes: [String: MethodRouter],
-        processResponse: HTTPResponseMiddleware? = nil) {
-
-            let router = PathRouter(methodRoutes: routes)
-
-            self.paths = router.keys
-
-            super.init(respond: processRequest >>>
-                                router.respond >>>
-                                processResponse >>>
-                                Middleware.headers(["server": "HTTP Server"]) >>>
-                                HTTPServer.respondFailure
-            )
+        super.init(
+            respond: router.respond >>>
+                     Middleware.headers(["server": "HTTP Server"]) >>>
+                     HTTPServer.respondFailure
+        )
 
     }
 
     private static func respondFailure(error: ErrorType) -> HTTPResponse {
 
         return HTTPResponse(status: .InternalServerError, body: TextBody(text: "\(error)"))
-        
-    }
 
+    }
+    
 }

@@ -22,71 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol Respondable {
+class ServerRouter<Route: ServerRoute> {
 
-    typealias Request
-    typealias Response
+    var routes: [Route] = []
 
-    var respond: Request throws -> Response { get }
-    
-}
+    var keys: [Route.Key] {
 
-class ServerRouter<Route: ServerRoute>: DictionaryLiteralConvertible {
-
-    let routes: [Route]
-    let keys: [Route.Key]
-
-    init(routes: [Route]) {
-
-        self.routes = routes
-        self.keys = routes.map { $0.key }
+        return routes.map { $0.key }
 
     }
 
-    init(dictionary: [Route.Key: Route.Request throws -> Route.Response]) {
+    func route(key: Route.Key, respond: Route.Request throws -> Route.Response) {
 
-        var routes: [Route] = []
-
-        for (key, responder) in dictionary {
-
-            let route = Route(key: key, respond: responder)
-            routes.append(route)
-
-        }
-
-        self.routes = routes
-        self.keys = routes.map { $0.key }
-        
-    }
-
-    required init<T: Respondable where T.Request == Route.Request, T.Response == Route.Response>(dictionary: [Route.Key: T]) {
-
-        var routes: [Route] = []
-
-        for (key, respondable) in dictionary {
-
-            let route = Route(key: key, respond: respondable.respond)
-            routes.append(route)
-
-        }
-
-        self.routes = routes
-        self.keys = routes.map { $0.key }
-
-    }
-
-    required convenience init(dictionaryLiteral responds: (Route.Key, Route.Request throws -> Route.Response)...) {
-
-        var routes: [Route] = []
-
-        for (key, respond) in responds {
-
-            let route = Route(key: key, respond: respond)
-            routes.append(route)
-
-        }
-
-        self.init(routes: routes)
+        let route = Route(key: key, respond: respond)
+        routes.append(route)
 
     }
 

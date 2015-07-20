@@ -22,13 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class PathRouter: ServerRouter<PathServerRoute>, Respondable {
-
-    init(methodRoutes: [String: MethodRouter]) {
-
-        super.init(dictionary: methodRoutes)
-
-    }
+final class PathRouter: ServerRouter<PathServerRoute> {
 
     var respond: HTTPRequest throws -> HTTPResponse {
 
@@ -76,7 +70,7 @@ struct PathServerRoute: ServerRoute {
     
 }
 
-class MethodRouter: ServerRouter<MethodServerRoute>, Respondable {
+final class MethodRouter: ServerRouter<MethodServerRoute> {
 
     var respond: HTTPRequest throws -> HTTPResponse {
 

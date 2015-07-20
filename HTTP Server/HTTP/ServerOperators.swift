@@ -36,6 +36,18 @@ func >>> <A, B, C>(f: (A throws -> B), g: (B throws -> C)) -> (A throws -> C) {
 
 }
 
+func >>><Request, Response>(middlewareA: (Request throws -> RequestMiddlewareResult<Request, Response>)?, middlewareB: Request throws -> RequestMiddlewareResult<Request, Response>) -> Request throws -> RequestMiddlewareResult<Request, Response> {
+
+    if let middlewareA = middlewareA {
+
+        return middlewareA >>> middlewareB
+
+    }
+
+    return middlewareB
+    
+}
+
 func >>><Request, Response>(middlewareA: Request throws -> RequestMiddlewareResult<Request, Response>, middlewareB: Request throws -> RequestMiddlewareResult<Request, Response>) -> Request throws -> RequestMiddlewareResult<Request, Response> {
 
     return { (request: Request) -> RequestMiddlewareResult<Request, Response> in
@@ -82,20 +94,16 @@ func >>><Request, Response>(middleware: (Request throws -> RequestMiddlewareResu
 
 func >>><Response>(middlewareA: (Response throws -> Response)?, middlewareB: Response throws -> Response) -> (Response throws -> Response) {
 
-    return { response in
+    if let middlewareA = middlewareA {
 
-        if let middlewareA = middlewareA {
+        return middlewareA >>> middlewareB
 
-            return try middlewareB(middlewareA(response))
+    } else {
 
-        } else {
-
-            return try middlewareB(response)
-            
-        }
+        return middlewareB
         
     }
-    
+
 }
 
 func >>><Request, Response>(responder: Request throws -> Response, middleware: (Response throws -> Response)?) -> (Request throws -> Response) {

@@ -1,4 +1,4 @@
-// RoutesResponder.swift
+// ParametersResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,20 +22,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct RoutesResponder {
+struct ParametersResponder {
 
-    static var paths: [String] = []
+    static func respond(request: HTTPRequest) throws -> HTTPResponse {
 
-    static func get(request: HTTPRequest) throws -> HTTPResponse {
+        //        print(request.pathParameters)
+        //        print(request.queryParameters)
+        //        print(request.bodyParameters)
 
-        let routes = [
-
-            "routes": paths
-
+        let info: [String: MustacheBoxable] = [
+            "URI": request.URI,
+            "method": request.method.description,
+            "headers": request.headers,
+            "params": request.parameters
         ]
 
-        return HTTPResponse(status: .OK, body: try TemplateBody(template: "routes.html", data: routes))
-
+        return HTTPResponse(status: .OK, body: try TemplateBody(template: "user.html", data: info))
+        
     }
-
+    
 }
