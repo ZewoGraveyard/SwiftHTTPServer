@@ -27,13 +27,12 @@ struct Responder {}
 
 class Server<Parser: RequestParser, Serializer: ResponseSerializer> {
 
-    let responder: (request: Parser.Request) -> Serializer.Response
-
+    let respond: (request: Parser.Request) -> Serializer.Response
     var socket: Socket?
 
-    init(responder: (request: Parser.Request) -> Serializer.Response) {
+    init(respond: (request: Parser.Request) -> Serializer.Response) {
 
-        self.responder = responder
+        self.respond = respond
 
     }
 
@@ -93,11 +92,9 @@ extension Server {
             while true {
 
                 let request = try Parser.receiveRequest(socket: clientSocket)
-                let respond = responder >>>
-                              Middleware.keepConnection(request: request)
+                let respond = self.respond >>> Middleware.keepConnection(request: request)
                 let response = respond(request)
                 try Serializer.sendResponse(socket: clientSocket, response: response)
-
                 if !keepConnectionForRequest(request) { break }
 
             }

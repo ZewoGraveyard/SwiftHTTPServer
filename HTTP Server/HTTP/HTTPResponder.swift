@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-typealias HTTPResponder = HTTPRequest throws -> HTTPResponse
+//typealias HTTPResponder = HTTPRequest throws -> HTTPResponse
 
 protocol HTTPResponderType {
 

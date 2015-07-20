@@ -275,8 +275,6 @@
 		B06319A91B59BC3F00E65C7D /* RequestParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06319A81B59BC3F00E65C7D /* RequestParser.swift */; };
 		B06319AB1B59BC6E00E65C7D /* ResponderSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06319AA1B59BC6E00E65C7D /* ResponderSerializer.swift */; };
 		B085B8181B595126007F9612 /* RequestMiddlewareResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B085B8171B595126007F9612 /* RequestMiddlewareResult.swift */; };
-		B085B81A1B59525B007F9612 /* RoutableServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B085B8191B59525B007F9612 /* RoutableServer.swift */; };
-		B085B81B1B595260007F9612 /* RoutableServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B085B8191B59525B007F9612 /* RoutableServer.swift */; };
 		B0A75C5F1B5C0EED00340DD8 /* HTTPServerRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A75C5E1B5C0EED00340DD8 /* HTTPServerRouter.swift */; };
 		B0A75C601B5C0EED00340DD8 /* HTTPServerRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A75C5E1B5C0EED00340DD8 /* HTTPServerRouter.swift */; };
 		B0B51EDB1B5895040007A0A3 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B51EDA1B5895040007A0A3 /* Server.swift */; };
@@ -497,7 +495,6 @@
 		B06319A81B59BC3F00E65C7D /* RequestParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestParser.swift; sourceTree = "<group>"; };
 		B06319AA1B59BC6E00E65C7D /* ResponderSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponderSerializer.swift; sourceTree = "<group>"; };
 		B085B8171B595126007F9612 /* RequestMiddlewareResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestMiddlewareResult.swift; sourceTree = "<group>"; };
-		B085B8191B59525B007F9612 /* RoutableServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoutableServer.swift; sourceTree = "<group>"; };
 		B0A75C5E1B5C0EED00340DD8 /* HTTPServerRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPServerRouter.swift; sourceTree = "<group>"; };
 		B0B51EDA1B5895040007A0A3 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		B0E3C4331B573EEA001E8A6A /* HTTPAssetResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPAssetResponder.swift; sourceTree = "<group>"; };
@@ -935,7 +932,6 @@
 				B0B51EDA1B5895040007A0A3 /* Server.swift */,
 				B06319A81B59BC3F00E65C7D /* RequestParser.swift */,
 				B06319AA1B59BC6E00E65C7D /* ResponderSerializer.swift */,
-				B085B8191B59525B007F9612 /* RoutableServer.swift */,
 				3AAC2B481B4C5C6200CDB7C9 /* ServerRouter.swift */,
 				3AAC2B471B4C5C6200CDB7C9 /* ServerRoute.swift */,
 				B04956201B52C86400AA2A54 /* LoggerMiddleware.swift */,
@@ -1269,7 +1265,6 @@
 				B049561F1B52C38C00AA2A54 /* ParametersMiddleware.swift in Sources */,
 				3AAC2C751B4C617300CDB7C9 /* LoginResponder.swift in Sources */,
 				3AAC2C501B4C5E9100CDB7C9 /* TemplateAST.swift in Sources */,
-				B085B81B1B595260007F9612 /* RoutableServer.swift in Sources */,
 				3AAC2C761B4C617300CDB7C9 /* HTTPRedirectResponder.swift in Sources */,
 				3AAC2C481B4C5E9100CDB7C9 /* JSONParser.swift in Sources */,
 				3AAC2C3D1B4C5E5C00CDB7C9 /* Media.swift in Sources */,
@@ -1418,7 +1413,6 @@
 				B04956211B52C86400AA2A54 /* LoggerMiddleware.swift in Sources */,
 				3AAC2BDF1B4C5C6200CDB7C9 /* HTMLEscape.swift in Sources */,
 				3AAC2BB41B4C5C6200CDB7C9 /* HTTPBody.swift in Sources */,
-				B085B81A1B59525B007F9612 /* RoutableServer.swift in Sources */,
 				3AAC2BE31B4C5C6200CDB7C9 /* StandardLibrary.swift in Sources */,
 				3AAC2BEF1B4C5C6200CDB7C9 /* Template.swift in Sources */,
 				3AAC2BD01B4C5C6200CDB7C9 /* JSONSerializer.swift in Sources */,

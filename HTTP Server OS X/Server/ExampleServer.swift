@@ -26,14 +26,9 @@ class ExampleServer: HTTPServer {
 
     init() {
 
-        let login: ServerRouter<MethodServerRoute<HTTPRequest, HTTPResponse>> = [
-            .GET  : LoginResponder.get,
-            .POST : LoginResponder.post
-        ]
-
         super.init(
-            requestMiddlewares: Middleware.logRequest,
-            router: [
+            processRequest: Middleware.logRequest,
+            routes: [
 
                 "/login": [
                     .GET  : LoginResponder.get,
@@ -70,7 +65,7 @@ class ExampleServer: HTTPServer {
                 ]
                 
             ],
-            responseMiddlewares: Middleware.logResponse
+            processResponse: Middleware.logResponse
         )
 
         RoutesResponder.server = self

@@ -26,52 +26,24 @@ class HTTPServer: Server<HTTPRequestParser, HTTPResponseSerializer> {
 
     let paths: [String]
 
-    init(requestMiddlewares: HTTPRequestMiddleware? = nil,
-        router: [String: MethodServerRouter],
-        responseMiddlewares: HTTPResponseMiddleware? = nil) {
+    init(processRequest: HTTPRequestMiddleware? = nil,
+        routes: [String: MethodRouter],
+        processResponse: HTTPResponseMiddleware? = nil) {
 
-            var pathResponders: [String: HTTPRequest throws -> HTTPResponse] = [:]
+            let router = PathRouter(methodRoutes: routes)
 
-            for (path, methodRouter) in router {
+            self.paths = router.keys
 
-                let methodResponder = methodRouter.getResponder(
-                    key: HTTPRequest.getMethod,
-                    defaultResponder: HTTPServer.methodNotAllowed
-                )
-
-                pathResponders[path] = methodResponder
-
-            }
-
-            let pathRouter = PathServerRouter(dictionary: pathResponders)
-
-            let pathResponder = pathRouter.getResponder(
-                key: HTTPRequest.getPath,
-                defaultResponder: Responder.assetAtPath
-            )
-
-            self.paths = pathRouter.keys
-
-            super.init(responder: requestMiddlewares >>>
-                                  pathResponder >>>
-                                  responseMiddlewares >>>
-                                  Middleware.headers(["server": "HTTP Server"]) >>>
-                                  HTTPServer.failureResponder
+            super.init(respond: processRequest >>>
+                                router.respond >>>
+                                processResponse >>>
+                                Middleware.headers(["server": "HTTP Server"]) >>>
+                                HTTPServer.respondFailure
             )
 
     }
 
-    private static func methodNotAllowed(method: HTTPMethod) -> HTTPRequest throws -> HTTPResponse {
-
-        return { request in
-
-            return HTTPResponse(status: .MethodNotAllowed)
-
-        }
-
-    }
-
-    private static func failureResponder(error: ErrorType) -> HTTPResponse {
+    private static func respondFailure(error: ErrorType) -> HTTPResponse {
 
         return HTTPResponse(status: .InternalServerError, body: TextBody(text: "\(error)"))
         
