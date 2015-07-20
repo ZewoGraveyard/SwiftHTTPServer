@@ -27,16 +27,13 @@ struct Responder {}
 
 class Server<Parser: RequestParser, Serializer: ResponseSerializer> {
 
-    let responderForRequest: (request: Parser.Request) -> (Parser.Request throws -> Serializer.Response)
-    let failureResponder: (error: ErrorType) -> Serializer.Response
+    let responder: (request: Parser.Request) -> Serializer.Response
 
     var socket: Socket?
 
-    init(responderForRequest: (request: Parser.Request) -> (Parser.Request throws -> Serializer.Response),
-        failureResponder: (error: ErrorType) -> Serializer.Response) {
+    init(responder: (request: Parser.Request) -> Serializer.Response) {
 
-            self.responderForRequest = responderForRequest
-            self.failureResponder = failureResponder
+        self.responder = responder
 
     }
 
@@ -96,8 +93,7 @@ extension Server {
             while true {
 
                 let request = try Parser.receiveRequest(socket: clientSocket)
-                let respond = responderForRequest(request: request) >>>
-                              failureResponder >>>
+                let respond = responder >>>
                               Middleware.keepConnection(request: request)
                 let response = respond(request)
                 try Serializer.sendResponse(socket: clientSocket, response: response)

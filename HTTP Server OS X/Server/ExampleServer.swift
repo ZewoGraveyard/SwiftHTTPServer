@@ -26,6 +26,11 @@ class ExampleServer: HTTPServer {
 
     init() {
 
+        let login: ServerRouter<MethodServerRoute<HTTPRequest, HTTPResponse>> = [
+            .GET  : LoginResponder.get,
+            .POST : LoginResponder.post
+        ]
+
         super.init(
             requestMiddlewares: Middleware.logRequest,
             router: [

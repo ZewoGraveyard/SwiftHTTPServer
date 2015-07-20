@@ -22,14 +22,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-infix operator =| { associativity right precedence 80 }
-
-func =|<Request, Response>(path: String, responder: Request throws -> Response) -> ServerRoute<Request, Response> {
-
-    return ServerRoute(path: path, responder: responder)
-    
-}
-
 infix operator >>> { associativity left }
 
 func >>> <A, B, C>(f: (A -> B), g: (B -> C)) -> (A -> C) {

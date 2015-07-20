@@ -22,19 +22,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class HTTPServer: RoutableServer<HTTPRequestParser, HTTPResponseSerializer> {
+class HTTPServer: Server<HTTPRequestParser, HTTPResponseSerializer> {
+
+    let paths: [String]
 
     init(requestMiddlewares: HTTPRequestMiddleware? = nil,
-        router: HTTPServerRouter,
+        router: [String: MethodServerRouter],
         responseMiddlewares: HTTPResponseMiddleware? = nil) {
 
-            super.init(
-                requestMiddlewares: requestMiddlewares,
-                router: router.router,
-                defaultResponder: Responder.assetAtPath,
-                responseMiddlewares: responseMiddlewares >>> Middleware.headers(["server": "HTTP Server"]),
-                failureResponder: HTTPServer.failureResponder
+            var pathResponders: [String: HTTPRequest throws -> HTTPResponse] = [:]
+
+            for (path, methodRouter) in router {
+
+                let methodResponder = methodRouter.getResponder(
+                    key: HTTPRequest.getMethod,
+                    defaultResponder: HTTPServer.methodNotAllowed
+                )
+
+                pathResponders[path] = methodResponder
+
+            }
+
+            let pathRouter = PathServerRouter(dictionary: pathResponders)
+
+            let pathResponder = pathRouter.getResponder(
+                key: HTTPRequest.getPath,
+                defaultResponder: Responder.assetAtPath
             )
+
+            self.paths = pathRouter.keys
+
+            super.init(responder: requestMiddlewares >>>
+                                  pathResponder >>>
+                                  responseMiddlewares >>>
+                                  Middleware.headers(["server": "HTTP Server"]) >>>
+                                  HTTPServer.failureResponder
+            )
+
+    }
+
+    private static func methodNotAllowed(method: HTTPMethod) -> HTTPRequest throws -> HTTPResponse {
+
+        return { request in
+
+            return HTTPResponse(status: .MethodNotAllowed)
+
+        }
 
     }
 

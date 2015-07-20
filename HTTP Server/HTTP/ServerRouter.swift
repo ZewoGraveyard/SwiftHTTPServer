@@ -22,31 +22,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol RoutableRequest {
 
-    var path: String { get }
+typealias PathServerRouter = ServerRouter<PathServerRoute<HTTPRequest, HTTPResponse>>
+typealias MethodServerRouter = ServerRouter<MethodServerRoute<HTTPRequest, HTTPResponse>>
 
-}
+class ServerRouter<Route: ServerRoute>: DictionaryLiteralConvertible {
 
-class ServerRouter<Request: RoutableRequest, Response>: DictionaryLiteralConvertible {
+    let routes: [Route]
+    let keys: [Route.Key]
 
-    let routes: [ServerRoute<Request, Response>]
-    let paths: [String]
+    init(routes: [Route]) {
 
-    init(routes: [ServerRoute<Request, Response>]) {
-x
         self.routes = routes
-        self.paths = routes.map { $0.path }
+        self.keys = routes.map { $0.key }
 
     }
 
-    convenience required init(dictionaryLiteral responders: (String, Request throws -> Response)...) {
+    init(dictionary: [Route.Key: Route.Request throws -> Route.Response]) {
 
-        var routes: [ServerRoute<Request, Response>] = []
+        var routes: [Route] = []
 
-        for (path, responder) in responders {
+        for (key, responder) in dictionary {
 
-            let route = ServerRoute(path: path, responder: responder)
+            let route = Route(key: key, responder: responder)
+            routes.append(route)
+
+        }
+
+        self.routes = routes
+        self.keys = routes.map { $0.key }
+        
+    }
+
+    convenience required init(dictionaryLiteral responders: (Route.Key, Route.Request throws -> Route.Response)...) {
+
+        var routes: [Route] = []
+
+        for (key, responder) in responders {
+
+            let route = Route(key: key, responder: responder)
             routes.append(route)
 
         }
@@ -55,13 +69,13 @@ x
 
     }
 
-    var responder: (path: String) -> (Request throws -> Response)? {
+    private var routerResponder: (key: Route.Key) -> (Route.Request throws -> Route.Response)? {
 
-        return { (path: String) in
+        return { (key: Route.Key) in
 
-            if let route = self.routes.find({$0.matchesPath(path)}) {
+            if let route = self.routes.find({$0.matchesKey(key)}) {
 
-                let parameters = route.parametersForPath(path)
+                let parameters = route.parametersForKey(key)
                 return Middleware.parameters(parameters) >>> route.responder
 
             }
@@ -70,6 +84,19 @@ x
 
         }
 
+    }
+
+    func getResponder(key key: Route.Request -> () -> Route.Key,
+        defaultResponder: (key: Route.Key) -> (Route.Request throws -> Route.Response)) -> (Route.Request throws -> Route.Response) {
+
+            return { (request: Route.Request) in
+
+                let key = key(request)()
+                let responder = self.routerResponder(key: key) ?? defaultResponder(key: key)
+                return try responder(request)
+                
+            }
+            
     }
 
 }

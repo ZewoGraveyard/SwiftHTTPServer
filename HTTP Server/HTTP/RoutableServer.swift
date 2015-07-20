@@ -21,32 +21,3 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
-class RoutableServer<Parser: RequestParser, Serializer: ResponseSerializer where Parser.Request: RoutableRequest>: Server<Parser, Serializer> {
-
-    let paths: [String]
-
-    init(requestMiddlewares: (Parser.Request throws -> RequestMiddlewareResult<Parser.Request, Serializer.Response>)? = nil,
-        router: ServerRouter<Parser.Request, Serializer.Response>,
-        defaultResponder: (path: String) -> (Parser.Request throws -> Serializer.Response),
-        responseMiddlewares: (Serializer.Response throws -> Serializer.Response)? = nil,
-        failureResponder: (error: ErrorType) -> Serializer.Response) {
-
-            self.paths = router.paths
-
-            let responderForRequest = { (request: Parser.Request) in
-
-                return requestMiddlewares >>>
-                       router.responder(path: request.path) ?? defaultResponder(path: request.path) >>>
-                       responseMiddlewares
-
-            }
-
-            super.init(
-                responderForRequest: responderForRequest,
-                failureResponder: failureResponder
-            )
-
-    }
-
-}

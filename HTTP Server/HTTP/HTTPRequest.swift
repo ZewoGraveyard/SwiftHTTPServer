@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPRequest: RoutableRequest, ParameterizableRequest, KeepConnectionRequest {
+struct HTTPRequest: ParameterizableRequest, KeepConnectionRequest {
 
     let method: HTTPMethod
     let URI: String
@@ -44,6 +44,18 @@ struct HTTPRequest: RoutableRequest, ParameterizableRequest, KeepConnectionReque
         self.headers = headers
         self.body = body
         self.parameters = parameters
+
+    }
+
+    func getPath() -> String {
+
+        return path
+        
+    }
+
+    func getMethod() -> HTTPMethod {
+
+        return method
 
     }
 
