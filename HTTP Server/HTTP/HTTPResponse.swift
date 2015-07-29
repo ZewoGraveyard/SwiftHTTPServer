@@ -62,7 +62,7 @@ struct HTTPResponse {
 
 }
 
-extension HTTPResponse: KeepConnectionResponse {
+extension HTTPResponse { //: KeepConnectionResponse {
 
     func copyKeepingConnection(keepConnection: Bool) -> HTTPResponse {
 

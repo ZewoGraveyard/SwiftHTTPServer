@@ -34,7 +34,7 @@ extension Responder {
 
             if let asset = Asset(path: assetPath) {
 
-                return HTTPResponse(status: .OK, body: DataBody(asset: asset))
+                return HTTPResponse(status: .OK, body: RawBody(asset: asset))
 
             } else {
                 

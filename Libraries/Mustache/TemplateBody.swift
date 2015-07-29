@@ -26,6 +26,7 @@ struct TemplateBody: HTTPBody {
 
     let contentType: InternetMediaType? = .TextHTML
     let body: String
+    let parameters: [String: String] = [:]
 
     init(template: String, data: MustacheBoxable) throws {
 

@@ -40,3 +40,120 @@ extension Middleware {
     }
 
 }
+
+extension Middleware {
+
+    static func parseJSONBody(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        guard let data = request.body.data,
+           contentType = request.headers["content-type"] where
+        InternetMediaType(string: contentType) == .ApplicationJSON else {
+
+            return .Request(request)
+            
+        }
+
+        let newRequest = HTTPRequest(
+            method: request.method,
+            URI: request.URI,
+            version: request.version,
+            headers: request.headers,
+            body: try JSONBody(data: data),
+            parameters: request.parameters
+        )
+
+        return .Request(newRequest)
+
+    }
+    
+}
+
+extension Middleware {
+
+    static func parseFormURLEncodedBody(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        guard let data = request.body.data,
+            contentType = request.headers["content-type"] where
+            InternetMediaType(string: contentType) == .ApplicationXWWWFormURLEncoded else {
+
+                return .Request(request)
+
+        }
+
+        let newRequest = HTTPRequest(
+            method: request.method,
+            URI: request.URI,
+            version: request.version,
+            headers: request.headers,
+            body: try FormURLEncodedBody(data: data),
+            parameters: request.parameters
+        )
+
+        return .Request(newRequest)
+        
+    }
+    
+}
+
+extension Middleware {
+
+    static func parseMultipartBody(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        guard let data = request.body.data,
+            contentType = request.headers["content-type"] else {
+
+                return .Request(request)
+
+        }
+
+        // TODO: Look for the if case stuff
+        switch InternetMediaType(string: contentType) {
+
+        case .MultipartFormData(let boundary):
+
+            let newRequest = HTTPRequest(
+                method: request.method,
+                URI: request.URI,
+                version: request.version,
+                headers: request.headers,
+                body: try MultipartFormDataBody(data: data, boundary: boundary),
+                parameters: request.parameters
+            )
+
+            return .Request(newRequest)
+
+        default:
+            return .Request(request)
+
+        }
+        
+    }
+    
+}
+
+extension Middleware {
+
+    static func parseTextBody(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        guard let data = request.body.data,
+            contentType = request.headers["content-type"] where
+            InternetMediaType(string: contentType) == .TextPlain else {
+
+                return .Request(request)
+
+        }
+
+        let newRequest = HTTPRequest(
+            method: request.method,
+            URI: request.URI,
+            version: request.version,
+            headers: request.headers,
+            body: try TextBody(data: data),
+            parameters: request.parameters
+        )
+
+        return .Request(newRequest)
+        
+    }
+    
+}

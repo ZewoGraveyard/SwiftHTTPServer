@@ -25,34 +25,47 @@
 typealias TCPPort = in_port_t
 typealias SocketHandler = CInt
 
+enum SocketError: ErrorType {
+
+    case ConnectionClosed
+
+}
+
 struct Socket {
 
-    let socketHandler: SocketHandler
+    private let socketHandler: SocketHandler
+
+    private(set) var IP: String
+    private(set) var port: TCPPort
 
     init(port: TCPPort, maxConnections: Int = 20) throws {
 
-        socketHandler = try Socket.createSocketHandler()
+        self.socketHandler = try Socket.createSocketHandler()
+        self.IP = "0.0.0.0"
+        self.port = port
 
         try setReuseAddressOption()
         try setNoSigPipeOption()
-        try bindToPort(port)
+        try bindTo(IP: self.IP, port: self.port)
         try listenWithMaxConnections(maxConnections)
 
     }
 
-    init(address: String, port: TCPPort) throws {
+    init(IP: String, port: TCPPort) throws {
 
-        socketHandler = try Socket.createSocketHandler()
+        self.socketHandler = try Socket.createSocketHandler()
+        self.IP = "0.0.0.0"
+        self.port = port
 
         try setReuseAddressOption()
         try setNoSigPipeOption()
-        try connectToHost(address, port: port)
+        try connectTo(IP: self.IP, port: self.port)
 
     }
 
-    func connectToHost(host: String, port: TCPPort) throws {
+    func connectTo(IP IP: String, port: TCPPort) throws {
 
-        let addresses = try addressesFromDNSHost(host, port: port)
+        let addresses = try addressesFromDNSHost(IP, port: port)
 
         var address = addresses.first!
 
@@ -65,7 +78,7 @@ struct Socket {
 
     }
 
-    init(socketHandler: SocketHandler) throws {
+    init(IP: String, port: TCPPort, socketHandler: SocketHandler) throws {
 
         if socketHandler == -1 {
 
@@ -73,6 +86,8 @@ struct Socket {
 
         }
 
+        self.IP = IP
+        self.port = port
         self.socketHandler = socketHandler
 
     }
@@ -81,7 +96,7 @@ struct Socket {
 
         var buffer = [UInt8](count: 1, repeatedValue: 0)
 
-        let result = recv(socketHandler as Int32, &buffer, Int(buffer.count), 0)
+        let result = recv(socketHandler, &buffer, Int(buffer.count), 0)
 
         if result == -1 {
 
@@ -91,11 +106,33 @@ struct Socket {
 
         if result == 0 {
 
-            return 0
+            throw SocketError.ConnectionClosed
 
         }
 
         return UInt8(buffer[0])
+
+    }
+
+    func dataAvailable() throws -> Bool {
+
+        var buffer = [UInt8](count: 1, repeatedValue: 0)
+
+        let result = recv(socketHandler, &buffer, Int(buffer.count), MSG_PEEK)
+
+        if result == -1 {
+
+            throw Error.lastSystemError(reason: "recv() failed")
+            
+        } else if result == 0 {
+
+            return false
+
+        } else {
+
+            return true
+
+        }
 
     }
 
@@ -128,15 +165,15 @@ struct Socket {
 
     func acceptClient() throws -> Socket {
 
-        var addr = sockaddr(
+        var clientAddress = sockaddr(
             sa_len: 0,
             sa_family: 0,
             sa_data: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
         )
 
-        var len: socklen_t = 0
+        var length: socklen_t = socklen_t(sizeof(sockaddr))
 
-        let clientSocketHandler = accept(socketHandler, &addr, &len)
+        let clientSocketHandler = accept(socketHandler, &clientAddress, &length)
 
         if clientSocketHandler == -1 {
 
@@ -144,7 +181,35 @@ struct Socket {
 
         }
 
-        let clientSocket = try Socket(socketHandler: clientSocketHandler)
+        var addressIn = sockaddr_in(
+            sin_len: 0,
+            sin_family: 0,
+            sin_port: 0,
+            sin_addr: in_addr(s_addr: 0),
+            sin_zero: (0, 0, 0, 0, 0, 0, 0, 0)
+        )
+
+        memcpy(&addressIn, &clientAddress, Int(sizeof(sockaddr_in)))
+
+        var addressString = [CChar](count: Int(NI_MAXHOST), repeatedValue: 0)
+
+        let result = inet_ntop(AF_INET, &addressIn.sin_addr.s_addr, &addressString, socklen_t(INET_ADDRSTRLEN))
+
+        if result == nil {
+
+            throw Error.lastSystemError(reason: "inet_ntop() failed")
+            
+        }
+
+        guard let IP = String.fromCString(&addressString) else {
+
+            throw Error.Generic("Could not get IP address from client", "CString not convertible to String")
+
+        }
+
+        let port = addressIn.sin_port
+
+        let clientSocket = try Socket(IP: IP, port: port, socketHandler: clientSocketHandler)
 
         try clientSocket.setNoSigPipeOption()
 
@@ -192,25 +257,25 @@ struct Socket {
 
     }
 
-    private func bindToPort(port: TCPPort) throws {
+    private func bindTo(IP IP: String, port: TCPPort) throws {
 
-        var addr = sockaddr_in(
+        var addressIn = sockaddr_in(
             sin_len: __uint8_t(sizeof(sockaddr_in)),
             sin_family: sa_family_t(AF_INET),
             sin_port: port_htons(port),
-            sin_addr: in_addr(s_addr: inet_addr("0.0.0.0")),
+            sin_addr: in_addr(s_addr: inet_addr(IP)),
             sin_zero: (0, 0, 0, 0, 0, 0, 0, 0)
         )
 
-        var sock_addr = sockaddr(
+        var address = sockaddr(
             sa_len: 0,
             sa_family: 0,
             sa_data: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
         )
         
-        memcpy(&sock_addr, &addr, Int(sizeof(sockaddr_in)))
+        memcpy(&address, &addressIn, Int(sizeof(sockaddr_in)))
         
-        if bind(socketHandler, &sock_addr, socklen_t(sizeof(sockaddr_in))) == -1 {
+        if bind(socketHandler, &address, socklen_t(sizeof(sockaddr_in))) == -1 {
             
             release()
             throw Error.lastSystemError(reason: "bind() failed")

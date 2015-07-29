@@ -26,6 +26,7 @@ struct JSONBody: HTTPBody {
 
     let contentType: InternetMediaType? = .ApplicationJSON
     var json: JSON
+    let parameters: [String: String] = [:]
 
     init(data: Data) throws {
 

@@ -26,6 +26,7 @@ protocol HTTPBody {
 
     var contentType: InternetMediaType? { get }
     var data: Data? { get }
+    var parameters: [String: String] { get }
 
 }
 
@@ -33,32 +34,13 @@ struct HTTPBodyFactory {
 
     static func bodyFromData(data: Data?, headers: [String: String]) throws -> HTTPBody {
 
-        guard let data = data
-            else { return EmptyBody() }
+        guard let data = data else {
 
-        guard let contentType = headers["content-type"]
-            else { return DataBody(data: data) }
+            return EmptyBody()
 
-        let mediaType = InternetMediaType(string: contentType)
-
-        switch mediaType {
-
-        case .ApplicationJSON:
-            return try JSONBody(data: data)
-
-        case .ApplicationXWWWFormURLEncoded:
-            return try FormURLEncodedBody(data: data)
-
-        case .MultipartFormData(let boundary):
-            return MultipartFormDataBody(data: data, boundary: boundary)
-
-        case .TextPlain:
-            return try TextBody(data: data)
-
-        case (let contentType):
-            return DataBody(data: data, contentType: contentType)
-            
         }
+
+        return RawBody(data: data)
         
     }
 

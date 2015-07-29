@@ -26,6 +26,7 @@ struct HTMLBody: HTTPBody {
 
     let contentType: InternetMediaType? = .TextHTML
     let body: String
+    let parameters: [String: String] = [:]
 
     init(body: String) {
 

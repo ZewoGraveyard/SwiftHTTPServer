@@ -43,7 +43,7 @@ struct HTTPRequest: ParameterizableRequest, KeepConnectionRequest {
         self.version = version
         self.headers = headers
         self.body = body
-        self.parameters = parameters
+        self.parameters = parameters + body.parameters
 
     }
 

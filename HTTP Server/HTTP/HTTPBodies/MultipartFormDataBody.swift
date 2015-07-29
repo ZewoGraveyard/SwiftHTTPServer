@@ -28,11 +28,11 @@ struct MultipartFormDataBody: HTTPBody {
     let data: Data?
     let parameters: [String: String]
 
-    init(data: Data, boundary: String) {
+    init(data: Data, boundary: String) throws {
 
         self.contentType = .MultipartFormData(boundary: boundary)
         self.data = data
-        self.parameters = MultipartFormDataBody.getMultipartFormDataParametersFromBody(data, boundary: boundary)
+        self.parameters = try MultipartFormDataBody.getMultipartFormDataParametersFromBody(data, boundary: boundary)
 
     }
 
@@ -45,7 +45,8 @@ struct MultipartFormDataBody: HTTPBody {
 
     }
 
-    private static func getMultipartFormDataParametersFromBody(body: Data, boundary: String) -> [String: String] {
+    // TODO: Make this throw when shit happens
+    private static func getMultipartFormDataParametersFromBody(body: Data, boundary: String) throws -> [String: String] {
 
         var parameters: [String: String] = [:]
         var multiparts: [Multipart] = []

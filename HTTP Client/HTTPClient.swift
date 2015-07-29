@@ -26,9 +26,11 @@ final class HTTPClient {
 
     func sendRequest(request: HTTPRequest, address: String, port: TCPPort) throws -> HTTPResponse {
 
-        let socket = try Socket(address: address, port: port)
+        let socket = try Socket(IP: address, port: port)
         try HTTPClientSerializer.sendHTTPRequest(socket, request: request)
-        return try HTTPClientParser.receiveHTTPResponse(socket)
+        let response = try HTTPClientParser.receiveHTTPResponse(socket)
+        socket.release()
+        return response
     
     }
 

@@ -30,6 +30,8 @@ enum InternetMediaType {
     case TextHTML
     case TextPlain
 
+    case None
+
     case Unrecognized(mediaType: String)
 
     init(string: String) {
@@ -103,6 +105,14 @@ enum InternetMediaType {
 
 }
 
+extension InternetMediaType: Equatable {}
+
+func ==(lhs: InternetMediaType, rhs: InternetMediaType) -> Bool {
+
+    return lhs.description == rhs.description
+
+}
+
 extension InternetMediaType: CustomStringConvertible {
 
     var description: String {
@@ -114,6 +124,7 @@ extension InternetMediaType: CustomStringConvertible {
         case .MultipartFormData(let boundary): return "multipart/form-data; boundary=\(boundary)"
         case .TextHTML:                        return "text/html"
         case .TextPlain:                       return "text/plain"
+        case .None:                            return ""
         case .Unrecognized(let mediaType):     return mediaType
 
         }

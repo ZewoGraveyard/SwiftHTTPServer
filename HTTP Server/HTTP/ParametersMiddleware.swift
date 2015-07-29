@@ -24,19 +24,19 @@
 
 protocol ParameterizableRequest {
 
-    func copyWithParameters(parameters: [String: String]) -> Self
+    func copyWithParameters(parameters: [String: String]) throws -> Self
 
 }
 
 extension Middleware {
 
-    static func parameters<Request, Response>(parameters: [String: String]) -> Request -> RequestMiddlewareResult<Request, Response> {
+    static func parameters<Request, Response>(parameters: [String: String]) -> Request throws -> RequestMiddlewareResult<Request, Response> {
 
         return { request in
 
             if let request = request as? ParameterizableRequest {
 
-                return .Request(request.copyWithParameters(parameters) as! Request)
+                return .Request(try request.copyWithParameters(parameters) as! Request)
 
             } else {
 

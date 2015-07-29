@@ -22,63 +22,116 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct UserResponder {
+struct User {
 
-    static var users: [String: String] = [:]
-    static var usersId = 0
+    let name: String
 
-    static func index(request: HTTPRequest) throws -> HTTPResponse {
+}
 
-        return HTTPResponse(status: .OK, body: TextBody(text: "\(users)"))
+struct Collection<T> {
 
-    }
+    var elements: [String: T] = [:]
+    private var currentId = 0
 
-    static func create(request: HTTPRequest) throws -> HTTPResponse {
+    private mutating func getNewId() -> String {
 
-        guard let body = request.body as? FormURLEncodedBody,
-                  user = body.parameters["user"]
-        else { return HTTPResponse(status: .BadRequest) }
-
-        users["\(usersId)"] = user
-        usersId++
-
-        return HTTPResponse(status: .OK)
+        let id = "\(currentId)"
+        currentId++
+        return id
 
     }
 
-    static func show(request: HTTPRequest) throws -> HTTPResponse {
+    mutating func add(element element: T) {
 
-        guard let id = request.parameters["id"],
-                user = users[id]
-        else { return HTTPResponse(status: .NotFound) }
+        let id = getNewId()
+        elements[id] = element
+
+    }
+
+    func get(id id: String) -> T? {
+
+        return elements[id]
+
+    }
+
+    mutating func update(id id: String, element: T) {
+
+        elements[id] = element
+
+    }
+
+    mutating func delete(id id: String) {
+        
+        elements.removeValueForKey(id)
+        
+    }
+
+}
+
+extension HTTPRequest {
+
+    func getParameter(parameter: String) throws -> String {
+
+        if let parameter = parameters[parameter] {
+
+            return parameter
+
+        } else {
+
+            throw Error.Generic("Could not get parameter \(parameter)", "Parameter is not in the parameters dictionary")
+
+        }
+
+    }
+
+}
+
+final class UserResponder: ResourcefulResponder {
+
+    var users = Collection<User>()
+
+    func index(request: HTTPRequest) throws -> HTTPResponse {
+
+        return HTTPResponse(status: .OK, body: TextBody(text: "\(users.elements)"))
+
+    }
+
+    func create(request: HTTPRequest) throws -> HTTPResponse {
+
+        let name = try request.getParameter("name")
+        let user = User(name: name)
+        users.add(element: user)
+
+        return HTTPResponse(status: .Created)
+
+    }
+
+    func show(request: HTTPRequest) throws -> HTTPResponse {
+
+        let id =  try request.getParameter("id")
+        let user = users.get(id: id)
 
         return HTTPResponse(status: .OK, body: TextBody(text: "\(user)"))
         
     }
 
-    static func update(request: HTTPRequest) throws -> HTTPResponse {
+    func update(request: HTTPRequest) throws -> HTTPResponse {
 
-        guard let id = request.parameters["id"],
-                body = request.body as? FormURLEncodedBody,
-                user = body.parameters["user"]
-        where users[id] != nil
-        else { return HTTPResponse(status: .BadRequest) }
+        let id = try request.getParameter("id")
+        let name = try request.getParameter("name")
+        let user = User(name: name)
+        users.update(id: id, element: user)
 
-        users[id] = user
-
-        return HTTPResponse(status: .OK, body: TextBody(text: "\(user)"))
+        return HTTPResponse(status: .NoContent)
 
     }
 
-    static func destroy(request: HTTPRequest) throws -> HTTPResponse {
+    func destroy(request: HTTPRequest) throws -> HTTPResponse {
 
-        guard let id = request.parameters["id"]
-        else { return HTTPResponse(status: .BadRequest) }
-
-        users.removeValueForKey(id)
-
-        return HTTPResponse(status: .OK)
-
+        let id = try request.getParameter("id")
+        users.delete(id: id)
+        
+        return HTTPResponse(status: .NoContent)
 
     }
 

@@ -41,5 +41,23 @@ extension CollectionType {
         return .None
         
     }
+
+    /// Returns the first value of index
+    /// that satisfy the predicate `isMatch`.
+    func findIndex(@noescape isMatch: (Self.Generator.Element) -> Bool) -> Int? {
+
+        for (index, element) in self.enumerate() {
+
+            if isMatch(element) {
+
+                return index
+
+            }
+
+        }
+        
+        return .None
+        
+    }
     
 }

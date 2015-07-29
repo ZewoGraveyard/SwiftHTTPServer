@@ -26,5 +26,6 @@ struct EmptyBody: HTTPBody {
 
     let contentType: InternetMediaType? = .None
     let data: Data? = .None
-    
+    let parameters: [String: String] = [:]
+
 }

@@ -26,6 +26,7 @@ struct TextBody: HTTPBody {
 
     let contentType: InternetMediaType? = .TextPlain
     let text: String
+    let parameters: [String: String] = [:]
 
     init(data: Data) throws {
 

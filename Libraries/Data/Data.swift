@@ -52,6 +52,12 @@ public struct Data {
         
     }
 
+    var empty: Bool {
+
+        return bytes.count == 0
+        
+    }
+
 }
 
 

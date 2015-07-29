@@ -24,13 +24,11 @@
 
 class HTTPServer: Server<HTTPRequestParser, HTTPResponseSerializer> {
 
-    init(router: HTTPRouter) {
+    override init(respond: (request: HTTPRequest) throws -> HTTPResponse) {
 
-        super.init(
-            respond: router.respond >>>
-                     Middleware.headers(["server": "HTTP Server"]) >>>
-                     HTTPServer.respondFailure
-        )
+        super.init(respond: respond >>>
+                            HTTPServer.respondFailure >>>
+                            Middleware.headers(["server": "HTTP Server"]))
 
     }
 

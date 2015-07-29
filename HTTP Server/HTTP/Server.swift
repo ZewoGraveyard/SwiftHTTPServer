@@ -43,7 +43,7 @@ class Server<Parser: RequestParser, Serializer: ResponseSerializer> {
             socket?.release()
             socket = try Socket(port: port, maxConnections: 1000)
             Dispatch.async { self.waitForClients(failureHandler: failureHandler) }
-            Log.info("Server listening at port \(port).")
+            Log.info("Server listening at \(socket!.IP):\(socket!.port).")
 
         } catch {
 
@@ -73,6 +73,7 @@ extension Server {
 
                 let clientSocket = try socket!.acceptClient()
                 Dispatch.async { self.processClient(clientSocket: clientSocket, failureHandler: failureHandler) }
+                Log.info("Connected to client at \(clientSocket.IP):\(clientSocket.port).")
 
             }
 

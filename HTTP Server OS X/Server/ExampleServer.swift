@@ -22,115 +22,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPRouter {
-
-    var processRequest: HTTPRequestMiddleware?
-    var processResponse: HTTPResponseMiddleware?
-
-    var routes: [String: MethodRouter] = [:]
-
-    var paths: [String] {
-
-        return routes.keys.array
-        
-    }
-
-    var respond: HTTPRequest throws -> HTTPResponse {
-
-        let pathRouter = PathRouter()
-
-        // WARNING: Because of the nature of dictionaries (unordered), if a path matches more than one route. The route that is chosen is undefined. It could be any of them.
-        for (path, methodRouter) in routes {
-
-            pathRouter.route(path, respond: methodRouter.respond)
-
-        }
-
-        return processRequest >>>
-               pathRouter.respond >>>
-               processResponse
-
-    }
-
-    mutating func pre(processRequest: HTTPRequestMiddleware) {
-
-        self.processRequest = self.processRequest >>> processRequest
-
-    }
-
-    mutating func post(processResponse: HTTPResponseMiddleware) {
-
-        self.processResponse = self.processResponse >>> processResponse
-
-    }
-
-    mutating func route(method: HTTPMethod, _ path: String, _ respond: HTTPRequest throws -> HTTPResponse) {
-
-        route([method], path, respond)
-        
-    }
-
-    mutating func route(methods: Set<HTTPMethod>, _ path: String, _ respond: HTTPRequest throws -> HTTPResponse) {
-
-        if routes[path] == nil {
-
-            routes[path] = MethodRouter()
-
-        }
-
-        for method in methods {
-
-            routes[path]?.route(method, respond: respond)
-
-        }
-
-    }
-
-    mutating func route(path: String, _ respond: HTTPRequest throws -> HTTPResponse) {
-
-        route([.GET, .POST, .PUT, .PATCH, .DELETE], path, respond)
-        
-    }
-
-}
-
-
-
-class ExampleServer: HTTPServer {
+final class ExampleServer: HTTPServer {
 
     init() {
 
-        var router = HTTPRouter()
+        let respond = Middleware.logRequest >>> [
 
-        router.pre(Middleware.logRequest)
+            Router.get("/login", LoginResponder.get),
+            Router.post("/login", LoginResponder.post),
+            Router.resources("users", UserResponder()),
+            Router.get("/json", JSONResponder.get),
+            Router.post("/json", Middleware.parseJSONBody >>> JSONResponder.post),
+            Router.get("/database", Middleware.authenticate >>> DatabaseResponder.get),
+            Router.get("/redirect", Responder.redirect("http://www.google.com")),
+            Router.all("/parameters/:id/", Middleware.authenticate >>> ParametersResponder.respond),
 
-        router.route(.GET, "/login", LoginResponder.get)
-        router.route(.POST, "/login", LoginResponder.post)
+        ] >>> Middleware.logResponse
 
-        router.route(.GET, "/users/", UserResponder.index)
-        router.route(.POST, "/users/", UserResponder.create)
-
-        router.route(.GET, "/users/:id/", UserResponder.show)
-        router.route(.PATCH, "/users/:id/", UserResponder.update)
-        router.route(.PUT, "/users/:id/", UserResponder.update)
-        router.route(.DELETE, "/users/:id/", UserResponder.destroy)
-
-        router.route(.GET, "/json", JSONResponder.get)
-        router.route(.POST, "/json", JSONResponder.post)
-
-        router.route(.GET, "/database", Middleware.authenticate >>> DatabaseResponder.get)
-
-        router.route(.GET, "/redirect", Responder.redirect("http://www.google.com"))
-
-        router.route("/parameters/:id/", ParametersResponder.respond)
-
-        router.route(.GET, "/routes", RoutesResponder.get)
-
-        router.post(Middleware.logResponse)
-
-        super.init(router: router)
-
-        RoutesResponder.paths = router.paths
+        super.init(respond: respond)
 
     }
     

@@ -43,7 +43,7 @@ struct Client {
                     "accept-encoding": "gzip, deflate, sdch",
                     "accept-language": "pt-BR,pt;q=0.8,en-US;q=0.6,en;q=0.4,en-GB;q=0.2,de;q=0.2",
                     "cache-control": "no-cache",
-                    "connection": "close"
+                    "connection": "keep-alive"
                 ]
             )
 

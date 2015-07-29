@@ -22,10 +22,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct DataBody: HTTPBody {
+struct RawBody: HTTPBody {
 
     let data: Data?
     let contentType: InternetMediaType?
+    let parameters: [String: String] = [:]
 
     init?(assetAtPath path: String, contentType: InternetMediaType? = .None) {
 
