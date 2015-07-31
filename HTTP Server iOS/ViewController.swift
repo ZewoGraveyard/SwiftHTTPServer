@@ -30,6 +30,8 @@ class ViewController: UIViewController {
 
     @IBAction func startServerButtonTouched(sender: UIButton) {
 
+//        let resourcePath = NSBundle.mainBundle().resourcePath!
+//        let filePath = resourcePath.stringByExpandingTildeInPath.stringByAppendingPathComponent(path)
         server.start()
 
     }

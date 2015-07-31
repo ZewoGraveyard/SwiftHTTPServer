@@ -22,6 +22,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+typealias HTTPRequestMiddlewareResult = RequestMiddlewareResult<HTTPRequest, HTTPResponse>
+typealias HTTPRequestMiddleware = HTTPRequest throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse>
+typealias HTTPResponseMiddleware = HTTPResponse throws -> HTTPResponse
+
 class HTTPServer: Server<HTTPRequestParser, HTTPResponseSerializer> {
 
     override init(respond: (request: HTTPRequest) throws -> HTTPResponse) {
@@ -34,8 +38,18 @@ class HTTPServer: Server<HTTPRequestParser, HTTPResponseSerializer> {
 
     private static func respondFailure(error: ErrorType) -> HTTPResponse {
 
-        return HTTPResponse(status: .InternalServerError, body: TextBody(text: "\(error)"))
+        switch error { 
 
+        case is Error: print()
+        default: print()
+
+        }
+
+        Log.error(error)
+        let response = HTTPResponse(status: .InternalServerError, text: "\(error)")
+        Log.info(response)
+        return response
+        
     }
     
 }

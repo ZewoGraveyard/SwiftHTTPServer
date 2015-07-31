@@ -24,35 +24,20 @@
 
 struct LoginResponder {
 
-    static func get(request: HTTPRequest) -> HTTPResponse {
+    static func show(request: HTTPRequest) throws -> HTTPResponse {
 
-        if let body = RawBody(assetAtPath: "login.html") {
-
-            return HTTPResponse(status: .OK, body: body)
-
-        } else {
-
-            return HTTPResponse(status: .NotFound)
-
-        }
+        return try HTTPResponse(filePath: "Public/login.html")
 
     }
 
-    static func post(request: HTTPRequest) -> HTTPResponse {
+    static func authenticate(request: HTTPRequest) throws -> HTTPResponse {
 
-        guard let body = request.body as? FormURLEncodedBody
-        else { return HTTPResponse(status: .BadRequest) }
+        let email = try request.getParameter("email")
+        let password = try request.getParameter("password")
 
-        guard let email = body.parameters["email"],
-               password = body.parameters["password"] else {
+        if email == "email@email.com" && password == "password" {
 
-            return HTTPResponse(status: .BadRequest)
-
-        }
-
-        if email == "regis@regis.com" && password == "123" {
-
-            return HTTPResponse(status: .OK, body: HTMLBody(body: "logou"))
+            return HTTPResponse(HTML: "logou")
 
         } else {
 

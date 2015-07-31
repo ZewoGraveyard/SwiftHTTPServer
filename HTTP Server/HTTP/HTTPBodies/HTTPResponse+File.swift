@@ -1,4 +1,4 @@
-// HTTPServerSerializer.swift
+// HTTPResponse+File.swift
 //
 // The MIT License (MIT)
 //
@@ -22,22 +22,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPResponseSerializer: ResponseSerializer {
+extension HTTPResponse {
 
-    static func sendResponse(socket socket: Socket, response: HTTPResponse) throws {
+    init(
+        status: HTTPStatus = .OK,
+        version: HTTPVersion = .HTTP_1_1,
+        headers: [String: String] = [:],
+        filePath: String,
+        contentType: InternetMediaType = .ApplicationOctetStream) throws {
 
-        try socket.writeString("\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+        guard let file = File(path: filePath) else {
 
-        for (name, value) in response.headers {
-
-            try socket.writeString("\(name): \(value)\r\n")
+            throw Error.Generic("File Body", "Could not find file \(filePath)")
 
         }
 
-        try socket.writeString("\r\n")
-        try socket.writeData(response.body)
+        self.init(
+            status: status,
+            version: version,
+            headers: headers,
+            body: file.data,
+            contentType: contentType
+        )
 
     }
-
+    
 }
-

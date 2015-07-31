@@ -1,4 +1,4 @@
-// HTTPServerSerializer.swift
+// HTTPResponse+Template.swift
 //
 // The MIT License (MIT)
 //
@@ -22,22 +22,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPResponseSerializer: ResponseSerializer {
+extension HTTPResponse {
 
-    static func sendResponse(socket socket: Socket, response: HTTPResponse) throws {
+    init(
+        status: HTTPStatus = .OK,
+        version: HTTPVersion = .HTTP_1_1,
+        headers: [String: String] = [:],
+        templatePath: String,
+        templateData: MustacheBoxable) throws {
 
-        try socket.writeString("\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+            guard let templateFile = File(path: templatePath) else {
 
-        for (name, value) in response.headers {
+                throw Error.Generic("Template Response Body", "Could not find template at path: \(templatePath)")
 
-            try socket.writeString("\(name): \(value)\r\n")
+            }
 
-        }
+            guard let templateString = String(data: templateFile.data) else {
 
-        try socket.writeString("\r\n")
-        try socket.writeData(response.body)
+                throw Error.Generic("Template Response Body", "Template at path: \(templatePath); is not UTF-8 encoded")
 
+            }
+
+            let template = try Template(string: templateString)
+            let rendering = try template.render(Box(templateData))
+
+            self.init(
+                status: status,
+                version: version,
+                headers: headers,
+                body: Data(string: rendering),
+                contentType: .TextHTML
+            )
+            
     }
-
+    
 }
-

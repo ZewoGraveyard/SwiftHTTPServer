@@ -1,4 +1,4 @@
-// HTTPServerSerializer.swift
+// StaticFileResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,22 +22,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPResponseSerializer: ResponseSerializer {
+extension Responder {
 
-    static func sendResponse(socket socket: Socket, response: HTTPResponse) throws {
+    static func file(baseDirectory baseDirectory: String)(var path: String) -> HTTPRequest throws -> HTTPResponse {
 
-        try socket.writeString("\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+        if path == "/" { path = "/index.html" }
 
-        for (name, value) in response.headers {
+        return { request in
 
-            try socket.writeString("\(name): \(value)\r\n")
+            let filePath = path.dropFirstCharacter()
+            return try HTTPResponse(filePath: baseDirectory + filePath)
 
         }
 
-        try socket.writeString("\r\n")
-        try socket.writeData(response.body)
+    }
 
+    static func file(baseDirectory: String, path: String) -> HTTPRequest throws -> HTTPResponse {
+
+        return file(baseDirectory: baseDirectory)(path: path)
+        
     }
 
 }
-

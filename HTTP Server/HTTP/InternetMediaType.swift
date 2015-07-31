@@ -25,12 +25,11 @@
 enum InternetMediaType {
 
     case ApplicationJSON
+    case ApplicationOctetStream
     case ApplicationXWWWFormURLEncoded
     case MultipartFormData(boundary: String)
     case TextHTML
     case TextPlain
-
-    case None
 
     case Unrecognized(mediaType: String)
 
@@ -124,7 +123,6 @@ extension InternetMediaType: CustomStringConvertible {
         case .MultipartFormData(let boundary): return "multipart/form-data; boundary=\(boundary)"
         case .TextHTML:                        return "text/html"
         case .TextPlain:                       return "text/plain"
-        case .None:                            return ""
         case .Unrecognized(let mediaType):     return mediaType
 
         }

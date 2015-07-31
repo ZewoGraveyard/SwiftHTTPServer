@@ -1,4 +1,4 @@
-// HTTPServerSerializer.swift
+// ResponseHeaderMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,22 +22,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPResponseSerializer: ResponseSerializer {
+extension Middleware {
 
-    static func sendResponse(socket socket: Socket, response: HTTPResponse) throws {
+    static func headers(headers: [String: String]) -> (HTTPResponse -> HTTPResponse) {
 
-        try socket.writeString("\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+        return { response in
 
-        for (name, value) in response.headers {
-
-            try socket.writeString("\(name): \(value)\r\n")
+            return HTTPResponse(
+                status: response.status,
+                version: response.version,
+                headers: response.headers + headers,
+                body: response.body
+            )
 
         }
-
-        try socket.writeString("\r\n")
-        try socket.writeData(response.body)
-
+        
     }
-
+    
 }
-

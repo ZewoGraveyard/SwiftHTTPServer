@@ -1,4 +1,4 @@
-// HTTPServerSerializer.swift
+// JSONParserMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,22 +22,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPResponseSerializer: ResponseSerializer {
+extension Middleware {
 
-    static func sendResponse(socket socket: Socket, response: HTTPResponse) throws {
+    static func parseJSON(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        try socket.writeString("\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+        guard let contentType = request.contentType where contentType == .ApplicationJSON else {
 
-        for (name, value) in response.headers {
-
-            try socket.writeString("\(name): \(value)\r\n")
+                return .Request(request)
 
         }
 
-        try socket.writeString("\r\n")
-        try socket.writeData(response.body)
+        let json = try JSONParser.parse(request.body)
+        let newRequest = request.copyWithData(["JSON": json])
 
+        return .Request(newRequest)
+        
     }
-
+    
 }
-

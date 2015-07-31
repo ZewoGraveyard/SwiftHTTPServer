@@ -51,20 +51,19 @@ struct JSONResponder {
 
         ]
 
-        return HTTPResponse(status: .OK, body: JSONBody(json: json))
+        return HTTPResponse(json: json)
 
     }
 
-    static func post(request: HTTPRequest) -> HTTPResponse {
+    static func post(request: HTTPRequest) throws -> HTTPResponse {
 
-        guard var body = request.body as? JSONBody
-        else { return HTTPResponse(status: .BadRequest, body: TextBody(text: "Expected JSON body")) }
+        var json: JSON = try request.getData("JSON")
 
-        body.json["number"] = 321
-        body.json["array"][0] = 3
-        body.json["array"][2] = 1
+        json["number"] = 321
+        json["array"][0] = 3
+        json["array"][2] = 1
 
-        return HTTPResponse(status: .OK, body: body)
+        return HTTPResponse(json: json)
 
     }
 

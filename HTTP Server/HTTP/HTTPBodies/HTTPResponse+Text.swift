@@ -1,4 +1,4 @@
-// HTTPServerSerializer.swift
+// HTTPResponse+Text.swift
 //
 // The MIT License (MIT)
 //
@@ -22,22 +22,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPResponseSerializer: ResponseSerializer {
+extension HTTPResponse {
 
-    static func sendResponse(socket socket: Socket, response: HTTPResponse) throws {
+    init(
+        status: HTTPStatus = .OK,
+        version: HTTPVersion = .HTTP_1_1,
+        headers: [String: String] = [:],
+        text: String) {
 
-        try socket.writeString("\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
-
-        for (name, value) in response.headers {
-
-            try socket.writeString("\(name): \(value)\r\n")
-
-        }
-
-        try socket.writeString("\r\n")
-        try socket.writeData(response.body)
-
+            self.init(
+                status: status,
+                version: version,
+                headers: headers,
+                body: Data(string: text),
+                contentType: .TextPlain
+            )
+            
     }
-
+    
 }
-

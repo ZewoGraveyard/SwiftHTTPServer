@@ -28,22 +28,51 @@ struct HTTPRequest: ParameterizableRequest, KeepConnectionRequest {
     let URI: String
     let version: HTTPVersion
     let headers: [String: String]
-    let body: HTTPBody
+    let body: Data
     let parameters: [String: String]
+    let data: [String: Any]
 
     init(method: HTTPMethod,
         URI: String,
         version: HTTPVersion = .HTTP_1_1,
         headers: [String: String] = [:],
-        body: HTTPBody = EmptyBody(),
-        parameters: [String: String] = [:]) {
+        body: Data = Data(),
+        parameters: [String: String] = [:],
+        data: [String: Any] = [:]) {
 
         self.method = method
         self.URI = URI
         self.version = version
         self.headers = headers
         self.body = body
-        self.parameters = parameters + body.parameters
+        self.parameters = parameters
+        self.data = data
+
+    }
+
+    func copyWithData(data: [String: Any]) -> HTTPRequest {
+
+        return HTTPRequest(
+            method: self.method,
+            URI: self.URI,
+            version: self.version,
+            headers: self.headers,
+            body: self.body,
+            parameters: self.parameters,
+            data: self.data + data
+        )
+
+    }
+
+    func getData<T>(key: String) throws -> T {
+
+        guard let data = self.data[key] as? T else {
+
+            throw Error.Generic("Could not get data from key: \(key)", "Data doesn't exist or it's not of the specified type")
+            
+        }
+
+        return data
 
     }
 
@@ -59,6 +88,95 @@ struct HTTPRequest: ParameterizableRequest, KeepConnectionRequest {
 
     }
 
+    var contentType: InternetMediaType? {
+
+        guard let contentType = headers["content-type"] else {
+
+            return nil
+
+        }
+
+        return InternetMediaType(string: contentType)
+        
+    }
+
+}
+
+extension HTTPRequest {
+
+    func getParameter(parameter: String) throws -> String {
+
+        if let parameter = parameters[parameter] {
+
+            return parameter
+
+        } else {
+
+            throw Error.Generic("Could not get parameter \(parameter)", "Parameter is not in the parameters dictionary")
+            
+        }
+        
+    }
+    
+}
+
+extension HTTPRequest {
+
+    var path: String {
+
+        return URI.splitBy("?").first!
+
+    }
+
+}
+
+extension HTTPRequest {
+
+    func copyWithParameters(parameters: [String: String]) -> HTTPRequest {
+
+        return HTTPRequest(
+            method:     self.method,
+            URI:        self.URI,
+            version:    self.version,
+            headers:    self.headers,
+            body:       self.body,
+            parameters: self.parameters + parameters
+        )
+
+    }
+
+}
+
+extension HTTPRequest {
+
+    var queryParameters: [String: String] {
+
+        if let query = URI.splitBy("?").last {
+
+            return query.queryParameters
+
+        }
+
+        return [:]
+
+    }
+
+}
+
+extension HTTPRequest {
+
+    var keepConnection: Bool {
+
+        if let value = headers["connection"] {
+
+            return "keep-alive" == value.trim().lowercaseString
+            
+        }
+        
+        return false
+        
+    }
+    
 }
 
 extension HTTPRequest: CustomStringConvertible {
@@ -79,11 +197,7 @@ extension HTTPRequest: CustomStringConvertible {
 
         }
 
-        if let body = body.data {
-
-            string += "\n\(body)"
-
-        }
+        string += "\n\(body)"
 
         return string
 
@@ -98,7 +212,6 @@ extension HTTPRequest: CustomColorLogStringConvertible {
         var string = Log.lightGreen
 
         string += "\(method) \(URI) HTTP/1.1\n"
-
         string += Log.darkGreen
 
         for (index, (header, value)) in headers.enumerate() {
@@ -114,13 +227,7 @@ extension HTTPRequest: CustomColorLogStringConvertible {
         }
 
         string += Log.green
-
-        if let body = body.data {
-            
-            string += "\n\(body)"
-            
-        }
-
+        string += "\n\(body)"
         string += Log.reset
         
         return string

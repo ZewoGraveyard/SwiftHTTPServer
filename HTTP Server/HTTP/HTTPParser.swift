@@ -81,25 +81,23 @@ struct HTTPParser {
 
     }
 
-    static func getBody(socket socket: Socket, headers: [String: String]) throws -> HTTPBody {
+    static func getBody(socket socket: Socket, headers: [String: String]) throws -> Data {
 
         // TODO: support chunked data
         if let contentLenght = headers["content-length"],
             contentSize = Int(contentLenght) where contentSize > 0 {
 
-                let bodyData = try getBody(socket, size: contentSize)
-                return try HTTPBodyFactory.bodyFromData(bodyData, headers: headers)
+            return try getBody(socket, size: contentSize)
 
         }
 
         if let transferEncoding = headers["transfer-encoding"] where transferEncoding == "chunked" {
 
-                let bodyData = try getChunkedBody(socket)
-                return try HTTPBodyFactory.bodyFromData(bodyData, headers: headers)
+            return try getChunkedBody(socket)
                 
         }
 
-        return EmptyBody()
+        return Data()
 
     }
 

@@ -69,7 +69,7 @@ struct DatabaseResponder {
 
         #endif
 
-        return HTTPResponse(status: .OK)
+        return HTTPResponse()
         
     }
     

@@ -26,10 +26,6 @@ struct ParametersResponder {
 
     static func respond(request: HTTPRequest) throws -> HTTPResponse {
 
-        //        print(request.pathParameters)
-        //        print(request.queryParameters)
-        //        print(request.bodyParameters)
-
         let info: [String: MustacheBoxable] = [
             "URI": request.URI,
             "method": request.method.description,
@@ -37,7 +33,11 @@ struct ParametersResponder {
             "params": request.parameters
         ]
 
-        return HTTPResponse(status: .OK, body: try TemplateBody(template: "user.html", data: info))
+        let user: User = try request.getData("user")
+
+        print(user)
+
+        return try HTTPResponse(templatePath: "Views/user.html", templateData: info)
         
     }
     

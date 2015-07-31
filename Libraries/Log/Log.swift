@@ -44,9 +44,7 @@ struct Log {
     // MARK: - Colors
 
     static var colorsEnabled: Bool {
-        
-        return true
-        
+
         let xcodeColors = getenv("XcodeColors")
 
         if let enabled = String.fromCString(xcodeColors) where enabled == "YES" {
@@ -59,6 +57,7 @@ struct Log {
         
     }
 
+    // TODO: Make all of this variables return empty string when color is not available
     static let escape = "\u{001b}["
     
     static let resetForeground = escape + "fg;"

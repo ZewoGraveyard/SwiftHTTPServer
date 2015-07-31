@@ -1,4 +1,4 @@
-// HTTPServerSerializer.swift
+// TextParserMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,22 +22,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPResponseSerializer: ResponseSerializer {
+extension Middleware {
 
-    static func sendResponse(socket socket: Socket, response: HTTPResponse) throws {
+    static func parseTextBody(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        try socket.writeString("\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+        guard let contentType = request.contentType where contentType == .TextPlain else {
 
-        for (name, value) in response.headers {
-
-            try socket.writeString("\(name): \(value)\r\n")
+                return .Request(request)
 
         }
 
-        try socket.writeString("\r\n")
-        try socket.writeData(response.body)
+        guard let text = String(data: request.body) else {
 
+            throw Error.Generic("Could not create TextBody from data", "Data is not UTF-8 encoded")
+
+        }
+
+        let newRequest = request.copyWithParameters(["body": text])
+        
+        return .Request(newRequest)
+        
     }
-
+    
 }
-

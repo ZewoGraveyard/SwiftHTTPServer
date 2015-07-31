@@ -68,31 +68,13 @@ struct Collection<T> {
 
 }
 
-extension HTTPRequest {
-
-    func getParameter(parameter: String) throws -> String {
-
-        if let parameter = parameters[parameter] {
-
-            return parameter
-
-        } else {
-
-            throw Error.Generic("Could not get parameter \(parameter)", "Parameter is not in the parameters dictionary")
-
-        }
-
-    }
-
-}
-
 final class UserResponder: ResourcefulResponder {
 
     var users = Collection<User>()
 
     func index(request: HTTPRequest) throws -> HTTPResponse {
 
-        return HTTPResponse(status: .OK, body: TextBody(text: "\(users.elements)"))
+        return HTTPResponse(text: "\(users.elements)")
 
     }
 
@@ -111,7 +93,7 @@ final class UserResponder: ResourcefulResponder {
         let id =  try request.getParameter("id")
         let user = users.get(id: id)
 
-        return HTTPResponse(status: .OK, body: TextBody(text: "\(user)"))
+        return HTTPResponse(text: "\(user)")
         
     }
 

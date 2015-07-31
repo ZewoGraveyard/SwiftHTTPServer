@@ -32,6 +32,12 @@ public struct Data {
 
     }
 
+    init() {
+
+        self.bytes = []
+        
+    }
+
     init(bytes: [UInt8]) {
 
         self.bytes = bytes

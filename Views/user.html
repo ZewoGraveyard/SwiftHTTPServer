@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>User</title>
+    </head>
+    <body>
+        <h3>Url:</h3>
+        <div>{{ URI }}</div>
+        <h3>Method: {{ method }}</h3>
+        <h3>Headers:</h3>
+        {{# each(headers) }}
+            <div>{{ @key }}: {{.}}</div>
+        {{/}}
+        <h3>Params:</h3>
+        {{# each(params) }}
+            <div>{{ @key }}: {{.}}</div>
+        {{/}}
+    </body>
+</html>

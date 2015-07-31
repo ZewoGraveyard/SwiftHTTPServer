@@ -27,42 +27,40 @@ struct HTTPResponse {
     let status: HTTPStatus
     let version: HTTPVersion
     let headers: [String: String]
-    let body: HTTPBody
+    let body: Data
 
-    init(status: HTTPStatus, version: HTTPVersion = .HTTP_1_1, headers: [String: String] = [:], body: HTTPBody = EmptyBody()) {
+    init(
+        status: HTTPStatus = .OK,
+        version: HTTPVersion = .HTTP_1_1,
+        headers: [String: String] = [:],
+        body: Data = Data()) {
 
         self.status = status
         self.version = version
-        self.headers = HTTPResponse.headersByAddingContentInfoFromBody(body, headers: headers)
+        self.headers = headers + ["content-length": "\(body.length)"]
         self.body = body
 
     }
 
-    static func headersByAddingContentInfoFromBody(body: HTTPBody, var headers: [String: String]) -> [String: String] {
+    init(
+        status: HTTPStatus = .OK,
+        version: HTTPVersion = .HTTP_1_1,
+        headers: [String: String] = [:],
+        body: Data,
+        contentType: InternetMediaType) {
 
-        if let contentType = body.contentType {
-        
-            headers["content-type"] = "\(contentType)"
-        
-        }
-
-        if let data = body.data {
-
-            headers["content-length"] = "\(data.length)"
-
-        } else {
-
-            headers["content-length"] = "0"
-
-        }
-
-        return headers
+            self.init(
+                status: status,
+                version: version,
+                headers: headers + ["content-type": "\(contentType)"],
+                body: body
+            )
 
     }
 
 }
 
-extension HTTPResponse { //: KeepConnectionResponse {
+extension HTTPResponse: KeepConnectionResponse {
 
     func copyKeepingConnection(keepConnection: Bool) -> HTTPResponse {
 
@@ -100,11 +98,7 @@ extension HTTPResponse: CustomStringConvertible {
             
         }
 
-        if let body = body.data {
-
-            string += "\n\(body)"
-            
-        }
+        string += "\n\(body)"
         
         return string
         
@@ -117,9 +111,7 @@ extension HTTPResponse: CustomColorLogStringConvertible {
     var logDescription: String {
 
         var string = Log.lightPurple
-        
         string += "\(status.statusCode) \(status.reasonPhrase) \(version)\n"
-
         string += Log.darkPurple
 
         for (index, (header, value)) in headers.enumerate() {
@@ -135,13 +127,7 @@ extension HTTPResponse: CustomColorLogStringConvertible {
         }
 
         string += Log.purple
-
-        if let body = body.data {
-
-            string += "\n\(body)"
-            
-        }
-
+        string += "\n\(body)"
         string += Log.reset
         
         return string
