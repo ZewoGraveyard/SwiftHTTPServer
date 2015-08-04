@@ -33,9 +33,8 @@ extension HTTPResponse {
             self.init(
                 status: status,
                 version: version,
-                headers: headers,
-                body: Data(string: "\(json)"),
-                contentType: .ApplicationJSON
+                headers: headers + ["content-type": "application/json"],
+                body: Data(string: "\(json)")
             )
             
     }

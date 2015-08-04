@@ -22,6 +22,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+protocol ServerRoute {
+
+    typealias Key: Hashable
+    typealias Request
+    typealias Response
+
+    var key: Key { get }
+    var respond: Request throws -> Response { get }
+
+    init(key: Key, respond: Request throws -> Response)
+    func matchesKey(key: Key) -> Bool
+    func parametersForKey(key: Key) -> [String: String]
+    
+}
+
 class ServerRouter<Route: ServerRoute> {
 
     var routes: [Route] = []
@@ -46,7 +61,7 @@ class ServerRouter<Route: ServerRoute> {
             if let route = self.routes.find({$0.matchesKey(key)}) {
 
                 let parameters = route.parametersForKey(key)
-                return Middleware.parameters(parameters) >>> route.respond
+                return Middleware.addParameters(parameters) >>> route.respond
 
             }
 
@@ -56,12 +71,12 @@ class ServerRouter<Route: ServerRoute> {
 
     }
 
-    func getRespond(key key: Route.Request -> () -> Route.Key,
+    func getRespond(key getKey: Route.Request -> () -> Route.Key,
         defaultRespond: (key: Route.Key) -> (Route.Request throws -> Route.Response)) -> (Route.Request throws -> Route.Response) {
 
             return { (request: Route.Request) in
 
-                let key = key(request)()
+                let key = getKey(request)()
                 let respond = self.routerRespond(key: key) ?? defaultRespond(key: key)
                 return try respond(request)
                 

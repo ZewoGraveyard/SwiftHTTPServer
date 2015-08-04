@@ -1,4 +1,4 @@
-// KeepConnectionRequest.swift
+// HTTPRequestSerializer.swift
 //
 // The MIT License (MIT)
 //
@@ -22,8 +22,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol KeepConnectionRequest {
+struct HTTPRequestSerializer {
+    
+    static func serializeRequest(socket: Socket, request: HTTPRequest) throws {
 
-    var keepConnection: Bool { get }
+        var headers = ""
+        
+        headers += "\(request.method) \(request.uri) HTTP/1.3\r\n"
+        
+        for (name, value) in request.headers {
+            
+            headers += "\(name): \(value)\r\n"
+            
+        }
+        
+        headers += "\r\n"
+
+        try socket.writeData(Data(string: headers) + request.body)
+        
+    }
     
 }
+

@@ -1,4 +1,4 @@
-// StaticFileResponder.swift
+// HeaderMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,25 +22,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension Responder {
+protocol HeaderType {
 
-    static func file(baseDirectory baseDirectory: String)(var path: String) -> HTTPRequest throws -> HTTPResponse {
+    var headers: [String: String] { get set }
+    
+}
 
-        if path == "/" { path = "/index.html" }
+extension Middleware {
+
+    static func addHeaders<Request, Response>(headers: [String: String]) -> Request -> RequestMiddlewareResult<Request, Response> {
 
         return { request in
 
-            let filePath = path.dropFirstCharacter()
-            return try HTTPResponse(filePath: baseDirectory + filePath)
+            if var request = request as? HeaderType {
 
+                request.headers = request.headers + headers
+                return .Request(request as! Request)
+
+            } else {
+
+                return .Request(request)
+                
+            }
+            
         }
-
-    }
-
-    static func file(baseDirectory: String, path: String) -> HTTPRequest throws -> HTTPResponse {
-
-        return file(baseDirectory: baseDirectory)(path: path)
         
     }
 
+    static func addHeaders<Response>(headers: [String: String]) -> (Response -> Response) {
+
+        return { response in
+
+            if var response = response as? HeaderType {
+
+                response.headers = response.headers + headers
+                return response as! Response
+
+            } else {
+
+                return response
+                
+            }
+            
+        }
+        
+    }
+    
 }

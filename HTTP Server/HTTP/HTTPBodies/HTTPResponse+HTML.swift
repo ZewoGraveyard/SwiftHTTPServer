@@ -33,11 +33,31 @@ extension HTTPResponse {
             self.init(
                 status: status,
                 version: version,
-                headers: headers,
-                body: Data(string: HTML),
-                contentType: .TextHTML
+                headers: headers + ["content-type": "text/html"],
+                body: Data(string: HTML)
             )
             
+    }
+
+    init(
+        status: HTTPStatus = .OK,
+        version: HTTPVersion = .HTTP_1_1,
+        headers: [String: String] = [:],
+        HTMLPath: String) throws {
+
+            guard let file = File(path: HTMLPath) else {
+
+                throw Error.Generic("File Body", "Could not find file \(HTMLPath)")
+
+            }
+
+            self.init(
+                status: status,
+                version: version,
+                headers: headers + ["content-type": "text/html"],
+                body: file.data
+            )
+
     }
     
 }

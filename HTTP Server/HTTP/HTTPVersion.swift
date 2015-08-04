@@ -38,7 +38,7 @@ enum HTTPVersion {
             self = HTTP_1_1
 
         default:
-            throw Error.Generic("Impossible to create HTTP Version", "Invalid version \(string)")
+            throw Error.Generic("Impossible to create HTTP Version", "Unsupported version \(string)")
             
         }
         

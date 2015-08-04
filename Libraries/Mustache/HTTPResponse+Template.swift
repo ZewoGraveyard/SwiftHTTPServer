@@ -49,9 +49,8 @@ extension HTTPResponse {
             self.init(
                 status: status,
                 version: version,
-                headers: headers,
-                body: Data(string: rendering),
-                contentType: .TextHTML
+                headers: headers + ["content-type": "text/html"],
+                body: Data(string: rendering)
             )
             
     }

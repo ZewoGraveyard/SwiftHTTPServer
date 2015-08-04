@@ -1,4 +1,4 @@
-// HTTPRequestLine.swift
+// MediaType.swift
 //
 // The MIT License (MIT)
 //
@@ -22,10 +22,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPRequestLine {
+struct MediaType {
 
-    let method: HTTPMethod
-    let URI: String
-    let version: HTTPVersion
+    let type: String
+    let parameters: [String: String]
+
+    var description: String {
+
+        return "\(type);" + parameters.reduce("") { $0 + " \($1.0)=\($1.1)" }
+
+    }
+
+    init(_ string: String) {
+
+        let mediaTypeTokens = string.splitBy(";")
+        let mediaType = mediaTypeTokens.first!
+        var parameters: [String: String] = [:]
+
+        if mediaTypeTokens.count == 2 {
+
+            let parametersTokens = mediaTypeTokens[1].trim().splitBy(" ")
+
+            for parametersToken in parametersTokens {
+
+                let parameterTokens = parametersToken.splitBy("=")
+
+                if parameterTokens.count == 2 {
+
+                    let key = parameterTokens[0]
+                    let value = parameterTokens[1]
+                    parameters[key] = value
+
+                }
+                
+                
+            }
+            
+        }
+        
+        self.type = mediaType.lowercaseString
+        self.parameters = parameters
+        
+    }
 
 }

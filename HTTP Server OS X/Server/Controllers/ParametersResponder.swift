@@ -27,7 +27,7 @@ struct ParametersResponder {
     static func respond(request: HTTPRequest) throws -> HTTPResponse {
 
         let info: [String: MustacheBoxable] = [
-            "URI": request.URI,
+            "URI": request.uri.absolute,
             "method": request.method.description,
             "headers": request.headers,
             "params": request.parameters

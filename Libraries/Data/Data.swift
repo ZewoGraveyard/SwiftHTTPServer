@@ -44,17 +44,19 @@ public struct Data {
 
     }
 
+    init(bytes: [Int8]) {
+
+        var buffer: [UInt8] = [UInt8](count: bytes.count, repeatedValue: 0)
+        memcpy(&buffer, bytes, bytes.count)
+        self.bytes = buffer
+        
+    }
+
     init(string: String) {
 
-        var chars: [UInt8] = []
-
-        for char in string.utf8 {
-
-            chars.append(char)
-
-        }
-
-        self.bytes = chars
+        var buffer: [UInt8] = [UInt8](count: string.utf8.count, repeatedValue: 0)
+        memcpy(&buffer, string.bytes, string.utf8.count)
+        self.bytes = buffer
         
     }
 
@@ -65,7 +67,6 @@ public struct Data {
     }
 
 }
-
 
 extension Data: CustomStringConvertible {
 
@@ -98,5 +99,11 @@ extension Data: SequenceType {
         return IndexingGenerator(bytes)
 
     }
+
+}
+
+func +(lhs: Data, rhs: Data) -> Data {
+
+    return Data(bytes: lhs.bytes + rhs.bytes)
 
 }

@@ -22,18 +22,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPRequest: ParameterizableRequest, KeepConnectionRequest {
+struct HTTPRequest: Parameterizable, KeepAliveType {
 
     let method: HTTPMethod
-    let URI: String
+    let uri: URI
     let version: HTTPVersion
-    let headers: [String: String]
+    var headers: [String: String]
     let body: Data
-    let parameters: [String: String]
-    let data: [String: Any]
+    var parameters: [String: String]
+    var data: [String: Any]
 
     init(method: HTTPMethod,
-        URI: String,
+        uri: URI,
         version: HTTPVersion = .HTTP_1_1,
         headers: [String: String] = [:],
         body: Data = Data(),
@@ -41,26 +41,12 @@ struct HTTPRequest: ParameterizableRequest, KeepConnectionRequest {
         data: [String: Any] = [:]) {
 
         self.method = method
-        self.URI = URI
+        self.uri = uri
         self.version = version
         self.headers = headers
         self.body = body
         self.parameters = parameters
         self.data = data
-
-    }
-
-    func copyWithData(data: [String: Any]) -> HTTPRequest {
-
-        return HTTPRequest(
-            method: self.method,
-            URI: self.URI,
-            version: self.version,
-            headers: self.headers,
-            body: self.body,
-            parameters: self.parameters,
-            data: self.data + data
-        )
 
     }
 
@@ -76,34 +62,6 @@ struct HTTPRequest: ParameterizableRequest, KeepConnectionRequest {
 
     }
 
-    func getPath() -> String {
-
-        return path
-        
-    }
-
-    func getMethod() -> HTTPMethod {
-
-        return method
-
-    }
-
-    var contentType: InternetMediaType? {
-
-        guard let contentType = headers["content-type"] else {
-
-            return nil
-
-        }
-
-        return InternetMediaType(string: contentType)
-        
-    }
-
-}
-
-extension HTTPRequest {
-
     func getParameter(parameter: String) throws -> String {
 
         if let parameter = parameters[parameter] {
@@ -117,63 +75,46 @@ extension HTTPRequest {
         }
         
     }
-    
-}
 
-extension HTTPRequest {
+    func pathRouterKey() -> String {
 
-    var path: String {
+        return uri.path!
+        
+    }
 
-        return URI.splitBy("?").first!
+    func methodRouterKey() -> HTTPMethod {
+
+        return method
 
     }
 
-}
+    var keepAlive: Bool {
 
-extension HTTPRequest {
+        set {
 
-    func copyWithParameters(parameters: [String: String]) -> HTTPRequest {
+            if newValue == true {
 
-        return HTTPRequest(
-            method:     self.method,
-            URI:        self.URI,
-            version:    self.version,
-            headers:    self.headers,
-            body:       self.body,
-            parameters: self.parameters + parameters
-        )
+                headers["connection"] = "keep-alive"
 
-    }
+            } else {
 
-}
+                headers["connection"] = "close"
 
-extension HTTPRequest {
-
-    var queryParameters: [String: String] {
-
-        if let query = URI.splitBy("?").last {
-
-            return query.queryParameters
+            }
 
         }
 
-        return [:]
+        get {
 
-    }
+            if let connection = headers["connection"] {
 
-}
-
-extension HTTPRequest {
-
-    var keepConnection: Bool {
-
-        if let value = headers["connection"] {
-
-            return "keep-alive" == value.trim().lowercaseString
+                return  connection.trim().lowercaseString == "keep-alive"
+                
+            }
+            
+            return false
             
         }
-        
-        return false
         
     }
     
@@ -183,7 +124,7 @@ extension HTTPRequest: CustomStringConvertible {
 
     var description: String {
 
-        var string = "\(method) \(URI) HTTP/1.1\n"
+        var string = "\(method) \(uri) HTTP/1.1\n"
 
         for (index, (header, value)) in headers.enumerate() {
 
@@ -211,7 +152,7 @@ extension HTTPRequest: CustomColorLogStringConvertible {
 
         var string = Log.lightGreen
 
-        string += "\(method) \(URI) HTTP/1.1\n"
+        string += "\(method) \(uri) HTTP/1.1\n"
         string += Log.darkGreen
 
         for (index, (header, value)) in headers.enumerate() {

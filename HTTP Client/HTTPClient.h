@@ -25,6 +25,7 @@
 #ifndef HTTPClient_h
 #define HTTPClient_h
 
+#include "http_parser.h"
 #include "Dispatch.h"
 #include "Socket.h"
 #include "RegularExpression.h"

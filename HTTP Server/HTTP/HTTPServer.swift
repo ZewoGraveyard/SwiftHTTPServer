@@ -26,24 +26,23 @@ typealias HTTPRequestMiddlewareResult = RequestMiddlewareResult<HTTPRequest, HTT
 typealias HTTPRequestMiddleware = HTTPRequest throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse>
 typealias HTTPResponseMiddleware = HTTPResponse throws -> HTTPResponse
 
-class HTTPServer: Server<HTTPRequestParser, HTTPResponseSerializer> {
+class HTTPServer: Server<HTTPRequest, HTTPResponse> {
 
-    override init(respond: (request: HTTPRequest) throws -> HTTPResponse) {
+    init(respond: (request: HTTPRequest) throws -> HTTPResponse) {
 
-        super.init(respond: respond >>>
-                            HTTPServer.respondFailure >>>
-                            Middleware.headers(["server": "HTTP Server"]))
+        let parser = HTTPRequestParser2()
+        let serializer = HTTPResponseSerializer()
+
+        super.init(
+            parseRequest: parser.parseRequest,
+            respond: respond >>> HTTPServer.respondFailure >>> Middleware.addHeaders(["server": "HTTP Server"]),
+            serializeResponse: serializer.serializeResponse,
+            debug: true
+        )
 
     }
 
     private static func respondFailure(error: ErrorType) -> HTTPResponse {
-
-        switch error { 
-
-        case is Error: print()
-        default: print()
-
-        }
 
         Log.error(error)
         let response = HTTPResponse(status: .InternalServerError, text: "\(error)")

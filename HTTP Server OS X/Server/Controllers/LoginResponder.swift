@@ -26,7 +26,7 @@ struct LoginResponder {
 
     static func show(request: HTTPRequest) throws -> HTTPResponse {
 
-        return try HTTPResponse(filePath: "Public/login.html")
+        return try HTTPResponse(HTMLPath: "Public/login.html")
 
     }
 

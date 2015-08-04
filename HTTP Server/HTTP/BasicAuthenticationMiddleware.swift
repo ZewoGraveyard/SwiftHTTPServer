@@ -24,7 +24,7 @@
 
 extension Middleware {
 
-    static func basicAuthentication<T>(authorize: (username: String, password: String) throws -> T)(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+    static func basicAuthentication(authenticate: (username: String, password: String) throws -> [String: Any])(var request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
         if let authorization = request.headers["authorization"] {
 
@@ -42,10 +42,10 @@ extension Middleware {
                     let username = decodedCredentialsTokens[0]
                     let password = decodedCredentialsTokens[1]
 
-                    let user = try authorize(username: username, password: password)
+                    let data = try authenticate(username: username, password: password)
 
-                    let newRequest = request.copyWithData(["user": user])
-                    return .Request(newRequest)
+                    request.data = request.data + data
+                    return .Request(request)
 
                 }
                 

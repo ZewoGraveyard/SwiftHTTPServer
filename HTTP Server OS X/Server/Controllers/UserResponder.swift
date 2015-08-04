@@ -90,7 +90,7 @@ final class UserResponder: ResourcefulResponder {
 
     func show(request: HTTPRequest) throws -> HTTPResponse {
 
-        let id =  try request.getParameter("id")
+        let id = try request.getParameter("id")
         let user = users.get(id: id)
 
         return HTTPResponse(text: "\(user)")

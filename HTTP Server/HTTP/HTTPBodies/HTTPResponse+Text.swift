@@ -33,9 +33,8 @@ extension HTTPResponse {
             self.init(
                 status: status,
                 version: version,
-                headers: headers,
-                body: Data(string: text),
-                contentType: .TextPlain
+                headers: headers + ["content-type": "text/plain"],
+                body: Data(string: text)
             )
             
     }

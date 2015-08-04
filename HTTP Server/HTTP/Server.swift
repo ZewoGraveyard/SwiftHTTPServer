@@ -22,35 +22,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct Middleware {}
-struct Responder {}
+protocol KeepAliveType {
 
-class Server<Parser: RequestParser, Serializer: ResponseSerializer> {
+    var keepAlive: Bool { get set }
+    
+}
 
-    let respond: (request: Parser.Request) -> Serializer.Response
+class Server<Request, Response> {
+
+    let parseRequest: (socket: Socket) throws -> Request
+    let respond: (request: Request) -> Response
+    let serializeResponse: (socket: Socket, response: Response) throws -> Void
     var socket: Socket?
 
-    init(respond: (request: Parser.Request) -> Serializer.Response) {
+    let debug: Bool
 
-        self.respond = respond
+    init(parseRequest: (socket: Socket) throws -> Request,
+        respond: (request: Request) -> Response,
+        serializeResponse: (socket: Socket, response: Response) throws -> Void,
+        debug: Bool = false) {
+
+            self.parseRequest = parseRequest
+            self.respond = respond
+            self.serializeResponse = serializeResponse
+            self.debug = debug
 
     }
 
-    func start(port port: TCPPort = 8080, failureHandler: ErrorType -> Void = Error.defaultFailureHandler)   {
+    func start(port port: TCPPort = 8080, failure: ErrorType -> Void = Error.defaultFailureHandler) {
 
         do {
 
-            socket?.release()
-            socket = try Socket(port: port, maxConnections: 1000)
-            Dispatch.async { self.waitForClients(failureHandler: failureHandler) }
-            Log.info("Server listening at \(socket!.IP):\(socket!.port).")
+            try startListening(port: port)
+            Dispatch.async(queue: backgroundQueue) { self.waitForClients(port: port, failure: failure) }
+            if debug { Log.info("Server listening at \(socket!.IP):\(socket!.port).") }
 
         } catch {
 
-            failureHandler(error)
-
+            failure(error)
+            
         }
-
+        
     }
 
     func stop() {
@@ -65,54 +77,88 @@ class Server<Parser: RequestParser, Serializer: ResponseSerializer> {
 
 extension Server {
 
-    private func waitForClients(failureHandler failureHandler: ErrorType -> Void) {
+    private func startListening(port port: TCPPort) throws {
 
-        do {
+        socket?.release()
+        socket = try Socket(port: port, maxConnections: 1000)
 
-            while true {
+    }
 
-                let clientSocket = try socket!.acceptClient()
-                Dispatch.async { self.processClient(clientSocket: clientSocket, failureHandler: failureHandler) }
-                Log.info("Connected to client at \(clientSocket.IP):\(clientSocket.port).")
+    private func waitForClients(port port: TCPPort, failure: ErrorType -> Void) {
+
+        while true {
+
+            do {
+
+                while true {
+
+                    let clientSocket = try socket!.acceptClient()
+                    Dispatch.async(queue: backgroundQueue) { self.processClient(clientSocket: clientSocket, failure: failure) }
+                    if debug { Log.info("Connected to client at \(clientSocket.IP):\(clientSocket.port).") }
+
+                }
+
+            } catch {
+
+                failure(error)
 
             }
 
-        } catch {
-
-            socket?.release()
-            failureHandler(error)
+            // TODO: Think about this
+            try! startListening(port: port)
 
         }
 
     }
 
-    private func processClient(clientSocket clientSocket: Socket, failureHandler: ErrorType -> Void) {
+    private func processClient(clientSocket clientSocket: Socket, failure: ErrorType -> Void) {
 
         do {
 
             while true {
 
-                let request = try Parser.receiveRequest(socket: clientSocket)
-                let respond = self.respond >>> Middleware.keepConnection(request: request)
+                let request = try self.parseRequest(socket: clientSocket)
+                let keepAlive = keepAliveRequest(request)
+                let respond = self.respond >>> keepAliveResponse(keepAlive: keepAlive)
                 let response = respond(request)
-                try Serializer.sendResponse(socket: clientSocket, response: response)
-                if !keepConnectionForRequest(request) { break }
+                try self.serializeResponse(socket: clientSocket, response: response)
+                if !keepAlive { break }
 
             }
 
-            clientSocket.release()
-
         } catch {
-            
-            failureHandler(error)
+
+            failure(error)
             
         }
+
+        clientSocket.release()
+        if debug { Log.info("Closed connection with client at \(clientSocket.IP):\(clientSocket.port).") }
         
     }
     
-    private func keepConnectionForRequest(request: Parser.Request) -> Bool {
+    private func keepAliveRequest(request: Request) -> Bool {
         
-        return (request as? KeepConnectionRequest)?.keepConnection ?? false
+        return (request as? KeepAliveType)?.keepAlive ?? false
+        
+    }
+
+    private func keepAliveResponse<Response>(keepAlive keepAlive: Bool) -> (Response -> Response) {
+
+        return { response in
+
+            if var response = response as? KeepAliveType {
+
+                response.keepAlive = keepAlive
+                return response as! Response
+
+            } else {
+
+                return response
+                
+            }
+
+        }
         
     }
     

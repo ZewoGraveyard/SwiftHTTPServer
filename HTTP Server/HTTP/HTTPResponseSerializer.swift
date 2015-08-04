@@ -22,20 +22,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPResponseSerializer: ResponseSerializer {
+struct HTTPResponseSerializer {
 
-    static func sendResponse(socket socket: Socket, response: HTTPResponse) throws {
+    func serializeResponse(socket socket: Socket, response: HTTPResponse) throws {
 
-        try socket.writeString("\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+        var headers = ""
+
+        headers += "\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n"
 
         for (name, value) in response.headers {
 
-            try socket.writeString("\(name): \(value)\r\n")
+            headers += "\(name): \(value)\r\n"
 
         }
 
-        try socket.writeString("\r\n")
-        try socket.writeData(response.body)
+        headers += "\r\n"
+        
+        try socket.writeData(Data(string: headers) + response.body)
 
     }
 

@@ -33,7 +33,7 @@ enum SocketError: ErrorType {
 
 struct Socket {
 
-    private let socketHandler: SocketHandler
+    let socketHandler: SocketHandler
 
     private(set) var IP: String
     private(set) var port: TCPPort
@@ -92,11 +92,33 @@ struct Socket {
 
     }
 
+    func receiveBuffer(bufferSize bufferSize: Int) throws -> (buffer: [Int8], bytesRead: Int) {
+
+        var buffer = [Int8](count: bufferSize, repeatedValue: 0)
+
+        let result = recv(socketHandler, &buffer, bufferSize, 0)
+
+        if result == -1 {
+
+            throw Error.lastSystemError(reason: "recv() failed")
+
+        }
+
+        if result == 0 {
+
+            throw SocketError.ConnectionClosed
+            
+        }
+        
+        return (buffer: buffer, bytesRead: result)
+        
+    }
+
     func receiveByte() throws -> UInt8 {
 
         var buffer = [UInt8](count: 1, repeatedValue: 0)
 
-        let result = recv(socketHandler, &buffer, Int(buffer.count), 0)
+        let result = recv(socketHandler, &buffer, buffer.count, 0)
 
         if result == -1 {
 

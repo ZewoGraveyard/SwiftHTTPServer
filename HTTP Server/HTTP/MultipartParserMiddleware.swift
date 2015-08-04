@@ -24,9 +24,17 @@
 
 extension Middleware {
 
-    static func parseMultipart(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+    static func parseMultipart(var request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        guard let contentType = request.contentType else {
+        guard let contentType = request.headers["content-type"] else {
+
+            return .Request(request)
+
+        }
+
+        let multipartMediaType = MediaType(contentType)
+
+        if multipartMediaType.type != "multipart/form-data" {
 
             return .Request(request)
 
@@ -226,7 +234,7 @@ extension Middleware {
                     let filename = multipart.contentDispositionParameters["filename"]!
                     let value = multipart.body
                     
-                    // TODO: Create media directory if it doesn't exist
+                    // TODO: Create media directory if it doesn't exist. Remove this Media type, use only File.
                     if let media = Media(path: filename, data: value) {
                         
                         parameters[key] = media.path
@@ -241,20 +249,16 @@ extension Middleware {
             
         }
 
-        // TODO: Look for the if case stuff
-        switch contentType {
+        guard let boundary = multipartMediaType.parameters["boundary"] else {
 
-        case .MultipartFormData(let boundary):
-
-            let parameters = try getMultipartFormDataParametersFromBody(request.body, boundary: boundary)
-            let newRequest = request.copyWithParameters(parameters)
-
-            return .Request(newRequest)
-            
-        default:
             return .Request(request)
-            
+
         }
+
+        let parameters = try getMultipartFormDataParametersFromBody(request.body, boundary: boundary)
+        request.parameters = request.parameters + parameters
+
+        return .Request(request)
 
     }
     

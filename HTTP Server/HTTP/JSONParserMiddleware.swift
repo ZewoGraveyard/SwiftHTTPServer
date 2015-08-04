@@ -24,19 +24,43 @@
 
 extension Middleware {
 
-    static func parseJSON(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+    static func parseJSON(key key: String)(var request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        guard let contentType = request.contentType where contentType == .ApplicationJSON else {
+        guard let contentType = request.headers["content-type"] where MediaType(contentType).type == "application/json" else {
 
-                return .Request(request)
+            return .Request(request)
 
         }
 
         let json = try JSONParser.parse(request.body)
-        let newRequest = request.copyWithData(["JSON": json])
+        request.data = request.data + [key: json]
 
-        return .Request(newRequest)
+        return .Request(request)
+        
+    }
+
+    static func parseJSON(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+
+        return try parseJSON(key: "JSON")(request: request)
         
     }
     
+}
+
+extension HTTPRequest {
+
+    var json: JSON? {
+
+        do {
+
+            return try getData("JSON")
+
+        } catch {
+
+            return nil
+
+        }
+
+    }
+
 }

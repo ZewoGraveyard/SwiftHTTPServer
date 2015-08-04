@@ -26,27 +26,27 @@ final class ExampleServer: HTTPServer {
 
     init() {
 
-        func authorize(username: String, password: String) throws -> User {
+        func authenticate(username: String, password: String) throws -> [String: Any] {
 
             switch (username, password) {
 
-            case ("username", "password"): return User(name: "Name")
+            case ("username", "password"): return ["user": User(name: "Name")]
             default: throw Error.Generic("Unable to authenticate user", "Wrong credentials")
 
             }
 
         }
 
-        let respond = Middleware.logRequest >>> Middleware.parseFormURL >>> [
+        let respond = Middleware.logRequest >>> Middleware.parseURLEncoded >>> [
 
             Router.get("/login", LoginResponder.show),
             Router.post("/login", LoginResponder.authenticate),
-            Router.resources("users", UserResponder()),
+            Router.resources("users", Middleware.basicAuthentication(authenticate) >>> UserResponder()),
             Router.get("/json", JSONResponder.get),
             Router.post("/json", Middleware.parseJSON >>> JSONResponder.post),
             Router.get("/database", DatabaseResponder.get),
             Router.get("/redirect", Responder.redirect("http://www.google.com")),
-            Router.all("/parameters/:id/", Middleware.basicAuthentication(authorize) >>> ParametersResponder.respond)
+            Router.all("/parameters/:id/", ParametersResponder.respond)
 
         ] >>> Middleware.logResponse
 

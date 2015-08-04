@@ -24,9 +24,9 @@
 
 extension Middleware {
 
-    static func parseFormURL(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+    static func parseURLEncoded(var request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
 
-        guard let contentType = request.contentType where contentType == .ApplicationXWWWFormURLEncoded else {
+        guard let contentType = request.headers["content-type"] where MediaType(contentType).type == "application/x-www-form-urlencoded" else {
 
             return .Request(request)
 
@@ -39,9 +39,9 @@ extension Middleware {
         }
 
         let parameters = bodyString.queryParameters ?? [:]
-        let newRequest = request.copyWithParameters(parameters)
-        
-        return .Request(newRequest)
+        request.parameters = request.parameters + parameters
+
+        return .Request(request)
         
     }
     

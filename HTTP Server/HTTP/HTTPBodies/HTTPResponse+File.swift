@@ -29,21 +29,33 @@ extension HTTPResponse {
         version: HTTPVersion = .HTTP_1_1,
         headers: [String: String] = [:],
         filePath: String,
-        contentType: InternetMediaType = .ApplicationOctetStream) throws {
+        contentType: String? = .None) throws {
 
-        guard let file = File(path: filePath) else {
+            guard let file = File(path: filePath) else {
 
-            throw Error.Generic("File Body", "Could not find file \(filePath)")
+                throw Error.Generic("File Body", "Could not find file \(filePath)")
 
-        }
+            }
 
-        self.init(
-            status: status,
-            version: version,
-            headers: headers,
-            body: file.data,
-            contentType: contentType
-        )
+            if let contentType = contentType {
+
+                self.init(
+                    status: status,
+                    version: version,
+                    headers: headers + ["content-type": contentType],
+                    body: file.data
+                )
+
+            } else {
+
+                self.init(
+                    status: status,
+                    version: version,
+                    headers: headers,
+                    body: file.data
+                )
+                
+            }
 
     }
     

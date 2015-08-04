@@ -94,7 +94,7 @@ enum HTTPStatus {
     // MARK: Raw
     case Raw(statusCode: Int, reasonPhrase: String)
     
-    init(statusCode: Int, reasonPhrase: String) {
+    init(statusCode: Int, reasonPhrase: String = "") {
         
         switch statusCode {
             

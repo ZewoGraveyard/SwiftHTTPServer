@@ -22,6 +22,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+struct Middleware {}
+struct Responder {}
+
+enum RequestMiddlewareResult<RequestType, ResponderType> {
+
+    case Request(RequestType)
+    case Response(ResponderType)
+
+}
+
 infix operator >>> { associativity left }
 
 func >>> <A, B, C>(f: (A -> B), g: (B -> C)) -> (A -> C) {

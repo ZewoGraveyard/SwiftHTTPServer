@@ -22,21 +22,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol ParameterizableRequest {
+protocol Parameterizable {
 
-    func copyWithParameters(parameters: [String: String]) throws -> Self
+    var parameters: [String: String] { get set }
 
 }
 
 extension Middleware {
 
-    static func parameters<Request, Response>(parameters: [String: String]) -> Request throws -> RequestMiddlewareResult<Request, Response> {
+    static func addParameters<Request, Response>(parameters: [String: String]) -> Request throws -> RequestMiddlewareResult<Request, Response> {
 
         return { request in
 
-            if let request = request as? ParameterizableRequest {
+            if var request = request as? Parameterizable {
 
-                return .Request(try request.copyWithParameters(parameters) as! Request)
+                request.parameters = request.parameters + parameters
+                return .Request(request as! Request)
 
             } else {
 

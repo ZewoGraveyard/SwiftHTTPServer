@@ -22,11 +22,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPResponse {
+struct HTTPResponse: KeepAliveType {
 
     let status: HTTPStatus
     let version: HTTPVersion
-    let headers: [String: String]
+    var headers: [String: String]
     let body: Data
 
     init(
@@ -42,39 +42,33 @@ struct HTTPResponse {
 
     }
 
-    init(
-        status: HTTPStatus = .OK,
-        version: HTTPVersion = .HTTP_1_1,
-        headers: [String: String] = [:],
-        body: Data,
-        contentType: InternetMediaType) {
+    var keepAlive: Bool {
 
-            self.init(
-                status: status,
-                version: version,
-                headers: headers + ["content-type": "\(contentType)"],
-                body: body
-            )
+        set {
 
-    }
+            if newValue == true {
 
-}
+                headers["connection"] = "keep-alive"
 
-extension HTTPResponse: KeepConnectionResponse {
+            } else {
 
-    func copyKeepingConnection(keepConnection: Bool) -> HTTPResponse {
+                headers["connection"] = "close"
 
-        if keepConnection {
-
-            return HTTPResponse(
-                status: status,
-                headers: headers + ["connection": "keep-alive"],
-                body: body
-            )
+            }
 
         }
 
-        return self
+        get {
+
+            if let connection = headers["connection"] {
+
+                return  connection.trim().lowercaseString == "keep-alive"
+
+            }
+
+            return false
+
+        }
 
     }
 

@@ -22,9 +22,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPRequestParser: RequestParser {
+struct HTTPRequestParser {
 
-    static func receiveRequest(socket socket: Socket) throws -> HTTPRequest {
+    struct HTTPRequestLine {
+
+        let method: HTTPMethod
+        let uri: URI
+        let version: HTTPVersion
+        
+    }
+
+    static func parseRequest(socket socket: Socket) throws -> HTTPRequest {
 
         let requestLine = try getRequestLine(socket: socket)
         let headers = try HTTPParser.getHeaders(socket: socket)
@@ -32,19 +40,13 @@ struct HTTPRequestParser: RequestParser {
 
         return HTTPRequest(
             method: requestLine.method,
-            URI: requestLine.URI,
+            uri: requestLine.uri,
             version: requestLine.version,
             headers: headers,
             body: body
         )
 
     }
-
-}
-
-// MARK: - Private
-
-extension HTTPRequestParser {
 
     private static func getRequestLine(socket socket: Socket) throws -> HTTPRequestLine {
 
@@ -58,12 +60,18 @@ extension HTTPRequestParser {
         }
 
         let method = HTTPMethod(string: requestLineTokens[0])
-        let URI = requestLineTokens[1]
+
+        guard let uri = URI(text: requestLineTokens[1]) else {
+
+            throw Error.Generic("Impossible to create HTTP Request", "Invalid request line")
+
+        }
+
         let version = try HTTPVersion(string: requestLineTokens[2])
 
         return HTTPRequestLine(
             method: method,
-            URI: URI,
+            uri: uri,
             version: version
         )
         

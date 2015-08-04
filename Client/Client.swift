@@ -34,7 +34,7 @@ struct Client {
         
             let request =  HTTPRequest(
                 method: .GET,
-                URI: "/",
+                uri: URI(text: "/over/there/index.dtb?type=animal&name=narwhal#nose")!,
                 headers: [
                     "host": "localhost",
                     "accept": "*/*",
@@ -50,12 +50,6 @@ struct Client {
             Log.info(request)
 
             let response = try client.sendRequest(request, address: address, port: port)
-
-            if let jsonBody = response.body as? JSONBody {
-
-                print(jsonBody.json.debugDescription)
-
-            }
 
             Log.info(response)
         

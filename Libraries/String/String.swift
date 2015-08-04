@@ -356,6 +356,14 @@ extension String {
 
     }
 
+    init?(bytes: [Int8]) {
+
+        var buffer: [UInt8] = [UInt8](count: bytes.count, repeatedValue: 0)
+        memcpy(&buffer, bytes, bytes.count)
+        self.init(bytes: buffer)
+
+    }
+
     init?(bytes: [UInt8]) {
 
         var encodedString = ""

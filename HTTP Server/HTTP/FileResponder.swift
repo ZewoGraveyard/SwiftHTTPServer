@@ -1,4 +1,4 @@
-// HTTPKeepAliveMiddleware.swift
+// FileResponder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,29 +22,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol KeepConnectionResponse {
+extension Responder {
 
-    func copyKeepingConnection(keepConnection: Bool) -> Self
-    
-}
+    static func file(baseDirectory baseDirectory: String)(var path: String) -> HTTPRequest throws -> HTTPResponse {
 
-extension Middleware {
+        if path == "/" { path = "/index.html" }
 
-    static func keepConnection<Request, Response>(request request: Request) -> (Response -> Response) {
+        return { request in
 
-        return { response in
+            if request.method != .GET {
 
-            if let request = request as? KeepConnectionRequest,
-                  response = response as? KeepConnectionResponse {
+                return HTTPResponse(status: .MethodNotAllowed)
 
-                return response.copyKeepingConnection(request.keepConnection) as! Response
-                
             }
-            
-            return response
+
+            let filePath = path.dropFirstCharacter()
+            return try HTTPResponse(filePath: baseDirectory + filePath)
 
         }
+
+    }
+
+    static func file(baseDirectory: String, path: String) -> HTTPRequest throws -> HTTPResponse {
+
+        return file(baseDirectory: baseDirectory)(path: path)
         
     }
-    
+
 }

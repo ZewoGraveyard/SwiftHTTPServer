@@ -1,4 +1,4 @@
-// HTTPClientParser.swift
+// HTTPResponseParser.swift
 //
 // The MIT License (MIT)
 //
@@ -22,9 +22,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPClientParser {
+struct HTTPResponseParser {
+
+    struct HTTPStatusLine {
+
+        let status: HTTPStatus
+        let version: HTTPVersion
+        
+    }
     
-    static func receiveHTTPResponse(socket: Socket) throws -> HTTPResponse {
+    static func parseResponse(socket: Socket) throws -> HTTPResponse {
         
         let statusLine = try getStatusLine(socket: socket)
         let headers = try HTTPParser.getHeaders(socket: socket)
@@ -38,12 +45,6 @@ struct HTTPClientParser {
         )
         
     }
-    
-}
-
-// MARK: - Private
-
-extension HTTPClientParser {
     
     private static func getStatusLine(socket socket: Socket) throws -> HTTPStatusLine {
         

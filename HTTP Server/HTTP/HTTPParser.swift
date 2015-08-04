@@ -83,7 +83,6 @@ struct HTTPParser {
 
     static func getBody(socket socket: Socket, headers: [String: String]) throws -> Data {
 
-        // TODO: support chunked data
         if let contentLenght = headers["content-length"],
             contentSize = Int(contentLenght) where contentSize > 0 {
 

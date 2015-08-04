@@ -35,7 +35,7 @@ final class PathRouter: ServerRouter<PathRoute> {
     var respond: HTTPRequest throws -> HTTPResponse {
 
         return getRespond(
-            key: HTTPRequest.getPath,
+            key: HTTPRequest.pathRouterKey,
             defaultRespond: defaultRespond
         )
         
@@ -91,7 +91,7 @@ final class MethodRouter: ServerRouter<MethodRoute> {
     var respond: HTTPRequest throws -> HTTPResponse {
 
         return getRespond(
-            key: HTTPRequest.getMethod,
+            key: HTTPRequest.methodRouterKey,
             defaultRespond: defaultRespond
         )
         
