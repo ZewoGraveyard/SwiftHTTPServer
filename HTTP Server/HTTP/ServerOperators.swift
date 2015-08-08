@@ -25,10 +25,10 @@
 struct Middleware {}
 struct Responder {}
 
-enum RequestMiddlewareResult<RequestType, ResponderType> {
+enum RequestMiddlewareResult<RequestType, ResponseType> {
 
     case Request(RequestType)
-    case Response(ResponderType)
+    case Response(ResponseType)
 
 }
 
@@ -76,7 +76,7 @@ func >>><Request, Response>(middlewareA: Request throws -> RequestMiddlewareResu
 
 }
 
-func >>><Request, Response>(middleware: (Request throws -> RequestMiddlewareResult<Request, Response>)?, responder: Request throws -> Response) -> (Request throws -> Response) {
+func >>><Request, Response>(middleware: (Request throws -> RequestMiddlewareResult<Request, Response>)?, respond: Request throws -> Response) -> (Request throws -> Response) {
 
     return { (request: Request) -> Response in
 
@@ -85,7 +85,7 @@ func >>><Request, Response>(middleware: (Request throws -> RequestMiddlewareResu
             switch try middleware(request) {
 
             case .Request(let request):
-                return try responder(request)
+                return try respond(request)
 
             case .Response(let response):
                 return response
@@ -94,7 +94,7 @@ func >>><Request, Response>(middleware: (Request throws -> RequestMiddlewareResu
 
         } else {
 
-            return try responder(request)
+            return try respond(request)
 
         }
 
@@ -116,17 +116,17 @@ func >>><Response>(middlewareA: (Response throws -> Response)?, middlewareB: Res
 
 }
 
-func >>><Request, Response>(responder: Request throws -> Response, middleware: (Response throws -> Response)?) -> (Request throws -> Response) {
+func >>><Request, Response>(respond: Request throws -> Response, middleware: (Response throws -> Response)?) -> (Request throws -> Response) {
 
     return { request in
 
         if let middleware = middleware {
 
-            return try middleware(responder(request))
+            return try middleware(respond(request))
 
         } else {
 
-            return try responder(request)
+            return try respond(request)
 
         }
 
@@ -134,29 +134,29 @@ func >>><Request, Response>(responder: Request throws -> Response, middleware: (
     
 }
 
-func ??<Request, Response>(responderA: (Request throws -> Response)?, responderB: Request throws -> Response) -> (Request throws -> Response) {
+func ??<Request, Response>(respondA: (Request throws -> Response)?, respondB: Request throws -> Response) -> (Request throws -> Response) {
 
-    if let responderA = responderA {
+    if let respondA = respondA {
 
-        return responderA
+        return respondA
 
     }
 
-    return responderB
+    return respondB
 
 }
 
-func >>><Request, Response>(responder: Request throws -> Response, errorResponder: ErrorType -> Response) -> ((request: Request) -> Response) {
+func >>><Request, Response>(respond: Request throws -> Response, respondError: ErrorType -> Response) -> ((request: Request) -> Response) {
 
     return { request in
 
         do {
 
-            return try responder(request)
+            return try respond(request)
 
         } catch {
 
-            return errorResponder(error)
+            return respondError(error)
             
         }
         

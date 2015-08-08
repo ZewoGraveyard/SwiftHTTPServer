@@ -23,7 +23,7 @@
 // SOFTWARE.
 
 typealias HTTPRequestMiddlewareResult = RequestMiddlewareResult<HTTPRequest, HTTPResponse>
-typealias HTTPRequestMiddleware = HTTPRequest throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse>
+typealias HTTPRequestMiddleware = HTTPRequest throws -> HTTPRequestMiddlewareResult
 typealias HTTPResponseMiddleware = HTTPResponse throws -> HTTPResponse
 
 class HTTPServer: Server<HTTPRequest, HTTPResponse> {

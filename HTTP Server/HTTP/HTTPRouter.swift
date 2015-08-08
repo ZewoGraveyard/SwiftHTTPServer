@@ -388,7 +388,7 @@ struct SimpleResourcefulResponder: ResourcefulResponder {
 
 }
 
-func >>><T: ResourcefulResponder>(middleware: HTTPRequest throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse>, responder: T) -> SimpleResourcefulResponder {
+func >>><T: ResourcefulResponder>(middleware: HTTPRequestMiddleware, responder: T) -> SimpleResourcefulResponder {
 
     return SimpleResourcefulResponder(
         indexFunction:   middleware >>> responder.index,
@@ -400,7 +400,7 @@ func >>><T: ResourcefulResponder>(middleware: HTTPRequest throws -> RequestMiddl
 
 }
 
-func >>><T: ResourcefulResponder>(responder: T, middleware: HTTPResponse throws -> HTTPResponse) -> SimpleResourcefulResponder {
+func >>><T: ResourcefulResponder>(responder: T, middleware: HTTPResponseMiddleware) -> SimpleResourcefulResponder {
     
     return SimpleResourcefulResponder(
         indexFunction:   responder.index   >>> middleware,
