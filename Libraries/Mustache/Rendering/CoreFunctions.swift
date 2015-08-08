@@ -148,7 +148,7 @@ public func Filter(filter: (MustacheBox) throws -> MustacheBox) -> FilterFunctio
         guard !partialApplication else {
 
             // This is a single-argument filter: we do not wait for another one.
-            throw Error.Generic("Rendering Error", "Too many arguments")
+            throw MustacheError.Render("Too many arguments")
 
         }
 
@@ -189,7 +189,7 @@ public func Filter<T>(filter: (T?) throws -> MustacheBox) -> FilterFunction {
         guard !partialApplication else {
 
             // This is a single-argument filter: we do not wait for another one.
-            throw Error.Generic("Rendering Error", "Too many arguments")
+            throw MustacheError.Render("Too many arguments")
 
         }
 
@@ -292,7 +292,7 @@ public func Filter(filter: (Rendering) throws -> Rendering) -> FilterFunction {
         guard !partialApplication else {
 
             // This is a single-argument filter: we do not wait for another one.
-            throw Error.Generic("Rendering Error", "Too many arguments")
+            throw MustacheError.Render("Too many arguments")
 
         }
 

@@ -501,7 +501,7 @@ extension Set: MustacheBoxable {
             
         }
         
-        return array.mustacheBoxWithSetValue(value: array, box: { Box($0) })
+        return array.mustacheBoxWithSetValue(value: array, box: { Box(boxable: $0) })
         
     }
     
@@ -533,7 +533,7 @@ extension Array: MustacheBoxable {
             
         }
         
-        return array.mustacheBoxWithArrayValue(value: array, box: { Box($0) })
+        return array.mustacheBoxWithArrayValue(value: array, box: { Box(boxable: $0) })
         
     }
     
@@ -611,7 +611,7 @@ extension Dictionary: MustacheBoxable {
 
                 } else if let v = value as? MustacheBoxable {
 
-                    dictionaryValue[k] = Box(v)
+                    dictionaryValue[k] = Box(boxable: v)
 
                 } else {
 
@@ -649,7 +649,7 @@ protocol.
 
 - returns: A MustacheBox that wraps *boxable*.
 */
-public func Box(boxable: MustacheBoxable?) -> MustacheBox {
+public func Box(boxable boxable: MustacheBoxable?) -> MustacheBox {
 
     return boxable?.mustacheBox ?? Box()
 
@@ -741,7 +741,7 @@ extension CollectionType {
 
                 // Inconsistent content type: this is an error. How are we
                 // supposed to mix Text and HTML?
-                throw Error.Generic("Rendering Error", "Content type mismatch")
+                throw MustacheError.Box("Content type mismatch")
 
             }
 
@@ -939,7 +939,7 @@ public func Box<C: CollectionType where C.Generator.Element: MustacheBoxable, C.
 
     if let set = set {
 
-        return set.mustacheBoxWithSetValue(value: set, box: { Box($0) })
+        return set.mustacheBoxWithSetValue(value: set, box: { Box(boxable: $0) })
 
     } else {
 
@@ -1048,7 +1048,7 @@ public func Box<C: CollectionType where C.Generator.Element: MustacheBoxable, C.
 
     if let array = array {
 
-        return array.mustacheBoxWithArrayValue(value: array, box: { Box($0) })
+        return array.mustacheBoxWithArrayValue(value: array, box: { Box(boxable: $0) })
 
     } else {
 
@@ -1172,10 +1172,10 @@ public func Box<T: MustacheBoxable>(dictionary dictionary: [String: T]?) -> Must
             value: dictionary,
             converter: MustacheBox.Converter(
                 dictionaryValue: dictionary.reduce([String: MustacheBox](), combine: { (var boxDictionary, item: (key: String, value: T)) in
-                    boxDictionary[item.key] = Box(item.value)
+                    boxDictionary[item.key] = Box(boxable: item.value)
                     return boxDictionary
                 })),
-            keyedSubscript: { Box(dictionary[$0]) }
+            keyedSubscript: { Box(boxable: dictionary[$0]) }
         )
 
     } else {

@@ -1,4 +1,4 @@
-// HTTPResponse+JSON.swift
+// MustacheError.swift
 //
 // The MIT License (MIT)
 //
@@ -22,19 +22,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension HTTPResponse {
+enum MustacheError: ErrorType {
 
-    init(
-        status: HTTPStatus = .OK,
-        headers: [String: String] = [:],
-        json: JSON) {
+    case Box(String)
+    case Render(String)
+    case Parse(String)
+    case TemplateNotFound(String)
 
-            self.init(
-                status: status,
-                headers: headers + ["content-type": "application/json"],
-                body: Data(string: "\(json)")
-            )
-            
+    var reason: String {
+
+        switch self {
+
+        case Box(let reason): return reason
+        case Render(let reason): return reason
+        case Parse(let reason): return reason
+        case TemplateNotFound(let reason): return reason
+
+        }
+
     }
     
 }

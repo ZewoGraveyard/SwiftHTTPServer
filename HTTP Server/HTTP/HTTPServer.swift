@@ -30,25 +30,16 @@ class HTTPServer: Server<HTTPRequest, HTTPResponse> {
 
     init(respond: (request: HTTPRequest) throws -> HTTPResponse) {
 
-        let parser = HTTPRequestParser2()
+        let parser = HTTPRequestParser()
         let serializer = HTTPResponseSerializer()
 
         super.init(
             parseRequest: parser.parseRequest,
-            respond: respond >>> HTTPServer.respondFailure >>> Middleware.addHeaders(["server": "HTTP Server"]),
+            respond: respond >>> HTTPError.respondError >>> Middleware.addHeaders(["server": "HTTP Server"]),
             serializeResponse: serializer.serializeResponse,
             debug: true
         )
 
-    }
-
-    private static func respondFailure(error: ErrorType) -> HTTPResponse {
-
-        Log.error(error)
-        let response = HTTPResponse(status: .InternalServerError, text: "\(error)")
-        Log.info(response)
-        return response
-        
     }
     
 }

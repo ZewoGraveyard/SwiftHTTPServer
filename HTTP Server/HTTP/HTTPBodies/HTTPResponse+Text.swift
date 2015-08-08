@@ -26,13 +26,11 @@ extension HTTPResponse {
 
     init(
         status: HTTPStatus = .OK,
-        version: HTTPVersion = .HTTP_1_1,
         headers: [String: String] = [:],
         text: String) {
 
             self.init(
                 status: status,
-                version: version,
                 headers: headers + ["content-type": "text/plain"],
                 body: Data(string: text)
             )

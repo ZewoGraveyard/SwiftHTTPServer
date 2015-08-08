@@ -138,14 +138,9 @@ final class RenderingEngine {
 
             box = try ExpressionInvocation(expression: expression).invokeWithContext(context)
 
-        } catch let error as Error {
+        } catch let error as MustacheError {
 
-            switch error {
-
-            case .Generic(let description, let reason):
-                throw Error.Generic(description, "Error evaluating \(tag): \(reason)")
-
-            }
+            throw MustacheError.Render("Error evaluating \(tag): \(error.reason)")
 
         }
         

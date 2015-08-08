@@ -1,4 +1,4 @@
-// HTTPServerParser.swift
+// HTTPRequestParser.swift
 //
 // The MIT License (MIT)
 //
@@ -24,57 +24,150 @@
 
 struct HTTPRequestParser {
 
-    struct HTTPRequestLine {
+    func parseRequest(socket socket: Socket) throws -> HTTPRequest {
 
-        let method: HTTPMethod
-        let uri: URI
-        let version: HTTPVersion
-        
-    }
+        struct RawHTTPRequest {
+            var method: String = ""
+            var uri: String = ""
+            var version: String = ""
+            var currentHeaderField: String = ""
+            var headers: [String: String] = [:]
+            var body: [Int8] = []
+        }
 
-    static func parseRequest(socket socket: Socket) throws -> HTTPRequest {
+        func onURL(parser: UnsafeMutablePointer<http_parser>, data: UnsafePointer<Int8>, length: Int) -> Int32 {
 
-        let requestLine = try getRequestLine(socket: socket)
-        let headers = try HTTPParser.getHeaders(socket: socket)
-        let body = try HTTPParser.getBody(socket: socket, headers: headers)
+            let requestPointer = UnsafeMutablePointer<RawHTTPRequest>(parser.memory.data)
+
+            var buffer: [Int8] = [Int8](count: length + 1, repeatedValue: 0)
+            strncpy(&buffer, data, length)
+
+            requestPointer.memory.uri = String.fromCString(buffer)!
+
+            return 0
+
+        }
+
+        func onHeaderField(parser: UnsafeMutablePointer<http_parser>, data: UnsafePointer<Int8>, length: Int) -> Int32 {
+
+            let requestPointer = UnsafeMutablePointer<RawHTTPRequest>(parser.memory.data)
+
+            var buffer: [Int8] = [Int8](count: length + 1, repeatedValue: 0)
+            strncpy(&buffer, data, length)
+
+            requestPointer.memory.currentHeaderField = String.fromCString(buffer)!
+            
+            return 0
+
+        }
+
+        func onHeaderValue(parser: UnsafeMutablePointer<http_parser>, data: UnsafePointer<Int8>, length: Int) -> Int32 {
+
+            let requestPointer = UnsafeMutablePointer<RawHTTPRequest>(parser.memory.data)
+
+            var buffer: [Int8] = [Int8](count: length + 1, repeatedValue: 0)
+            strncpy(&buffer, data, length)
+
+            let headerField = requestPointer.memory.currentHeaderField.lowercaseString
+            requestPointer.memory.headers[headerField] = String.fromCString(buffer)!
+
+            return 0
+
+        }
+
+        func onHeadersComplete(parser: UnsafeMutablePointer<http_parser>) -> Int32 {
+
+            let requestPointer = UnsafeMutablePointer<RawHTTPRequest>(parser.memory.data)
+
+            let method = http_method_str(http_method(parser.memory.method))
+            requestPointer.memory.method = String.fromCString(method)!
+
+            let major = parser.memory.http_major
+            let minor = parser.memory.http_minor
+
+            requestPointer.memory.version = "HTTP/\(major).\(minor)"
+
+            return 0
+
+        }
+
+        func onBody(parser: UnsafeMutablePointer<http_parser>, data: UnsafePointer<Int8>, length: Int) -> Int32 {
+            
+            let requestPointer = UnsafeMutablePointer<RawHTTPRequest>(parser.memory.data)
+
+            var buffer: [Int8] = [Int8](count: length, repeatedValue: 0)
+            memcpy(&buffer, data, length)
+
+            requestPointer.memory.body = buffer
+            
+            return 0
+            
+        }
+
+        var settings = http_parser_settings(
+            on_message_begin: nil,
+            on_url: onURL,
+            on_status: nil,
+            on_header_field: onHeaderField,
+            on_header_value: onHeaderValue,
+            on_headers_complete: onHeadersComplete,
+            on_body: onBody,
+            on_message_complete: nil
+        )
+
+        var parser = http_parser()
+
+        http_parser_init(&parser, HTTP_REQUEST)
+
+        var request = RawHTTPRequest()
+
+        let requestPointer = UnsafeMutablePointer<RawHTTPRequest>.alloc(1)
+        requestPointer.initialize(request)
+
+        parser.data = UnsafeMutablePointer<Void>(requestPointer)
+
+        var (buffer, bytesRead) = try socket.receiveBuffer(bufferSize: 80 * 1024)
+
+        let bytesParsed = http_parser_execute(&parser, &settings, &buffer, bytesRead)
+
+        if parser.upgrade == 1 {
+
+            /* handle new protocol */
+
+        }
+
+        if bytesParsed != bytesRead {
+
+            let error = http_errno_name(http_errno(parser.http_errno))
+            throw Error.Generic("Error parsing request",  String.fromCString(error)!)
+
+        }
+
+        request = requestPointer.memory
+
+        requestPointer.destroy()
+        requestPointer.dealloc(1)
+
+        guard let uri = URI(text: request.uri) else {
+
+            throw Error.Generic("Error parsing URI", "Invalid URI")
+
+        }
+
+        if uri.path == nil {
+
+            throw Error.Generic("Error parsing URI", "Path not present")
+            
+        }
 
         return HTTPRequest(
-            method: requestLine.method,
-            uri: requestLine.uri,
-            version: requestLine.version,
-            headers: headers,
-            body: body
-        )
-
-    }
-
-    private static func getRequestLine(socket socket: Socket) throws -> HTTPRequestLine {
-
-        let requestLine = try HTTPParser.getLine(socket: socket)
-        let requestLineTokens = requestLine.splitBy(" ")
-
-        if requestLineTokens.count != 3 {
-
-            throw Error.Generic("Impossible to create HTTP Request", "Invalid request line")
-
-        }
-
-        let method = HTTPMethod(string: requestLineTokens[0])
-
-        guard let uri = URI(text: requestLineTokens[1]) else {
-
-            throw Error.Generic("Impossible to create HTTP Request", "Invalid request line")
-
-        }
-
-        let version = try HTTPVersion(string: requestLineTokens[2])
-
-        return HTTPRequestLine(
-            method: method,
+            method: HTTPMethod(string: request.method),
             uri: uri,
-            version: version
+            version: request.version,
+            headers: request.headers,
+            body: Data(bytes: request.body)
         )
-        
+
     }
-    
+
 }

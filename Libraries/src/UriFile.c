@@ -83,7 +83,7 @@ static URI_INLINE int URI_FUNC(FilenameToUriString)(const URI_CHAR * filename,
 	is_windows_network = (filename[0] == _UT('\\')) && (filename[1] == _UT('\\'));
 	absolute = fromUnix
 			? (filename[0] == _UT('/'))
-			: ((filename[0] != _UT('\0')) && (filename[1] == _UT(':'))
+			: (((filename[0] != _UT('\0')) && (filename[1] == _UT(':')))
 				|| is_windows_network);
 
 	if (absolute) {
@@ -92,7 +92,7 @@ static URI_INLINE int URI_FUNC(FilenameToUriString)(const URI_CHAR * filename,
 				: is_windows_network
 					? _UT("file:")
 					: _UT("file:///");
-		const int prefixLen = URI_STRLEN(prefix);
+		const int prefixLen = (int) URI_STRLEN(prefix);
 
 		/* Copy prefix */
 		memcpy(uriString, prefix, prefixLen * sizeof(URI_CHAR));

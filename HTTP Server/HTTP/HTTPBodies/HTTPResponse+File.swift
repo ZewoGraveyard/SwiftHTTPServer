@@ -26,7 +26,6 @@ extension HTTPResponse {
 
     init(
         status: HTTPStatus = .OK,
-        version: HTTPVersion = .HTTP_1_1,
         headers: [String: String] = [:],
         filePath: String,
         contentType: String? = .None) throws {
@@ -41,7 +40,6 @@ extension HTTPResponse {
 
                 self.init(
                     status: status,
-                    version: version,
                     headers: headers + ["content-type": contentType],
                     body: file.data
                 )
@@ -50,7 +48,6 @@ extension HTTPResponse {
 
                 self.init(
                     status: status,
-                    version: version,
                     headers: headers,
                     body: file.data
                 )

@@ -336,11 +336,11 @@ final public class TemplateRepository {
     
     func templateAST(named name: String, relativeToTemplateID templateID: TemplateID? = nil) throws -> TemplateAST {
         guard let dataSource = self.dataSource else {
-            throw Error.Generic("Template Not Found", "No such template: `\(name)`")
+            throw MustacheError.TemplateNotFound("No such template: `\(name)`")
         }
         
         guard let templateID = dataSource.templateIDForName(name, relativeToTemplateID: templateID) else {
-            throw Error.Generic("Template Not Found", "No such template: `\(name)`")
+            throw MustacheError.TemplateNotFound("No such template: `\(name)`")
         }
         
         if let templateAST = templateASTCache[templateID] {
@@ -406,7 +406,7 @@ final public class TemplateRepository {
             if let string = templates[templateID] {
                 return string
             } else {
-                throw Error.Generic("Template Not Found", "No such template: `\(templateID)`")
+                throw MustacheError.TemplateNotFound("No such template: `\(templateID)`")
             }
         }
     }

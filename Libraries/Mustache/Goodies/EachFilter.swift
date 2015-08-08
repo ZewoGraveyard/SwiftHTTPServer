@@ -50,13 +50,13 @@ let EachFilter = Filter { (box: MustacheBox) -> MustacheBox in
                 // Push positional keys in the context stack and then perform
                 // a regular rendering.
                 var position: [String: MustacheBox] = [:]
-                position["@index"] = Box(index)
-                position["@indexPlusOne"] = Box(index + 1)
-                position["@indexIsEven"] = Box(index % 2 == 0)
-                position["@first"] = Box(index == 0)
-                position["@last"] = Box((index == count - 1))
-                position["@key"] = Box(element.key)
-                info.context = info.context.extendedContext(box: Box(position))
+                position["@index"] = Box(boxable: index)
+                position["@indexPlusOne"] = Box(boxable: index + 1)
+                position["@indexIsEven"] = Box(boxable: index % 2 == 0)
+                position["@first"] = Box(boxable: index == 0)
+                position["@last"] = Box(boxable: (index == count - 1))
+                position["@key"] = Box(boxable: element.key)
+                info.context = info.context.extendedContext(box: Box(boxable: position))
                 return try element.box.render(info: info)
             }
 
@@ -64,7 +64,7 @@ let EachFilter = Filter { (box: MustacheBox) -> MustacheBox in
 
         }
 
-        return Box(transformedBoxes)
+        return Box(boxable: transformedBoxes)
 
     }
     
@@ -86,17 +86,17 @@ let EachFilter = Filter { (box: MustacheBox) -> MustacheBox in
                 // Push positional keys in the context stack and then perform
                 // a regular rendering.
                 var position: [String: MustacheBox] = [:]
-                position["@index"] = Box(index)
-                position["@indexPlusOne"] = Box(index + 1)
-                position["@indexIsEven"] = Box(index % 2 == 0)
-                position["@first"] = Box(index == 0)
-                position["@last"] = Box((index == count - 1))
-                info.context = info.context.extendedContext(box: Box(position))
+                position["@index"] = Box(boxable: index)
+                position["@indexPlusOne"] = Box(boxable: index + 1)
+                position["@indexIsEven"] = Box(boxable: index % 2 == 0)
+                position["@first"] = Box(boxable: index == 0)
+                position["@last"] = Box(boxable: (index == count - 1))
+                info.context = info.context.extendedContext(box: Box(boxable: position))
                 return try box.render(info: info)
             }
             return Box(render: customRenderFunction)
         }
-        return Box(transformedBoxes)
+        return Box(boxable: transformedBoxes)
     }
     
     // Non-iterable value

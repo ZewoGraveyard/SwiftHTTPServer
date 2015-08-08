@@ -12,7 +12,8 @@ void copy_uri_element(char **element, const char *first, const char *afterLast) 
 
     if (first != NULL && afterLast != NULL) {
 
-        *element = (char *) malloc((afterLast - first + 1) * sizeof(char));
+        size_t len = (afterLast - first + 1);
+        *element = (char *) malloc(len * sizeof(char));
         strncpy(*element, first, afterLast - first);
         (*element)[afterLast - first] = '\0';
 
@@ -56,6 +57,7 @@ struct uri_info* get_uri_info(const char *text) {
     copy_uri_element_from_text_range(&uri_info->host, uri.hostText);
     copy_uri_element_from_text_range(&uri_info->port, uri.portText);
 
+    // TODO: This doesn't work if the path is nested like foo/baz/yo
     if (uri.pathHead != NULL && uri.pathTail != NULL) {
 
         copy_uri_element(&uri_info->path, uri.pathHead->text.first, uri.pathTail->text.afterLast);

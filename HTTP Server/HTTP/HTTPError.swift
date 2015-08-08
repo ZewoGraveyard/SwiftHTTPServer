@@ -1,4 +1,4 @@
-// HTTPResponse+JSON.swift
+// HTTPError.swift
 //
 // The MIT License (MIT)
 //
@@ -22,19 +22,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension HTTPResponse {
+enum HTTPError : ErrorType {
 
-    init(
-        status: HTTPStatus = .OK,
-        headers: [String: String] = [:],
-        json: JSON) {
+    case BadRequest(description: String)
+    case Unauthorized(description: String)
 
-            self.init(
-                status: status,
-                headers: headers + ["content-type": "application/json"],
-                body: Data(string: "\(json)")
-            )
+    static func respondError(error: ErrorType) -> HTTPResponse {
+
+        let response: HTTPResponse
+
+        switch error {
+
+        case HTTPError.BadRequest:
+            response = HTTPResponse(status: .BadRequest, text: "\(error)")
+
+        case HTTPError.Unauthorized:
+            response = HTTPResponse(status: .Unauthorized, text: "\(error)")
+
+        default:
+            response = HTTPResponse(status: .InternalServerError, text: "\(error)")
             
+        }
+
+        Log.error(error)
+        Log.info(response)
+        return response
+        
     }
-    
+
+}
+
+extension HTTPError : CustomStringConvertible {
+
+    var description: String {
+
+        switch self {
+
+        case .BadRequest(let description):
+            return description
+
+        case .Unauthorized(let description):
+            return description
+
+        }
+
+    }
+
 }

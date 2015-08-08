@@ -25,10 +25,9 @@
 #ifndef HTTPServer_h
 #define HTTPServer_h
 
-#include "uri_wrapper.h"
-#include "http_parser.h"
 #include "Dispatch.h"
-#include "Socket.h"
-#include "RegularExpression.h"
+#include "Server.h"
+#include "HTTPParser.h"
+#include "HTTPRouter.h"
 
 #endif /* HTTPServer_h */

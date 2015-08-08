@@ -38,6 +38,14 @@ extension Middleware {
 
         }
 
+        guard let uri = URI(text: bodyString) else {
+
+            throw Error.Generic("Could not create FormURLEncodedBody from data", "Data is not UTF-8 URL encoded")
+
+        }
+
+        uri.query
+
         let parameters = bodyString.queryParameters ?? [:]
         request.parameters = request.parameters + parameters
 

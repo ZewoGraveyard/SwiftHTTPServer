@@ -38,16 +38,16 @@ final class TemplateCompiler: TemplateTokenConsumer {
             case .Root:
                 return TemplateAST(nodes: compilationState.currentScope.templateASTNodes, contentType: compilationState.contentType)
             case .Section(openingToken: let openingToken, expression: _):
-                throw Error.Generic("Parse Error", "Parse error at \(openingToken.locationDescription): Unclosed Mustache tag")
+                throw MustacheError.Parse("Parse error at \(openingToken.locationDescription): Unclosed Mustache tag")
 
             case .InvertedSection(openingToken: let openingToken, expression: _):
-                throw Error.Generic("Parse Error", "Parse error at \(openingToken.locationDescription): Unclosed Mustache tag")
+                throw MustacheError.Parse("Parse error at \(openingToken.locationDescription): Unclosed Mustache tag")
 
             case .InheritedPartial(openingToken: let openingToken, partialName: _):
-                throw Error.Generic("Parse Error", "Parse error at \(openingToken.locationDescription): Unclosed Mustache tag")
+                throw MustacheError.Parse("Parse error at \(openingToken.locationDescription): Unclosed Mustache tag")
 
             case .InheritableSection(openingToken: let openingToken, inheritableSectionName: _):
-                throw Error.Generic("Parse Error", "Parse error at \(openingToken.locationDescription): Unclosed Mustache tag")
+                throw MustacheError.Parse("Parse error at \(openingToken.locationDescription): Unclosed Mustache tag")
             }
         case .Error(let compilationError):
             throw compilationError
@@ -95,7 +95,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
 
                         case .Locked(_):
 
-                            throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): CONTENT_TYPE:TEXT pragma tag must prepend any Mustache variable, section, or partial tag.")
+                            throw MustacheError.Parse("Parse error at \(token.locationDescription): CONTENT_TYPE:TEXT pragma tag must prepend any Mustache variable, section, or partial tag.")
 
 
                         }
@@ -108,7 +108,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
                             compilationState.compilerContentType = .Unlocked(.HTML)
 
                         case .Locked(_):
-                            throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): CONTENT_TYPE:HTML pragma tag must prepend any Mustache variable, section, or partial tag.")
+                            throw MustacheError.Parse("Parse error at \(token.locationDescription): CONTENT_TYPE:HTML pragma tag must prepend any Mustache variable, section, or partial tag.")
 
 
                         }
@@ -126,7 +126,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
                         compilationState.compilerContentType = .Locked(compilationState.contentType)
                     } catch {
 
-                        throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): \(error)")
+                        throw MustacheError.Parse("Parse error at \(token.locationDescription): \(error)")
 
                     }
                     
@@ -138,7 +138,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
                         compilationState.compilerContentType = .Locked(compilationState.contentType)
                     } catch {
 
-                        throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): \(error)")
+                        throw MustacheError.Parse("Parse error at \(token.locationDescription): \(error)")
 
                     }
                     
@@ -150,7 +150,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
                         compilationState.compilerContentType = .Locked(compilationState.contentType)
                     } catch {
 
-                        throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): \(error)")
+                        throw MustacheError.Parse("Parse error at \(token.locationDescription): \(error)")
 
                     }
                     
@@ -162,7 +162,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
                         compilationState.compilerContentType = .Locked(compilationState.contentType)
                     } catch {
 
-                        throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): \(error)")
+                        throw MustacheError.Parse("Parse error at \(token.locationDescription): \(error)")
 
                     }
                     
@@ -181,7 +181,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
                 case .Close(content: let content):
                     switch compilationState.currentScope.type {
                     case .Root:
-                        throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): Unmatched closing tag")
+                        throw MustacheError.Parse("Parse error at \(token.locationDescription): Unmatched closing tag")
 
                     case .Section(openingToken: let openingToken, expression: let closedExpression):
                         var empty: Bool = false
@@ -192,7 +192,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
 
                             if empty == false {
 
-                                throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): \(error)")
+                                throw MustacheError.Parse("Parse error at \(token.locationDescription): \(error)")
 
                             }
 
@@ -200,7 +200,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
 
                         if expression != nil && expression != closedExpression {
 
-                            throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): Unmatched closing tag")
+                            throw MustacheError.Parse("Parse error at \(token.locationDescription): Unmatched closing tag")
 
                         }
                         
@@ -227,7 +227,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
 
                             if empty == false {
 
-                                throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): \(error)")
+                                throw MustacheError.Parse("Parse error at \(token.locationDescription): \(error)")
 
                             }
 
@@ -235,7 +235,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
 
                         if expression != nil && expression != closedExpression {
 
-                            throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): Unmatched closing tag")
+                            throw MustacheError.Parse("Parse error at \(token.locationDescription): Unmatched closing tag")
 
                         }
                         
@@ -266,7 +266,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
 
                         if partialName != nil && partialName != inheritedPartialName {
 
-                            throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): Unmatched closing tag")
+                            throw MustacheError.Parse("Parse error at \(token.locationDescription): Unmatched closing tag")
 
                         }
                         
@@ -278,7 +278,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
 
                             if partialContentType != compilationState.contentType {
 
-                                throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): Content type mismatch")
+                                throw MustacheError.Parse("Parse error at \(token.locationDescription): Content type mismatch")
 
                             }
 
@@ -302,7 +302,7 @@ final class TemplateCompiler: TemplateTokenConsumer {
                         }
                         if inheritableSectionName != nil && inheritableSectionName != closedInheritableSectionName {
 
-                            throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): Unmatched closing tag")
+                            throw MustacheError.Parse("Parse error at \(token.locationDescription): Unmatched closing tag")
 
                         }
                         
@@ -401,12 +401,12 @@ final class TemplateCompiler: TemplateTokenConsumer {
         if inheritableSectionName.characters.count == 0 {
 
             empty = true
-            throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): Missing inheritable section name")
+            throw MustacheError.Parse("Parse error at \(token.locationDescription): Missing inheritable section name")
 
         } else if inheritableSectionName.containsCharacterFromSet(whiteSpace) {
 
             empty = false
-            throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): Invalid inheritable section name")
+            throw MustacheError.Parse("Parse error at \(token.locationDescription): Invalid inheritable section name")
 
         }
         return inheritableSectionName
@@ -420,12 +420,12 @@ final class TemplateCompiler: TemplateTokenConsumer {
         if partialName.characters.count == 0 {
 
             empty = true
-            throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): Missing template name")
+            throw MustacheError.Parse("Parse error at \(token.locationDescription): Missing template name")
 
         } else if partialName.containsCharacterFromSet(whiteSpace) {
 
             empty = false
-            throw Error.Generic("Parse Error", "Parse error at \(token.locationDescription): Invalid template name")
+            throw MustacheError.Parse("Parse error at \(token.locationDescription): Invalid template name")
 
         }
         return partialName

@@ -146,7 +146,7 @@ func ??<Request, Response>(responderA: (Request throws -> Response)?, responderB
 
 }
 
-func >>><Request, Response>(responder: Request throws -> Response, failureResponder: ErrorType -> Response) -> ((request: Request) -> Response) {
+func >>><Request, Response>(responder: Request throws -> Response, errorResponder: ErrorType -> Response) -> ((request: Request) -> Response) {
 
     return { request in
 
@@ -156,7 +156,7 @@ func >>><Request, Response>(responder: Request throws -> Response, failureRespon
 
         } catch {
 
-            return failureResponder(error)
+            return errorResponder(error)
             
         }
         

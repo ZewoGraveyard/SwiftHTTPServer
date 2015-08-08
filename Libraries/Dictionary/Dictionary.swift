@@ -22,19 +22,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-func +<Key, Value>(var left: [Key: Value], right: [Key: Value]) -> [Key: Value] {
+func +<Key, Value>(var lhs: [Key: Value], rhs: [Key: Value]) -> [Key: Value] {
 
-    for (key, value) in right {
+    for (key, value) in rhs {
 
-        left[key] = value
+        lhs[key] = value
 
     }
 
-    return left
+    return lhs
 
 }
 
-func dictionaryFromKeys<Key, Value>(keys: [Key], values: [Value]) -> [Key: Value] {
+func dictionaryFromKeys<Key, Value>(keys: [Key], values: [Value]) throws -> [Key: Value] {
+
+    if keys.count != values.count {
+
+        throw Error.Generic("Could not create dictionary from arrays of values and keys" , "Size of the arrays don't match. Keys array size is \(keys.count), values array size is \(values.count)")
+
+    }
 
     var dictionary: [Key: Value] = [:]
 

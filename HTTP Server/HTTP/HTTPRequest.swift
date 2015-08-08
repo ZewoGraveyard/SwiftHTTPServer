@@ -26,7 +26,7 @@ struct HTTPRequest: Parameterizable, KeepAliveType {
 
     let method: HTTPMethod
     let uri: URI
-    let version: HTTPVersion
+    let version: String
     var headers: [String: String]
     let body: Data
     var parameters: [String: String]
@@ -34,7 +34,7 @@ struct HTTPRequest: Parameterizable, KeepAliveType {
 
     init(method: HTTPMethod,
         uri: URI,
-        version: HTTPVersion = .HTTP_1_1,
+        version: String = "HTTP/1.1",
         headers: [String: String] = [:],
         body: Data = Data(),
         parameters: [String: String] = [:],
@@ -54,8 +54,10 @@ struct HTTPRequest: Parameterizable, KeepAliveType {
 
         guard let data = self.data[key] as? T else {
 
-            throw Error.Generic("Could not get data from key: \(key)", "Data doesn't exist or it's not of the specified type")
-            
+            throw HTTPError.BadRequest(
+                description: "Could not get data from key: \(key). Data doesn't exist or it's not a value of the specified type."
+            )
+
         }
 
         return data
@@ -64,15 +66,15 @@ struct HTTPRequest: Parameterizable, KeepAliveType {
 
     func getParameter(parameter: String) throws -> String {
 
-        if let parameter = parameters[parameter] {
+        guard let value = parameters[parameter] else {
 
-            return parameter
-
-        } else {
-
-            throw Error.Generic("Could not get parameter \(parameter)", "Parameter is not in the parameters dictionary")
+            throw HTTPError.BadRequest(
+                description: "Missing field: \(parameter)."
+            )
             
         }
+
+        return value
         
     }
 
@@ -92,27 +94,13 @@ struct HTTPRequest: Parameterizable, KeepAliveType {
 
         set {
 
-            if newValue == true {
-
-                headers["connection"] = "keep-alive"
-
-            } else {
-
-                headers["connection"] = "close"
-
-            }
+            if (newValue) { headers["connection"] = "keep-alive" }
 
         }
 
         get {
 
-            if let connection = headers["connection"] {
-
-                return  connection.trim().lowercaseString == "keep-alive"
-                
-            }
-            
-            return false
+            return (headers["connection"]?.trim().lowercaseString == "keep-alive") ?? false
             
         }
         

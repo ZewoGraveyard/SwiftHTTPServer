@@ -26,7 +26,6 @@ extension HTTPResponse {
 
     init(
         status: HTTPStatus = .OK,
-        version: HTTPVersion = .HTTP_1_1,
         headers: [String: String] = [:],
         templatePath: String,
         templateData: MustacheBoxable) throws {
@@ -44,11 +43,10 @@ extension HTTPResponse {
             }
 
             let template = try Template(string: templateString)
-            let rendering = try template.render(Box(templateData))
+            let rendering = try template.render(Box(boxable: templateData))
 
             self.init(
                 status: status,
-                version: version,
                 headers: headers + ["content-type": "text/html"],
                 body: Data(string: rendering)
             )

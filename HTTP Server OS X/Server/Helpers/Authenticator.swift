@@ -1,4 +1,4 @@
-// HTTPResponder.swift
+// Authenticator.swift
 //
 // The MIT License (MIT)
 //
@@ -22,10 +22,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-//typealias HTTPResponder = HTTPRequest throws -> HTTPResponse
+struct Authenticator {
 
-protocol HTTPResponderType {
+    static func authenticate(username: String, password: String) throws -> [String: Any] {
 
-    func respond(request: HTTPRequest) throws -> HTTPResponse
-    
+        if username == "username" && password == "password" {
+
+            return [
+
+                "user": User(name: "Name")
+
+            ]
+
+        }
+
+        throw HTTPError.Unauthorized(description: "Unable to authenticate user. Wrong credentials")
+        
+    }
+
 }

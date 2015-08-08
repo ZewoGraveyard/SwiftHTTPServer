@@ -31,27 +31,28 @@ enum JSONParseError: ErrorType, CustomStringConvertible {
     case InvalidStringError(ErrorReason, Parser)
     case InvalidNumberError(ErrorReason, Parser)
 
+    // TODO: Check what this actually prints.
     var description: String {
 
         switch self {
 
         case UnexpectedTokenError(let reason, let parser):
-            return "\(reflect(self).summary)[\(parser.lineNumber):\(parser.columnNumber)]: \(reason)"
+            return "\(self)[\(parser.lineNumber):\(parser.columnNumber)]: \(reason)"
 
         case InsufficientTokenError(let reason, let parser):
-            return "\(reflect(self).summary)[\(parser.lineNumber):\(parser.columnNumber)]: \(reason)"
+            return "\(self)[\(parser.lineNumber):\(parser.columnNumber)]: \(reason)"
 
         case ExtraTokenError(let reason, let parser):
-            return "\(reflect(self).summary)[\(parser.lineNumber):\(parser.columnNumber)]: \(reason)"
+            return "\(self)[\(parser.lineNumber):\(parser.columnNumber)]: \(reason)"
 
         case NonStringKeyError(let reason, let parser):
-            return "\(reflect(self).summary)[\(parser.lineNumber):\(parser.columnNumber)]: \(reason)"
+            return "\(self)[\(parser.lineNumber):\(parser.columnNumber)]: \(reason)"
 
         case InvalidStringError(let reason, let parser):
-            return "\(reflect(self).summary)[\(parser.lineNumber):\(parser.columnNumber)]: \(reason)"
+            return "\(self)[\(parser.lineNumber):\(parser.columnNumber)]: \(reason)"
 
         case InvalidNumberError(let reason, let parser):
-            return "\(reflect(self).summary)[\(parser.lineNumber):\(parser.columnNumber)]: \(reason)"
+            return "\(self)[\(parser.lineNumber):\(parser.columnNumber)]: \(reason)"
 
         }
 

@@ -1,4 +1,4 @@
-// HTTPVersion.swift
+// HTTPMethodRouter.swift
 //
 // The MIT License (MIT)
 //
@@ -22,44 +22,53 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-enum HTTPVersion {
+final class HTTPMethodRouter: ServerRouter<HTTPMethodRoute> {
 
-    case HTTP_1_0
-    case HTTP_1_1
+    let defaultRespond: (method: HTTPMethod) -> HTTPRequest throws -> HTTPResponse
 
-    init(string: String) throws {
+    init(defaultRespond: (method: HTTPMethod) -> HTTPRequest throws -> HTTPResponse) {
 
-        switch string {
+        self.defaultRespond = defaultRespond
 
-        case "HTTP/1.0":
-            self = HTTP_1_0
+    }
 
-        case "HTTP/1.1":
-            self = HTTP_1_1
+    var respond: HTTPRequest throws -> HTTPResponse {
 
-        default:
-            throw Error.Generic("Impossible to create HTTP Version", "Unsupported version \(string)")
+        return getRespond(
+            key: HTTPRequest.methodRouterKey,
+            defaultRespond: defaultRespond
+        )
+
+    }
+
+}
+
+struct HTTPMethodRoute: ServerRoute {
+
+    let key: HTTPMethod
+    let respond: HTTPRequest throws -> HTTPResponse
+
+    init(key: HTTPMethod, respond: HTTPRequest throws -> HTTPResponse) {
+
+        self.key = key
+        self.respond = respond
+
+    }
+
+    func matchesKey(key: HTTPMethod) -> Bool {
+
+        return self.key == key
+
+    }
+
+    var respondForKey: (key: HTTPMethod) -> (HTTPRequest throws -> HTTPResponse) {
+
+        return { (key: HTTPMethod) in
+            
+            return self.respond
             
         }
         
     }
     
-}
-
-extension HTTPVersion: CustomStringConvertible {
-
-    var description: String {
-
-        switch self {
-
-        case HTTP_1_0:
-            return "HTTP/1.0"
-
-        case HTTP_1_1:
-            return "HTTP/1.1"
-
-        }
-
-    }
-
 }

@@ -487,7 +487,7 @@ extension String {
 
         }
 
-        return String(dropFirst(self.characters))
+        return String(self.characters.dropFirst())
 
     }
 
@@ -499,7 +499,7 @@ extension String {
             
         }
 
-        return String(dropLast(self.characters))
+        return String(self.characters.dropLast())
         
     }
 
@@ -604,7 +604,7 @@ extension String {
 
     func splitBy(separator: Character, allowEmptySlices: Bool = false) -> [String] {
 
-        return split(characters, allowEmptySlices: allowEmptySlices) { $0 == separator }.map { String($0) }
+        return characters.split(allowEmptySlices: allowEmptySlices) { $0 == separator }.map { String($0) }
 
     }
 
@@ -632,7 +632,7 @@ extension String {
 
     func componentsSeparatedByCharactersInSet(characterSet: Set<Character>) -> [String] {
 
-        return split(characters) { characterSet.contains($0) }.map { String($0) }
+        return characters.split { characterSet.contains($0) }.map { String($0) }
         
     }
 

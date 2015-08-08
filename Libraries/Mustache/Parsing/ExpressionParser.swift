@@ -302,11 +302,11 @@ final class ExpressionParser {
         case .Empty:
 
             outEmpty = true
-            throw Error.Generic("Parse Error", "Missing expression")
+            throw MustacheError.Parse("Missing expression")
 
         case .Error(let description):
             outEmpty = false
-            throw Error.Generic("Parse Error", "Invalid expression `\(string)`: \(description)")
+            throw MustacheError.Parse("Invalid expression `\(string)`: \(description)")
 
         case .Valid(expression: let validExpression):
             return validExpression

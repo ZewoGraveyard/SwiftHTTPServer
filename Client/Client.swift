@@ -27,11 +27,11 @@ struct Client {
     private let client = HTTPClient()
     private let address: String = "localhost"
     private let port: TCPPort = 8080
-    
+
     func send() {
-        
+
         do {
-        
+
             let request =  HTTPRequest(
                 method: .GET,
                 uri: URI(text: "/over/there/index.dtb?type=animal&name=narwhal#nose")!,
@@ -52,7 +52,7 @@ struct Client {
             let response = try client.sendRequest(request, address: address, port: port)
 
             Log.info(response)
-        
+
         } catch {
             
             Log.error("Server error: \(error)")

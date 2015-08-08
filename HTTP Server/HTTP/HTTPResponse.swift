@@ -25,13 +25,13 @@
 struct HTTPResponse: KeepAliveType {
 
     let status: HTTPStatus
-    let version: HTTPVersion
+    let version: String
     var headers: [String: String]
     let body: Data
 
     init(
         status: HTTPStatus = .OK,
-        version: HTTPVersion = .HTTP_1_1,
+        version: String = "HTTP/1.1",
         headers: [String: String] = [:],
         body: Data = Data()) {
 
@@ -46,30 +46,16 @@ struct HTTPResponse: KeepAliveType {
 
         set {
 
-            if newValue == true {
-
-                headers["connection"] = "keep-alive"
-
-            } else {
-
-                headers["connection"] = "close"
-
-            }
+            if (newValue) { headers["connection"] = "keep-alive" }
 
         }
 
         get {
 
-            if let connection = headers["connection"] {
-
-                return  connection.trim().lowercaseString == "keep-alive"
-
-            }
-
-            return false
-
+            return (headers["connection"]?.trim().lowercaseString == "keep-alive") ?? false
+            
         }
-
+        
     }
 
 }

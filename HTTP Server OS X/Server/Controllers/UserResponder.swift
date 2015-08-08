@@ -68,7 +68,7 @@ struct Collection<T> {
 
 }
 
-final class UserResponder: ResourcefulResponder {
+final class UserResponder : ResourcefulResponder {
 
     var users = Collection<User>()
 

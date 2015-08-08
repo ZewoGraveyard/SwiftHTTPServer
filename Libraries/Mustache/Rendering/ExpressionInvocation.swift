@@ -54,11 +54,11 @@ struct ExpressionInvocation {
 
                 if filterBox.isEmpty {
 
-                    throw Error.Generic("Rendering Error", "Missing filter")
+                    throw MustacheError.Render("Missing filter")
 
                 } else {
 
-                    throw Error.Generic("Rendering Error", "Not a filter")
+                    throw MustacheError.Render("Not a filter")
 
                 }
 

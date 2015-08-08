@@ -29,11 +29,10 @@ protocol ServerRoute {
     typealias Response
 
     var key: Key { get }
-    var respond: Request throws -> Response { get }
+    var respondForKey: (key: Key) -> Request throws -> Response { get }
 
     init(key: Key, respond: Request throws -> Response)
     func matchesKey(key: Key) -> Bool
-    func parametersForKey(key: Key) -> [String: String]
     
 }
 
@@ -60,8 +59,7 @@ class ServerRouter<Route: ServerRoute> {
 
             if let route = self.routes.find({$0.matchesKey(key)}) {
 
-                let parameters = route.parametersForKey(key)
-                return Middleware.addParameters(parameters) >>> route.respond
+                return route.respondForKey(key: key)
 
             }
 

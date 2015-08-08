@@ -293,7 +293,7 @@ final class TemplateParser {
                             locationDescription = "line \(startLineNumber)"
                         }
 
-                        let error = Error.Generic("Parse Error", "Parse error at \(locationDescription): Invalid set delimiters tag")
+                        let error = MustacheError.Parse("Parse error at \(locationDescription): Invalid set delimiters tag")
                         tokenConsumer.parser(self, didFailWithError: error)
                         return
 
@@ -343,7 +343,7 @@ final class TemplateParser {
                 locationDescription = "line \(startLineNumber)"
             }
 
-            let error = Error.Generic("Parse Error", "Parse error at \(locationDescription): Unclosed Mustache tag")
+            let error = MustacheError.Parse("Parse error at \(locationDescription): Unclosed Mustache tag")
             tokenConsumer.parser(self, didFailWithError: error)
 
         }
