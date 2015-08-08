@@ -137,7 +137,7 @@ let simpleRouter = HTTPRouter { router in
 }
 ```
 
-`router` is an instance of `HTTPRouterBuilder` which has a lot of methods that associate an HTTP method and an URI path to a responder. For example `router.post("/foo", someResponder)` will associate a request with the POST method and the "/foo" URI path to the responder called `someRespondFunction`. `HTTPRouterBuilder` also has the `resource` and `resources` functions which work kinda like `rails` routing, but we won't go in detail about it now.
+`router` is an instance of `HTTPRouterBuilder` which has a lot of methods that associate an HTTP method and an URI path to a responder. For example `router.post("/foo", someRespondFunction)` will associate a request with the POST method and the "/foo" URI path to the responder called `someRespondFunction`. `HTTPRouterBuilder` also has the `resource` and `resources` functions which work kinda like `rails` routing, but we won't go in detail about it now.
 
 If you define a route with a `:placeholder` in the path, the router will match any text and save it in the `parameters` dictionary of the request with `placeholder` as a key. Using the route defined above and the request below: 
 
