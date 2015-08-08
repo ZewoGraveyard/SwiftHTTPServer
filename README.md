@@ -230,4 +230,4 @@ server.start()
 
 ## `HTTPParser`
 
-The `HTTPParser` used by the `HTTPServer` is a wrapper over the **C** library [`http_parser`](https://github.com/joyent/http-parser) which is used by **Node.js**. I've made some simple benchmarks, and when compiled in release mode without any logging we were able to get faster results than the `http` module from **Node.js**.
+The `HTTPParser` used by the `HTTPServer` is a wrapper over the **C** library [`http_parser`](https://github.com/joyent/http-parser) which is used by **Node.js**. I've made some simple benchmarks, and when compiled in release mode we were able to get faster results than the `http` module from **Node.js**.
