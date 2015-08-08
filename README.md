@@ -145,7 +145,7 @@ If you define a route with a `:placeholder` in the path, the router will match a
 GET /baz/1969 HTTP/1.1
 ```
 
-The router will set `parameter["id"] = "1969"` to the `HTTPRequest` and send it to the function defined in the literal closure above.
+The router will set `parameter["id"] = "1969"` to the `HTTPRequest` and send it to the function defined by the literal closure above.
 
 
 You can use request middlewares before and response middlewares after the router like:
