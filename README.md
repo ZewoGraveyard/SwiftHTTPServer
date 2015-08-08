@@ -209,14 +209,6 @@ let respond = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRoute
 
 	router.get("/login", LoginResponder.show)
 	router.post("/login", LoginResponder.authenticate)
-
-	router.resources("users") {
-
-		Middleware.basicAuthentication(Authenticator.authenticate) >>>
-			UserResponder()
-
-	}
-
 	router.get("/json", JSONResponder.get)
 	router.post("/json", Middleware.parseJSON >>> JSONResponder.post)
 	router.get("/redirect", Responder.redirect("http://www.google.com"))
