@@ -5,6 +5,16 @@ This project is still very unstable. That's why it still doesn't have a name and
 
 Actually, the reason this project has so many components is because **it doesn't depend on Foundation at all**. This constraint was defined because we want this framework to run on every platform **Swift 2** will support (specially **Linux**). Another reason everything is packed together is that we don't know how swift frameworks will work on **Linux**, so all dependencies are imported directly from the source. As we don't depend on **Foundation**, all the low level routines are accessed through **C** library wrappers. Specially **Grand Central Dispatch** and **Socket**.
 
+What we have until now:
+
+- No foundation dependency (has everything needed to run on Linux)
+- Async I/O with Joyent's libuv 
+- HTTP parsing with Nginx/Joyent's http_parser 
+- URI parsing 
+- Functional based routing and middleware architecture
+- JSON parsing
+- Mustache templates
+
 There's a lot of things happening behind the curtains, but to be brief I will explain only the essential.
 
 ## `HTTPRequest`
