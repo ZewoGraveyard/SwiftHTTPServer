@@ -7,7 +7,8 @@ Actually, the reason this project has so many components is because **it doesn't
 
 What we have until now:
 
-- No foundation dependency (has everything needed to run on Linux)
+- No Foundation dependency (has everything needed to run on Linux)
+- FastCGI support
 - Async I/O with Joyent's libuv 
 - HTTP parsing with Nginx/Joyent's http_parser 
 - URI parsing 
