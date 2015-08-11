@@ -28,7 +28,7 @@ struct HTTPRequest {
 }
 ```
 
-That's quite self explanatory. What's not standard HTTP request information is the properties `parameters` and `data`. These properties are used to pass information between the middlewares and the responders, which will be explained later. `parameters` is used when the information is just a string, `data` is used when you want to pass forward any other value.
+That's quite self explanatory. What's not standard HTTP request information is the properties `parameters` and `data`. These properties are used to pass information between the middlewares and the respond functions, which will be explained later. `parameters` is used when the information is just a string, `data` is used when you want to pass forward any other value.
 
 ## `HTTPResponse`
 
@@ -95,7 +95,7 @@ func >>>(middleware: HTTPRequestMiddleware, respond: HTTPRespond) -> HTTPRespond
             return response
 
         case .Request(let request):
-            return try responder(request)
+            return try respond(request)
 
         }
 
@@ -137,7 +137,7 @@ let simpleRouter = HTTPRouter { router in
 }
 ```
 
-`router` is an instance of `HTTPRouterBuilder` which has a lot of methods that associate an HTTP method and an URI path to a responder. For example `router.post("/foo", someResponder)` will associate a request with the POST method and the "/foo" URI path to the responder called `someRespondFunction`. `HTTPRouterBuilder` also has the `resource` and `resources` functions which work kinda like `rails` routing, but we won't go in detail about it now.
+`router` is an instance of `HTTPRouterBuilder` which has a lot of methods that associate an HTTP method and an URI path to a respond function. For example `router.post("/foo", someRespondFunction)` will associate a request with the POST method and the "/foo" URI path to the respond function called `someRespondFunction`. `HTTPRouterBuilder` also has the `resource` and `resources` functions which work kinda like `rails` routing, but we won't go in detail about it now.
 
 If you define a route with a `:placeholder` in the path, the router will match any text and save it in the `parameters` dictionary of the request with `placeholder` as a key. Using the route defined above and the request below: 
 
@@ -178,7 +178,7 @@ let respond = middlewareA >>> middlewareB >>> HTTPRouter { router in
 
 ## `Middleware` and `Responder`
 
-Most of the middlewares availabe are static functions of the `Middleware` struct defined in `Middleware` extensions. Some respond functions like `redirect` are also available as static functions of the `Responder` struct.
+Most of the middlewares availabe are static functions of the `Middleware` struct defined in `Middleware` extensions. Some respond functions like `redirect` are also available as static functions of the `Responder` struct. A responder is just a struct or a class that has a respond function.
 
 This decision has two reasons.
 
@@ -192,7 +192,7 @@ let longChain = Middleware.middlewareA >>>
 	Middleware.middlewareB >>>
 	Middleware.middlewareC >>>
 	Middleware.middlewareD >>>
-	responder >>>
+	respond >>>
 	Middleware.middlewareE >>>
 	Middleware.middlewareF >>>
 	Middleware.middlewareG
@@ -209,14 +209,6 @@ let respond = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRoute
 
 	router.get("/login", LoginResponder.show)
 	router.post("/login", LoginResponder.authenticate)
-
-	router.resources("users") {
-
-		Middleware.basicAuthentication(Authenticator.authenticate) >>>
-			UserResponder()
-
-	}
-
 	router.get("/json", JSONResponder.get)
 	router.post("/json", Middleware.parseJSON >>> JSONResponder.post)
 	router.get("/redirect", Responder.redirect("http://www.google.com"))
