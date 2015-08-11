@@ -27,15 +27,15 @@ struct SimpleHTTPResponseParser {
     struct HTTPStatusLine {
 
         let status: HTTPStatus
-        let version: HTTPVersion
+        let version: String
         
     }
     
     static func parseResponse(socket: Socket) throws -> HTTPResponse {
         
         let statusLine = try getStatusLine(socket: socket)
-        let headers = try HTTPParser.getHeaders(socket: socket)
-        let body = try HTTPParser.getBody(socket: socket, headers: headers)
+        let headers = try SimpleHTTPParser.getHeaders(socket: socket)
+        let body = try SimpleHTTPParser.getBody(socket: socket, headers: headers)
         
         return HTTPResponse(
             status: statusLine.status,
@@ -48,10 +48,10 @@ struct SimpleHTTPResponseParser {
     
     private static func getStatusLine(socket socket: Socket) throws -> HTTPStatusLine {
         
-        let statusLine = try HTTPParser.getLine(socket: socket)
+        let statusLine = try SimpleHTTPParser.getLine(socket: socket)
         let statusLineTokens = statusLine.splitBy(" ")
 
-        let version = try HTTPVersion(string: statusLineTokens[0])
+        let version = statusLineTokens[0]
         
         guard let statusCode = Int(statusLineTokens[1]) else {
 

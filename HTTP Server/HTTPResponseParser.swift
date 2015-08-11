@@ -35,14 +35,14 @@ struct HTTPResponseParser {
             var body: [Int8] = []
         }
 
-        func onStatus(parser: UnsafeMutablePointer<http_parser>, data: UnsafePointer<Int8>, length: Int) -> Int32 {
+        var response = RawHTTPResponse()
 
-            let responsePointer = UnsafeMutablePointer<RawHTTPResponse>(parser.memory.data)
+        func onStatus(parser: UnsafeMutablePointer<http_parser>, data: UnsafePointer<Int8>, length: Int) -> Int32 {
 
             var buffer: [Int8] = [Int8](count: length + 1, repeatedValue: 0)
             strncpy(&buffer, data, length)
 
-            responsePointer.memory.reasonPhrase = String.fromCString(buffer)!
+            response.reasonPhrase = String.fromCString(buffer)!
 
             return 0
 
@@ -50,12 +50,10 @@ struct HTTPResponseParser {
 
         func onHeaderField(parser: UnsafeMutablePointer<http_parser>, data: UnsafePointer<Int8>, length: Int) -> Int32 {
 
-            let responsePointer = UnsafeMutablePointer<RawHTTPResponse>(parser.memory.data)
-
             var buffer: [Int8] = [Int8](count: length + 1, repeatedValue: 0)
             strncpy(&buffer, data, length)
 
-            responsePointer.memory.currentHeaderField = String.fromCString(buffer)!
+            response.currentHeaderField = String.fromCString(buffer)!
 
             return 0
 
@@ -63,13 +61,11 @@ struct HTTPResponseParser {
 
         func onHeaderValue(parser: UnsafeMutablePointer<http_parser>, data: UnsafePointer<Int8>, length: Int) -> Int32 {
 
-            let responsePointer = UnsafeMutablePointer<RawHTTPResponse>(parser.memory.data)
-
             var buffer: [Int8] = [Int8](count: length + 1, repeatedValue: 0)
             strncpy(&buffer, data, length)
 
-            let headerField = responsePointer.memory.currentHeaderField
-            responsePointer.memory.headers[headerField] = String.fromCString(buffer)!
+            let headerField = response.currentHeaderField
+            response.headers[headerField] = String.fromCString(buffer)!
 
             return 0
 
@@ -77,14 +73,12 @@ struct HTTPResponseParser {
 
         func onHeadersComplete(parser: UnsafeMutablePointer<http_parser>) -> Int32 {
 
-            let responsePointer = UnsafeMutablePointer<RawHTTPResponse>(parser.memory.data)
-
-            responsePointer.memory.statusCode = Int(parser.memory.status_code)
+            response.statusCode = Int(parser.memory.status_code)
 
             let major = parser.memory.http_major
             let minor = parser.memory.http_minor
 
-            responsePointer.memory.version = "HTTP/\(major).\(minor)"
+            response.version = "HTTP/\(major).\(minor)"
 
             return 0
 
@@ -92,42 +86,34 @@ struct HTTPResponseParser {
 
         func onBody(parser: UnsafeMutablePointer<http_parser>, data: UnsafePointer<Int8>, length: Int) -> Int32 {
 
-            let responsePointer = UnsafeMutablePointer<RawHTTPResponse>(parser.memory.data)
-
             var buffer: [Int8] = [Int8](count: length, repeatedValue: 0)
             memcpy(&buffer, data, length)
 
-            responsePointer.memory.body = buffer
+            response.body = buffer
 
             return 0
 
         }
 
-        var settings = http_parser_settings(
-            on_message_begin: nil,
-            on_url: nil,
-            on_status: onStatus,
-            on_header_field: onHeaderField,
-            on_header_value: onHeaderValue,
-            on_headers_complete: onHeadersComplete,
-            on_body: onBody,
-            on_message_complete: nil
-        )
-
         var parser = http_parser()
 
         http_parser_init(&parser, HTTP_RESPONSE)
 
-        var response = RawHTTPResponse()
-
-        let responsePointer = UnsafeMutablePointer<RawHTTPResponse>.alloc(1)
-        responsePointer.initialize(response)
-
-        parser.data = UnsafeMutablePointer<Void>(responsePointer)
-
         var (buffer, bytesRead) = try socket.receiveBuffer(bufferSize: 80 * 1024)
 
-        let bytesParsed = http_parser_execute(&parser, &settings, &buffer, bytesRead)
+        let bytesParsed = http_parser_execute(
+            &parser,
+            nil,
+            nil,
+            onStatus,
+            onHeaderField,
+            onHeaderValue,
+            onHeadersComplete,
+            onBody,
+            nil,
+            &buffer,
+            bytesRead
+        )
 
         if bytesParsed != bytesRead {
 
@@ -135,15 +121,10 @@ struct HTTPResponseParser {
             throw Error.Generic("Error parsing response",  String.fromCString(error)!)
             
         }
-        
-        response = responsePointer.memory
 
-        responsePointer.destroy()
-        responsePointer.dealloc(1)
-        
         return HTTPResponse(
             status: HTTPStatus(statusCode: response.statusCode, reasonPhrase: response.reasonPhrase),
-            version: try HTTPVersion(string: response.version),
+            version: response.version,
             headers: response.headers,
             body: Data(bytes: response.body)
         )

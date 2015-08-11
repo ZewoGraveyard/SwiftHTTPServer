@@ -24,44 +24,7 @@
 
 // MARK: - Dispatch
 
-public typealias Queue = dispatch_queue_t
-
-public var mainQueue: Queue {
-
-    return dispatch_get_main_queue()!
-
-}
-
-public var userInteractiveQueue: Queue {
-
-    return Dispatch.getGlobalQueue(qualityOfServiceClass: .UserInteractive)
-
-}
-
-public var userInitiatedQueue: Queue {
-
-    return Dispatch.getGlobalQueue(qualityOfServiceClass: .UserInitiated)
-
-}
-
-public var defaultQueue: Queue {
-
-    return Dispatch.getGlobalQueue(qualityOfServiceClass: .Default)
-    
-}
-
-public var utilityQueue: Queue {
-
-    return Dispatch.getGlobalQueue(qualityOfServiceClass: .Utility)
-
-}
-
-public var backgroundQueue: Queue {
-
-    return Dispatch.getGlobalQueue(qualityOfServiceClass: .Background)
-
-}
-
+public typealias DispatchQueue = dispatch_queue_t
 
 public struct Dispatch {
 
@@ -148,7 +111,43 @@ public struct Dispatch {
 
     }
 
-    public static func getGlobalQueue(qualityOfServiceClass qos: QualityOfServiceClass = .Default) -> Queue {
+    public static var mainQueue: DispatchQueue {
+
+        return dispatch_get_main_queue()!
+
+    }
+
+    public static var userInteractiveQueue: DispatchQueue {
+
+        return Dispatch.getGlobalQueue(qualityOfServiceClass: .UserInteractive)
+
+    }
+
+    public static var userInitiatedQueue: DispatchQueue {
+
+        return Dispatch.getGlobalQueue(qualityOfServiceClass: .UserInitiated)
+
+    }
+
+    public static var defaultQueue: DispatchQueue {
+
+        return Dispatch.getGlobalQueue(qualityOfServiceClass: .Default)
+
+    }
+
+    public static var utilityQueue: DispatchQueue {
+
+        return Dispatch.getGlobalQueue(qualityOfServiceClass: .Utility)
+        
+    }
+    
+    public static var backgroundQueue: DispatchQueue {
+        
+        return Dispatch.getGlobalQueue(qualityOfServiceClass: .Background)
+        
+    }
+
+    public static func getGlobalQueue(qualityOfServiceClass qos: QualityOfServiceClass = .Default) -> DispatchQueue {
 
         return dispatch_get_global_queue(qos.value, 0)
 
@@ -166,7 +165,7 @@ public struct Dispatch {
     :param: queue   The target dispatch queue to which the closure is submitted. The system will hold a reference on the target queue until the closure has finished. The default parameter is the **default queue**.
     :param: closure The closure to submit to the target dispatch queue.
     */
-    public static func async(queue queue: Queue = defaultQueue, closure: Void -> Void) {
+    public static func async(queue queue: DispatchQueue = defaultQueue, closure: Void -> Void) {
 
         dispatch_async(queue, closure)
 
@@ -186,17 +185,34 @@ public struct Dispatch {
     :param: queue   The target dispatch queue to which the closure is submitted. The default parameter is the **main queue**.
     :param: closure The closure to be invoked on the target dispatch queue.
     */
-    public static func sync(queue queue: Queue = mainQueue, closure: Void -> Void) {
+    public static func sync(queue queue: DispatchQueue = mainQueue, closure: Void -> Void) {
 
         dispatch_sync(queue, closure)
         
     }
     
-    public static func delay(delay: Double, queue: Queue = mainQueue, closure: Void -> Void) {
+    public static func delay(delay: Double, queue: DispatchQueue = mainQueue, closure: Void -> Void) {
         
         let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC)))
         dispatch_after(time, queue, closure)
         
+    }
+
+    public static func read<T>(
+        fileDescriptor: dispatch_fd_t,
+        lenght: Int = Int.max,
+        queue: DispatchQueue = Dispatch.defaultQueue,
+        completion: (buffer: UnsafePointer<T>, length: Int) -> Void) {
+
+        dispatch_read(fileDescriptor, Int.max, queue) { (data: dispatch_data_t!, error: Int32) in
+
+            var buffer: UnsafePointer<Void> = nil
+            var length: Int = 0
+            let _ = dispatch_data_create_map(data, &buffer, &length)
+            completion(buffer: UnsafePointer<T>(buffer), length: length)
+
+        }
+
     }
 
     public static func main() {

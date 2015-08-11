@@ -28,7 +28,7 @@ final class HTTPClient {
 
         let socket = try Socket(IP: address, port: port)
         try HTTPRequestSerializer.serializeRequest(socket, request: request)
-        let response = try HTTPResponseParser2.parseResponse(socket: socket)
+        let response = try HTTPResponseParser.parseResponse(socket: socket)
         socket.release()
         return response
     

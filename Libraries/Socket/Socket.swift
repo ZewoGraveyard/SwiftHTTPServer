@@ -23,7 +23,7 @@
 // SOFTWARE.
 
 typealias TCPPort = in_port_t
-typealias SocketHandler = CInt
+typealias SocketFileDescriptor = CInt
 
 enum SocketError: ErrorType {
 
@@ -33,14 +33,14 @@ enum SocketError: ErrorType {
 
 struct Socket {
 
-    let socketHandler: SocketHandler
+    let socketFileDescriptor: SocketFileDescriptor
 
     private(set) var IP: String
     private(set) var port: TCPPort
 
     init(port: TCPPort, maxConnections: Int = 20) throws {
 
-        self.socketHandler = try Socket.createSocketHandler()
+        self.socketFileDescriptor = try Socket.createSocketHandler()
         self.IP = "0.0.0.0"
         self.port = port
 
@@ -53,7 +53,7 @@ struct Socket {
 
     init(IP: String, port: TCPPort) throws {
 
-        self.socketHandler = try Socket.createSocketHandler()
+        self.socketFileDescriptor = try Socket.createSocketHandler()
         self.IP = "0.0.0.0"
         self.port = port
 
@@ -69,7 +69,7 @@ struct Socket {
 
         var address = addresses.first!
 
-        if connect(socketHandler, &address, socklen_t(sizeof(sockaddr_in))) == -1 {
+        if connect(socketFileDescriptor, &address, socklen_t(sizeof(sockaddr_in))) == -1 {
 
             release()
             throw Error.lastSystemError(reason: "connect() failed")
@@ -78,7 +78,7 @@ struct Socket {
 
     }
 
-    init(IP: String, port: TCPPort, socketHandler: SocketHandler) throws {
+    init(IP: String, port: TCPPort, socketHandler: SocketFileDescriptor) throws {
 
         if socketHandler == -1 {
 
@@ -88,7 +88,7 @@ struct Socket {
 
         self.IP = IP
         self.port = port
-        self.socketHandler = socketHandler
+        self.socketFileDescriptor = socketHandler
 
     }
 
@@ -96,7 +96,7 @@ struct Socket {
 
         var buffer = [Int8](count: bufferSize, repeatedValue: 0)
 
-        let result = recv(socketHandler, &buffer, bufferSize, 0)
+        let result = recv(socketFileDescriptor, &buffer, bufferSize, 0)
 
         if result == -1 {
 
@@ -118,7 +118,7 @@ struct Socket {
 
         var buffer = [UInt8](count: 1, repeatedValue: 0)
 
-        let result = recv(socketHandler, &buffer, buffer.count, 0)
+        let result = recv(socketFileDescriptor, &buffer, buffer.count, 0)
 
         if result == -1 {
 
@@ -140,7 +140,7 @@ struct Socket {
 
         var buffer = [UInt8](count: 1, repeatedValue: 0)
 
-        let result = recv(socketHandler, &buffer, Int(buffer.count), MSG_PEEK)
+        let result = recv(socketFileDescriptor, &buffer, Int(buffer.count), MSG_PEEK)
 
         if result == -1 {
 
@@ -171,7 +171,7 @@ struct Socket {
 
         while sent < data.length {
 
-            let s = write(socketHandler, unsafePointer + sent, Int(data.length - sent))
+            let s = write(socketFileDescriptor, unsafePointer + sent, Int(data.length - sent))
 
             if s <= 0 {
 
@@ -195,7 +195,7 @@ struct Socket {
 
         var length: socklen_t = socklen_t(sizeof(sockaddr))
 
-        let clientSocketHandler = accept(socketHandler, &clientAddress, &length)
+        let clientSocketHandler = accept(socketFileDescriptor, &clientAddress, &length)
 
         if clientSocketHandler == -1 {
 
@@ -239,7 +239,7 @@ struct Socket {
 
     }
 
-    private static func createSocketHandler() throws -> SocketHandler {
+    private static func createSocketHandler() throws -> SocketFileDescriptor {
 
         let socketHandler = socket(AF_INET, SOCK_STREAM, 0)
 
@@ -257,7 +257,7 @@ struct Socket {
 
         var reuseAddressValue: Int32 = 1
 
-        if setsockopt(socketHandler, SOL_SOCKET, SO_REUSEADDR, &reuseAddressValue, socklen_t(sizeof(Int32))) == -1  {
+        if setsockopt(socketFileDescriptor, SOL_SOCKET, SO_REUSEADDR, &reuseAddressValue, socklen_t(sizeof(Int32))) == -1  {
 
             release()
             throw Error.lastSystemError(reason: "reuseAddress() failed")
@@ -270,7 +270,7 @@ struct Socket {
 
         var noSigPipeValue: Int32 = 1
 
-        if setsockopt(socketHandler, SOL_SOCKET, SO_NOSIGPIPE, &noSigPipeValue, socklen_t(sizeof(Int32))) == -1  {
+        if setsockopt(socketFileDescriptor, SOL_SOCKET, SO_NOSIGPIPE, &noSigPipeValue, socklen_t(sizeof(Int32))) == -1  {
 
             release()
             throw Error.lastSystemError(reason: "noSigPipe() failed")
@@ -297,7 +297,7 @@ struct Socket {
         
         memcpy(&address, &addressIn, Int(sizeof(sockaddr_in)))
         
-        if bind(socketHandler, &address, socklen_t(sizeof(sockaddr_in))) == -1 {
+        if bind(socketFileDescriptor, &address, socklen_t(sizeof(sockaddr_in))) == -1 {
             
             release()
             throw Error.lastSystemError(reason: "bind() failed")
@@ -362,7 +362,7 @@ struct Socket {
 
     private func listenWithMaxConnections(maxConnections: Int) throws {
 
-        if listen(socketHandler, Int32(maxConnections)) == -1 {
+        if listen(socketFileDescriptor, Int32(maxConnections)) == -1 {
 
             release()
             throw Error.lastSystemError(reason: "listen() failed")
@@ -373,8 +373,8 @@ struct Socket {
     
     func release() {
         
-        shutdown(socketHandler, SHUT_RDWR)
-        close(socketHandler)
+        shutdown(socketFileDescriptor, SHUT_RDWR)
+        close(socketFileDescriptor)
         
     }
     

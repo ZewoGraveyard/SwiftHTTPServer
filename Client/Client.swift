@@ -32,19 +32,27 @@ struct Client {
 
         do {
 
+            var h = [
+                "host": "localhost",
+                "accept": "*/*",
+                "user-agent": "HTTP Client",
+                "csp": "active",
+                "accept-encoding": "gzip, deflate, sdch",
+                "accept-language": "pt-BR,pt;q=0.8,en-US;q=0.6,en;q=0.4,en-GB;q=0.2,de;q=0.2",
+                "cache-control": "no-cache",
+                "connection": "keep-alive"
+            ]
+
+            for i in 0 ..< 100 {
+
+                h["\(i)"] = "yo"
+
+            }
+
             let request =  HTTPRequest(
                 method: .GET,
                 uri: URI(text: "/over/there/index.dtb?type=animal&name=narwhal#nose")!,
-                headers: [
-                    "host": "localhost",
-                    "accept": "*/*",
-                    "user-agent": "HTTP Client",
-                    "csp": "active",
-                    "accept-encoding": "gzip, deflate, sdch",
-                    "accept-language": "pt-BR,pt;q=0.8,en-US;q=0.6,en;q=0.4,en-GB;q=0.2,de;q=0.2",
-                    "cache-control": "no-cache",
-                    "connection": "keep-alive"
-                ]
+                headers: h
             )
 
             Log.info(request)

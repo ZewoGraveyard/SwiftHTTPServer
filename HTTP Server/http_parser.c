@@ -62,8 +62,8 @@ do {                                                                 \
 do {                                                                 \
   assert(HTTP_PARSER_ERRNO(parser) == HPE_OK);                       \
                                                                      \
-  if (settings->on_##FOR) {                                          \
-    if (0 != settings->on_##FOR(parser)) {                           \
+  if (on_##FOR) {                                          \
+    if (0 != on_##FOR(parser)) {                           \
       SET_ERRNO(HPE_CB_##FOR);                                       \
     }                                                                \
                                                                      \
@@ -86,8 +86,8 @@ do {                                                                 \
   assert(HTTP_PARSER_ERRNO(parser) == HPE_OK);                       \
                                                                      \
   if (FOR##_mark) {                                                  \
-    if (settings->on_##FOR) {                                        \
-      if (0 != settings->on_##FOR(parser, FOR##_mark, (LEN))) {      \
+    if (on_##FOR) {                                        \
+      if (0 != on_##FOR(parser, FOR##_mark, (LEN))) {      \
         SET_ERRNO(HPE_CB_##FOR);                                     \
       }                                                              \
                                                                      \
@@ -574,7 +574,14 @@ parse_url_char(enum state s, const char ch)
 }
 
 size_t http_parser_execute (http_parser *parser,
-                            const http_parser_settings *settings,
+                            http_block      on_message_begin,
+                            http_data_block on_url,
+                            http_data_block on_status,
+                            http_data_block on_header_field,
+                            http_data_block on_header_value,
+                            http_block      on_headers_complete,
+                            http_data_block on_body,
+                            http_block      on_message_complete,
                             const char *data,
                             size_t len)
 {
@@ -1648,8 +1655,8 @@ size_t http_parser_execute (http_parser *parser,
          * We'd like to use CALLBACK_NOTIFY_NOADVANCE() here but we cannot, so
          * we have to simulate it by handling a change in errno below.
          */
-        if (settings->on_headers_complete) {
-          switch (settings->on_headers_complete(parser)) {
+        if (on_headers_complete) {
+          switch (on_headers_complete(parser)) {
             case 0:
               break;
 
@@ -1972,9 +1979,7 @@ http_method_str (enum http_method m)
 void
 http_parser_init (http_parser *parser, enum http_parser_type t)
 {
-  void *data = parser->data; /* preserve application data */
   memset(parser, 0, sizeof(*parser));
-  parser->data = data;
   parser->type = t;
   parser->state = (t == HTTP_REQUEST ? s_start_req : (t == HTTP_RESPONSE ? s_start_res : s_start_req_or_res));
   parser->http_errno = HPE_OK;

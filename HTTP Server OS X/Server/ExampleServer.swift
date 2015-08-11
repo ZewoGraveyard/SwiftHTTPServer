@@ -22,11 +22,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-final class ExampleServer: HTTPServer {
+final class ExampleServer: HTTPServer2 {
 
     init() {
 
         let respond = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRouter { router in
+
+            router.get("/login") { request in
+
+                return HTTPResponse()
+
+            }
 
             router.get("/login", LoginResponder.show)
             router.post("/login", LoginResponder.authenticate)

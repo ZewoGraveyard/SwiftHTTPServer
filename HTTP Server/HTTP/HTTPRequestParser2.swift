@@ -22,44 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPRequestParser {
+struct HTTPRequestParser2 {
 
-//    func shit(socket: Socket, queue: DispatchQueue) {
-//
-//        return
-//
-//        let fd = socket.socketFileDescriptor
-//
-//        swift_fcntl(fd, F_SETFL, O_NONBLOCK)
-//
-//        let readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, UInt(fd), 0, queue)
-//
-//        if (readSource == nil) {
-//
-//            close(fd)
-//            return
-//
-//        }
-//
-//        dispatch_source_set_event_handler(readSource) {
-//
-//            let estimated = Int(dispatch_source_get_data(readSource) + 1)
-//            var buffer = [UInt8](count: estimated, repeatedValue: 0)
-//            recv(fd, &buffer, estimated, 0)
-//
-//            let string = String(bytes: buffer)
-//
-//            print(string)
-//
-//            dispatch_source_cancel(readSource)
-//
-//        }
-//
-//        dispatch_resume(readSource)
-//
-//    }
-
-    func parseRequest(socket socket: Socket, completion: HTTPRequest -> Void) {
+    func parseRequest(stream stream: Stream, completion: HTTPRequest -> Void) {
 
         struct RawHTTPRequest {
             var method: String = ""
@@ -89,7 +54,7 @@ struct HTTPRequestParser {
             strncpy(&buffer, data, length)
 
             request.currentHeaderField = String.fromCString(buffer)!
-            
+
             return 0
 
         }
@@ -126,28 +91,28 @@ struct HTTPRequestParser {
             memcpy(&buffer, data, length)
 
             request.body = buffer
-            
+
             return 0
-            
+
         }
 
         func onMessageComplete(parser: UnsafeMutablePointer<http_parser>) -> Int32 {
 
 
             guard let uri = URI(text: request.uri) else {
-    
+
                 print("Error parsing URI. Invalid URI")
                 return -1
-    
+
             }
-    
+
             if uri.path == nil {
-    
+
                 print("Error parsing URI. Path not present")
                 return -1
-    
+
             }
-    
+
             let request = HTTPRequest(
                 method: HTTPMethod(string: request.method),
                 uri: uri,
@@ -166,9 +131,7 @@ struct HTTPRequestParser {
 
         http_parser_init(&parser, HTTP_REQUEST)
 
-        Dispatch.read(socket.socketFileDescriptor) { (buffer: UnsafePointer<Int8>, length: Int) in
-
-            print("called")
+        try! stream.bufferedRead { data in
 
             let bytesParsed = http_parser_execute(
                 &parser,
@@ -180,25 +143,25 @@ struct HTTPRequestParser {
                 onHeadersComplete,
                 onBody,
                 onMessageComplete,
-                buffer,
-                length
+                UnsafePointer<Int8>(data.bytes),
+                data.length
             )
-
+            
             if parser.upgrade == 1 {
-    
+                
                 print("Error parsing request: Protocol upgrade unsupported")
-    
+                
             }
-
-            if bytesParsed != length {
-    
+            
+            if bytesParsed != data.length {
+                
                 let error = http_errno_name(http_errno(parser.http_errno))
                 print("Error parsing request: " + String.fromCString(error)!)
-    
+                
             }
-
+            
         }
-
+        
     }
-
+    
 }

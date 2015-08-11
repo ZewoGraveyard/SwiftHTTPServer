@@ -1,4 +1,4 @@
-// main.h
+// HTTPServer.swift
 //
 // The MIT License (MIT)
 //
@@ -22,10 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BridgingHeader_h
-#define BridgingHeader_h
+class HTTPServer2: Server2<HTTPRequest, HTTPResponse> {
 
-#include "ExampleServer.h"
-#include "uv.h"
+    init(respond: (request: HTTPRequest) throws -> HTTPResponse) {
 
-#endif
+        let parser = HTTPRequestParser2()
+        let serializer = HTTPResponseSerializer2()
+
+        super.init(
+            parseRequest: parser.parseRequest,
+            respond: respond >>> HTTPError.respondError >>> Middleware.addHeaders(["server": "HTTP Server"]),
+            serializeResponse: serializer.serializeResponse,
+            debug: true
+        )
+        
+    }
+    
+}

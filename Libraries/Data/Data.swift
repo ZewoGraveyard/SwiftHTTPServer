@@ -38,6 +38,14 @@ public struct Data {
         
     }
 
+    init(bytes: UnsafePointer<Void>, length: Int) {
+
+        var buffer: [UInt8] = [UInt8](count: length, repeatedValue: 0)
+        memcpy(&buffer, bytes, length)
+        self.bytes = buffer
+
+    }
+
     init(bytes: [UInt8]) {
 
         self.bytes = bytes

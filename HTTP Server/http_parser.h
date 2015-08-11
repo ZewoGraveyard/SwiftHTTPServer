@@ -73,8 +73,9 @@ typedef struct http_parser_settings http_parser_settings;
  * many times for each string. E.G. you might get 10 callbacks for "on_url"
  * each providing just a few characters more data.
  */
-typedef int (*http_data_cb) (http_parser*, const char *at, size_t length);
-typedef int (*http_cb) (http_parser*);
+
+typedef int (^http_data_block) (http_parser*, const char *at, size_t length);
+typedef int (^http_block) (http_parser*);
 
 
 /* Request Methods */
@@ -205,11 +206,8 @@ struct http_parser {
   /** READ-ONLY **/
   unsigned short http_major;
   unsigned short http_minor;
-//  unsigned int status_code : 16; /* responses only */
   unsigned int status_code; /* responses only */
-//  unsigned int method : 8;       /* requests only */
   unsigned int method;       /* requests only */
-//  unsigned int http_errno : 7;
   unsigned int http_errno;
 
   /* 1 = Upgrade header was present and the parser has exited because of that.
@@ -220,20 +218,6 @@ struct http_parser {
 //  unsigned int upgrade : 1;
   unsigned int upgrade;
 
-  /** PUBLIC **/
-  void *data; /* A pointer to get hook to the "connection" or "socket" object */
-};
-
-
-struct http_parser_settings {
-  http_cb      on_message_begin;
-  http_data_cb on_url;
-  http_data_cb on_status;
-  http_data_cb on_header_field;
-  http_data_cb on_header_value;
-  http_cb      on_headers_complete;
-  http_data_cb on_body;
-  http_cb      on_message_complete;
 };
 
 enum http_parser_url_fields
@@ -281,10 +265,17 @@ unsigned long http_parser_version(void);
 void http_parser_init(http_parser *parser, enum http_parser_type type);
 
 
-size_t http_parser_execute(http_parser *parser,
-                           const http_parser_settings *settings,
-                           const char *data,
-                           size_t len);
+size_t http_parser_execute(http_parser     *parser,
+                           http_block      on_message_begin,
+                           http_data_block on_url,
+                           http_data_block on_status,
+                           http_data_block on_header_field,
+                           http_data_block on_header_value,
+                           http_block      on_headers_complete,
+                           http_data_block on_body,
+                           http_block      on_message_complete,
+                           const char      *data,
+                           size_t          len);
 
 
 /* If http_should_keep_alive() in the on_headers_complete or

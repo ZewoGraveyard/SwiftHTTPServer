@@ -1,4 +1,4 @@
-// main.h
+// HTTPParser.c
 //
 // The MIT License (MIT)
 //
@@ -22,10 +22,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BridgingHeader_h
-#define BridgingHeader_h
+#include "HTTPParser.h"
 
-#include "ExampleServer.h"
-#include "uv.h"
+int swift_fcntl(int fd, int cmd, int val) {
 
-#endif
+    return fcntl(fd, cmd, val);
+
+}

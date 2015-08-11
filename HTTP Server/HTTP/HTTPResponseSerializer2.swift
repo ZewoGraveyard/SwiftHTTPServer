@@ -1,4 +1,4 @@
-// main.h
+// HTTPServerSerializer.swift
 //
 // The MIT License (MIT)
 //
@@ -22,10 +22,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BridgingHeader_h
-#define BridgingHeader_h
+struct HTTPResponseSerializer2 {
 
-#include "ExampleServer.h"
-#include "uv.h"
+    func serializeResponse(stream stream: Stream, response: HTTPResponse) {
 
-#endif
+        stream.writeData(Data(string: "\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")) {}
+
+        for (name, value) in response.headers {
+
+            stream.writeData(Data(string: "\(name): \(value)\r\n")) {}
+
+        }
+
+        stream.writeData(Data(string: "\r\n")) {}
+        stream.writeData(response.body) {}
+
+    }
+    
+}
+
