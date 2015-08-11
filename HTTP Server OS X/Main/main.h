@@ -27,5 +27,6 @@
 
 #include "ExampleServer.h"
 #include "uv.h"
+#include "FCGI.h"
 
 #endif

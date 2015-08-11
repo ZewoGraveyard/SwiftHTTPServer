@@ -687,6 +687,12 @@ extension String {
 
     }
 
+    func substringToIndex(index: Index) -> String {
+
+        return self[startIndex ..< index]
+        
+    }
+
     func substringFromIndex(index: Index) -> String {
 
         return self[index ..< endIndex]

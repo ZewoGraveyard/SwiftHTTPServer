@@ -58,10 +58,21 @@ struct uri_info* get_uri_info(const char *text) {
     copy_uri_element_from_text_range(&uri_info->port, uri.portText);
 
     // TODO: This doesn't work if the path is nested like foo/baz/yo
-    if (uri.pathHead != NULL && uri.pathTail != NULL) {
+    size_t pathLenght = 0;
 
-        copy_uri_element(&uri_info->path, uri.pathHead->text.first, uri.pathTail->text.afterLast);
+    for (UriPathSegmentA * segment = uri.pathHead; segment; segment = segment->next) {
 
+        pathLenght += segment->text.afterLast - segment->text.first + 1;
+
+    }
+
+    uri_info->path = (char *) malloc(pathLenght + 1 * sizeof(char));
+    uri_info->path[pathLenght] = '\0';
+
+    for (UriPathSegmentA * segment = uri.pathHead; segment; segment = segment->next) {
+
+        strncat(uri_info->path, segment->text.first, segment->text.afterLast - segment->text.first + 1);
+        
     }
 
     copy_uri_element_from_text_range(&uri_info->fragment, uri.fragment);

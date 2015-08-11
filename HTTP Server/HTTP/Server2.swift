@@ -39,7 +39,7 @@ class Server2<Request, Response> {
 
     }
 
-    func start(port port: Int = 8080, failure: ErrorType -> Void = Error.defaultFailureHandler) {
+    func start(port port: Int = 9090, failure: ErrorType -> Void = Error.defaultFailureHandler) {
 
         do {
 

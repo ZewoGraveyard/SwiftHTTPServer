@@ -23,4 +23,3 @@
 // SOFTWARE.
 
 ExampleServer().start()
-Dispatch.main()

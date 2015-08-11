@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-final class ExampleServer: HTTPServer2 {
+final class ExampleServer: FastCGIServer {
 
     init() {
 

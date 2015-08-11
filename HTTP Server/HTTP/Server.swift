@@ -56,6 +56,7 @@ class Server<Request, Response> {
             try startListening(port: port)
             Dispatch.async(queue: Dispatch.backgroundQueue) { self.waitForClients(port: port, failure: failure) }
             if debug { Log.info("Server listening at \(socket!.IP):\(socket!.port).") }
+            Dispatch.main()
 
         } catch {
 

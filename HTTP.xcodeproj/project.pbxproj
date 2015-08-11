@@ -376,6 +376,10 @@
 		B09DBE2E1B79885D00DE4ED0 /* HTTPRequestParser2.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09DBE2C1B79885D00DE4ED0 /* HTTPRequestParser2.swift */; };
 		B09DBE301B7997E300DE4ED0 /* HTTPResponseSerializer2.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09DBE2F1B7997E300DE4ED0 /* HTTPResponseSerializer2.swift */; };
 		B09DBE311B7997E300DE4ED0 /* HTTPResponseSerializer2.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09DBE2F1B7997E300DE4ED0 /* HTTPResponseSerializer2.swift */; };
+		B09DBE351B7A3DCF00DE4ED0 /* FCGI.c in Sources */ = {isa = PBXBuildFile; fileRef = B09DBE331B7A3DCF00DE4ED0 /* FCGI.c */; };
+		B09DBE361B7A3DCF00DE4ED0 /* FCGI.c in Sources */ = {isa = PBXBuildFile; fileRef = B09DBE331B7A3DCF00DE4ED0 /* FCGI.c */; };
+		B09DBE391B7A6A9D00DE4ED0 /* FastCGIServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09DBE381B7A6A9D00DE4ED0 /* FastCGIServer.swift */; };
+		B09DBE3A1B7A6A9D00DE4ED0 /* FastCGIServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09DBE381B7A6A9D00DE4ED0 /* FastCGIServer.swift */; };
 		B0A75C5F1B5C0EED00340DD8 /* HTTPRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A75C5E1B5C0EED00340DD8 /* HTTPRouter.swift */; };
 		B0A75C601B5C0EED00340DD8 /* HTTPRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A75C5E1B5C0EED00340DD8 /* HTTPRouter.swift */; };
 		B0A75C621B5D834A00340DD8 /* ParametersResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A75C611B5D834A00340DD8 /* ParametersResponder.swift */; };
@@ -654,10 +658,13 @@
 		B093DAB01B7973A100537FFE /* uv-common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "uv-common.h"; sourceTree = "<group>"; };
 		B093DAB11B7973A200537FFE /* version.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = version.c; sourceTree = "<group>"; };
 		B09DBE231B79844600DE4ED0 /* Server2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server2.swift; sourceTree = "<group>"; };
-		B09DBE261B7984C700DE4ED0 /* Libuv.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Libuv.swift; sourceTree = "<group>"; };
+		B09DBE261B7984C700DE4ED0 /* Libuv.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Libuv.swift; path = "../HTTP Server/HTTP/Libuv.swift"; sourceTree = "<group>"; };
 		B09DBE291B79882300DE4ED0 /* HTTPServer2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPServer2.swift; sourceTree = "<group>"; };
 		B09DBE2C1B79885D00DE4ED0 /* HTTPRequestParser2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPRequestParser2.swift; path = HTTP/HTTPRequestParser2.swift; sourceTree = "<group>"; };
 		B09DBE2F1B7997E300DE4ED0 /* HTTPResponseSerializer2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPResponseSerializer2.swift; path = HTTP/HTTPResponseSerializer2.swift; sourceTree = "<group>"; };
+		B09DBE331B7A3DCF00DE4ED0 /* FCGI.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = FCGI.c; path = "HTTP Server OS X/FCGI.c"; sourceTree = SOURCE_ROOT; };
+		B09DBE341B7A3DCF00DE4ED0 /* FCGI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FCGI.h; path = "HTTP Server OS X/FCGI.h"; sourceTree = SOURCE_ROOT; };
+		B09DBE381B7A6A9D00DE4ED0 /* FastCGIServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FastCGIServer.swift; path = HTTP/FastCGIServer.swift; sourceTree = "<group>"; };
 		B0A75C5E1B5C0EED00340DD8 /* HTTPRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPRouter.swift; sourceTree = "<group>"; };
 		B0A75C611B5D834A00340DD8 /* ParametersResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParametersResponder.swift; sourceTree = "<group>"; };
 		B0B51EDA1B5895040007A0A3 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
@@ -783,6 +790,7 @@
 		3AAC2B5B1B4C5C6200CDB7C9 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				B09DBE321B7A24E700DE4ED0 /* FastCGI */,
 				B093DA851B7972D400537FFE /* Libuv */,
 				B0609E6A1B6DFDE400FC19C8 /* URI */,
 				B05E712B1B69D7460004DB62 /* Base64 */,
@@ -1074,6 +1082,7 @@
 				B04C42A31B6C292000F39C9F /* HTTP Response */,
 				3AAC2B351B4C5C6100CDB7C9 /* HTTP */,
 				B0DA22F71B707117008CBAB7 /* HTTP Router */,
+				B09DBE371B7A6A8800DE4ED0 /* FastCGIServer */,
 				3AAC2B361B4C5C6100CDB7C9 /* HTTP Server */,
 				B0EC72981B4CC5B500D2D1D9 /* HTTP Client */,
 				3AAC2C181B4C5E0900CDB7C9 /* Example Server */,
@@ -1202,7 +1211,6 @@
 			children = (
 				B0DA22F61B707097008CBAB7 /* Server.h */,
 				B0B51EDA1B5895040007A0A3 /* Server.swift */,
-				B09DBE261B7984C700DE4ED0 /* Libuv.swift */,
 				B09DBE231B79844600DE4ED0 /* Server2.swift */,
 				3AAC2B481B4C5C6200CDB7C9 /* ServerRouter.swift */,
 				B049563E1B56889800AA2A54 /* ServerOperators.swift */,
@@ -1238,6 +1246,7 @@
 		B093DA851B7972D400537FFE /* Libuv */ = {
 			isa = PBXGroup;
 			children = (
+				B09DBE261B7984C700DE4ED0 /* Libuv.swift */,
 				B093DA8E1B7972FF00537FFE /* src */,
 				B093DA861B7972DB00537FFE /* include */,
 			);
@@ -1305,6 +1314,24 @@
 				B093DAAE1B7973A100537FFE /* udp.c */,
 			);
 			path = unix;
+			sourceTree = "<group>";
+		};
+		B09DBE321B7A24E700DE4ED0 /* FastCGI */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = FastCGI;
+			sourceTree = "<group>";
+		};
+		B09DBE371B7A6A8800DE4ED0 /* FastCGIServer */ = {
+			isa = PBXGroup;
+			children = (
+				B09DBE331B7A3DCF00DE4ED0 /* FCGI.c */,
+				B09DBE341B7A3DCF00DE4ED0 /* FCGI.h */,
+				B09DBE381B7A6A9D00DE4ED0 /* FastCGIServer.swift */,
+			);
+			name = FastCGIServer;
+			path = "HTTP Server";
 			sourceTree = "<group>";
 		};
 		B0B9F2871B74111700582235 /* Error */ = {
@@ -1739,6 +1766,7 @@
 				3AAC2C301B4C5E4D00CDB7C9 /* HTTPResponseSerializer.swift in Sources */,
 				B09DBE281B7984C700DE4ED0 /* Libuv.swift in Sources */,
 				B0E3C43F1B581AFB001E8A6A /* HeadersMiddleware.swift in Sources */,
+				B09DBE3A1B7A6A9D00DE4ED0 /* FastCGIServer.swift in Sources */,
 				3AAC2C5C1B4C5E9100CDB7C9 /* StandardLibrary.swift in Sources */,
 				B0609EFA1B6DFE9200FC19C8 /* UriQuery.c in Sources */,
 				B093DADD1B7973A200537FFE /* tcp.c in Sources */,
@@ -1764,6 +1792,7 @@
 				3AAC2C691B4C5E9100CDB7C9 /* TemplateRepository.swift in Sources */,
 				3AAC2C451B4C5E9100CDB7C9 /* HTTPResponse+JSON.swift in Sources */,
 				3AAC2C5B1B4C5E9100CDB7C9 /* NSFormatter.swift in Sources */,
+				B09DBE361B7A3DCF00DE4ED0 /* FCGI.c in Sources */,
 				B05E71271B69B3030004DB62 /* TextParserMiddleware.swift in Sources */,
 				3AAC2C5F1B4C5E9100CDB7C9 /* ExpressionParser.swift in Sources */,
 				B04956101B51715700AA2A54 /* SimpleHTTPParser.swift in Sources */,
@@ -1799,6 +1828,7 @@
 				B093DAB61B7973A200537FFE /* threadpool.c in Sources */,
 				3AAC2BDE1B4C5C6200CDB7C9 /* EachFilter.swift in Sources */,
 				B093DAD21B7973A200537FFE /* poll.c in Sources */,
+				B09DBE391B7A6A9D00DE4ED0 /* FastCGIServer.swift in Sources */,
 				3AAC2BC11B4C5C6200CDB7C9 /* MediaType.swift in Sources */,
 				3AAC2BDD1B4C5C6200CDB7C9 /* TemplateGenerator.swift in Sources */,
 				B093DAE61B7973A200537FFE /* uv-common.c in Sources */,
@@ -1826,6 +1856,7 @@
 				3AAC2BC61B4C5C6200CDB7C9 /* Data.swift in Sources */,
 				B049561E1B52C38C00AA2A54 /* ParametersMiddleware.swift in Sources */,
 				3AAC2BD71B4C5C6200CDB7C9 /* TemplateAST.swift in Sources */,
+				B09DBE351B7A3DCF00DE4ED0 /* FCGI.c in Sources */,
 				B093DAC41B7973A200537FFE /* fsevents.c in Sources */,
 				3AAC2BCF1B4C5C6200CDB7C9 /* JSONParser.swift in Sources */,
 				3AAC2BDA1B4C5C6200CDB7C9 /* TemplateCompiler.swift in Sources */,
@@ -2243,7 +2274,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lfcgi";
 				PRODUCT_NAME = server;
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)HTTP Server OS X/Main/main.h";
@@ -2265,7 +2296,7 @@
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lfcgi";
 				PRODUCT_NAME = server;
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)HTTP Server OS X/Main/main.h";
