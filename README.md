@@ -14,6 +14,7 @@ What we have until now:
 - URI parsing 
 - Functional based routing and middleware architecture
 - JSON parsing
+- PostgreSQL database
 - Mustache templates
 
 There's a lot of things happening behind the curtains, but to be brief I will explain only the essential.
