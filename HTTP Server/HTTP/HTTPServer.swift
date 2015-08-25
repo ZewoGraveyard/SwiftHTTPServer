@@ -36,8 +36,7 @@ class HTTPServer: Server<HTTPRequest, HTTPResponse> {
         super.init(
             parseRequest: parser.parseRequest,
             respond: respond >>> HTTPError.respondError >>> Middleware.addHeaders(["server": "HTTP Server"]),
-            serializeResponse: serializer.serializeResponse,
-            debug: true
+            serializeResponse: serializer.serializeResponse
         )
 
     }

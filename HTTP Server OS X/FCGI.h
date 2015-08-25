@@ -12,9 +12,8 @@
 #include <fcgi_stdio.h>
 
 extern char **environ;
-void dumpEnv();
-int FCGI_printf0(const char *format);
-size_t FCGI_fread0(void *ptr, size_t size);
-size_t FCGI_fwrite0(void *ptr, size_t size);
+int FCGI_writeString(const char *string);
+size_t FCGI_readBuffer(void *buffer, size_t size);
+size_t FCGI_writeBuffer(void *buffer, size_t size);
 
 #endif /* FCGI_h */

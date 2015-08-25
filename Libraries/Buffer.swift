@@ -1,4 +1,4 @@
-// main.h
+// Buffer.swift
 //
 // The MIT License (MIT)
 //
@@ -22,10 +22,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BridgingHeader_h
-#define BridgingHeader_h
+typealias BufferRef = UnsafePointer<uv_buf_t>
+typealias MutableBufferRef = UnsafeMutablePointer<uv_buf_t>
 
-#include "ExampleServer.h"
-#include "uv.h"
+func alloc_buffer(_: HandleRef, suggestedSize: Int, buffer: MutableBufferRef) {
 
-#endif
+    buffer.memory = uv_buf_init(UnsafeMutablePointer.alloc(suggestedSize), UInt32(suggestedSize))
+
+}
+
+func free_buffer(buffer: BufferRef) {
+
+    free(buffer.memory.base)
+    
+}

@@ -33,6 +33,7 @@ struct HTTPRouter {
     }
 
     private var routes: [String: HTTPMethodRouter] = [:]
+    private var fallback: (path: String) -> HTTPRequest throws -> HTTPResponse
 
     var paths: [String] {
 
@@ -40,12 +41,9 @@ struct HTTPRouter {
 
     }
 
-    let publicFilesBaseDirectory: String
-
     var respond: (request: HTTPRequest) throws -> HTTPResponse {
 
-        let defaultRespond = Responder.file(baseDirectory: publicFilesBaseDirectory)
-        let pathRouter = HTTPPathRouter(defaultRespond: defaultRespond)
+        let pathRouter = HTTPPathRouter(fallback: fallback)
 
         // WARNING: Because of the nature of dictionaries (unordered), if a path matches more than one route. The route that is chosen is undefined. It could be any of them.
         for (path, methodRouter) in routes {
@@ -58,21 +56,31 @@ struct HTTPRouter {
 
     }
 
-    init(publicFilesBaseDirectory: String = "Public/", routes: [HTTPRoute]) {
+    init(_ build: (router: HTTPRouterBuilder) -> Void) {
 
-        self.publicFilesBaseDirectory = publicFilesBaseDirectory
+        let routerBuilder = HTTPRouterBuilder()
+        build(router: routerBuilder)
 
-        for route in routes {
+        fallback = routerBuilder.fallback
+
+        for route in routerBuilder.routes {
 
             addRoute(route.methods, path: route.path, respond: route.respond)
-                
+
         }
 
     }
 
     final class HTTPRouterBuilder {
 
-        var routes: [HTTPRoute] = []
+        private var routes: [HTTPRoute] = []
+        var fallback: (path: String) -> HTTPRequest throws -> HTTPResponse = Responder.file(baseDirectory: "Public/")
+
+        func fallback(f: (path: String) -> HTTPRequest throws -> HTTPResponse) {
+
+            self.fallback = f
+
+        }
 
         func all(path: String, _ respond: HTTPRequest throws -> HTTPResponse) {
 
@@ -266,14 +274,6 @@ struct HTTPRouter {
 
     }
 
-    init(_ build: (router: HTTPRouterBuilder) -> Void) {
-
-        let routerBuilder = HTTPRouterBuilder()
-        build(router: routerBuilder)
-        self.init(routes: routerBuilder.routes)
-        
-    }
-
     private mutating func addRoute(methods: Set<HTTPMethod>, path: String, respond: HTTPRequest throws -> HTTPResponse) {
 
         func methodNotAllowed(method: HTTPMethod)(request: HTTPRequest) throws -> HTTPResponse {
@@ -284,7 +284,7 @@ struct HTTPRouter {
 
         if routes[path] == nil {
 
-            routes[path] = HTTPMethodRouter(defaultRespond: methodNotAllowed)
+            routes[path] = HTTPMethodRouter(fallback: methodNotAllowed)
 
         }
 

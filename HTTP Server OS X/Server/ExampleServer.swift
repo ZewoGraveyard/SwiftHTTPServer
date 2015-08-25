@@ -22,32 +22,61 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-final class ExampleServer: FastCGIServer {
+final class ExampleServer: HTTPServer2 {
 
     init() {
 
         let respond = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRouter { router in
 
-            router.get("/login") { request in
+            router.get("/") { request in
 
-                return HTTPResponse()
+                HTTPResponse()
 
             }
 
-            router.get("/login", LoginResponder.show)
-            router.post("/login", LoginResponder.authenticate)
+            router.get("/login") {
+
+                LoginResponder.show
+
+            }
+
+            router.post("/login") {
+
+                LoginResponder.authenticate
+
+            }
 
             router.resources("users") {
 
-                Middleware.basicAuthentication(Authenticator.authenticate) >>>
-                    UserResponder()
+                Middleware.basicAuthentication(Authenticator.authenticate) >>> UserResponder()
 
             }
 
-            router.get("/json", JSONResponder.get)
-            router.post("/json", Middleware.parseJSON >>> JSONResponder.post)
-            router.get("/redirect", Responder.redirect("http://www.google.com"))
-            router.all("/parameters/:id/", ParametersResponder.respond)
+            router.get("/json") {
+
+                JSONResponder.get
+
+            }
+
+            router.post("/json") {
+
+                Middleware.parseJSON >>> JSONResponder.post
+
+            }
+
+            router.get("/redirect") {
+
+                Responder.redirect("http://www.google.com")
+
+            }
+
+            router.all("/parameters/:id/") {
+
+                ParametersResponder.respond
+
+            }
+
+            router.fallback = Responder.file(baseDirectory: "Public/")
 
         } >>> Middleware.logResponse
 

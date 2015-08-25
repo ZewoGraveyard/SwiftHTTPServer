@@ -26,19 +26,21 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    let server = Server()
+
 
     @IBAction func startServerButtonTouched(sender: UIButton) {
 
 //        let resourcePath = NSBundle.mainBundle().resourcePath!
 //        let filePath = resourcePath.stringByExpandingTildeInPath.stringByAppendingPathComponent(path)
+
+        let server = ExampleServer()
         server.start()
 
     }
 
     @IBAction func stopServerButtonTouched(sender: UIButton) {
 
-        server.stop()
+
 
     }
 

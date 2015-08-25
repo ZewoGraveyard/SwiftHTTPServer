@@ -1,4 +1,4 @@
-// main.h
+// Pack.swift
 //
 // The MIT License (MIT)
 //
@@ -22,10 +22,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BridgingHeader_h
-#define BridgingHeader_h
+final class Pack<A> {
 
-#include "ExampleServer.h"
-#include "uv.h"
+    let unpack: A
 
-#endif
+    init(_ value: A) {
+
+        unpack = value
+
+    }
+
+}
+
+func retainedVoidPointer<A>(x: A?) -> UnsafeMutablePointer<Void> {
+
+    guard let value = x else { return UnsafeMutablePointer() }
+    let unmanaged = Unmanaged.passRetained(Pack(value))
+    return UnsafeMutablePointer(unmanaged.toOpaque())
+
+}
+
+func fromVoidPointer<A>(x: UnsafeMutablePointer<Void>) -> A? {
+
+    guard x != nil else { return nil }
+    return Unmanaged<Pack<A>>.fromOpaque(COpaquePointer(x)).takeUnretainedValue().unpack
+
+}
+
+func releaseVoidPointer<A>(x: UnsafeMutablePointer<Void>) -> A? {
+
+    guard x != nil else { return nil }
+    return Unmanaged<Pack<A>>.fromOpaque(COpaquePointer(x)).takeRetainedValue().unpack
+    
+}

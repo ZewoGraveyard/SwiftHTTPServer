@@ -8,30 +8,20 @@
 
 #include "FCGI.h"
 
-void dumpEnv() {
+int FCGI_writeString(const char *string) {
 
-    for (char **env = environ; *env; ++env) {
-
-        printf("%s\n", *env);
-
-    }
+    return FCGI_printf(string);
 
 }
 
-int FCGI_printf0(const char *format) {
+size_t FCGI_readBuffer(void *buffer, size_t size) {
 
-    return FCGI_printf(format);
-
-}
-
-size_t FCGI_fread0(void *ptr, size_t size) {
-
-    return FCGI_fread(ptr, 1, size, stdin);
+    return FCGI_fread(buffer, 1, size, stdin);
 
 }
 
-size_t FCGI_fwrite0(void *ptr, size_t size) {
+size_t FCGI_writeBuffer(void *buffer, size_t size) {
 
-    return FCGI_fwrite(ptr, size, 1, stdout);
+    return FCGI_fwrite(buffer, size, 1, stdout);
 
 }

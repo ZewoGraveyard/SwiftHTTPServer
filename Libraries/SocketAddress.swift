@@ -1,4 +1,4 @@
-// main.h
+// SocketAddress.swift
 //
 // The MIT License (MIT)
 //
@@ -22,10 +22,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BridgingHeader_h
-#define BridgingHeader_h
+class SocketAddress {
 
-#include "ExampleServer.h"
-#include "uv.h"
+    var internetAdress = UnsafeMutablePointer<sockaddr_in>.alloc(1)
 
-#endif
+    var address: UnsafePointer<sockaddr> {
+
+        return UnsafePointer(internetAdress)
+
+    }
+
+    init(host: String, port: Int) {
+
+        uv_ip4_addr(host, Int32(port), internetAdress)
+
+    }
+
+    deinit {
+        
+        internetAdress.dealloc(1)
+        
+    }
+    
+}

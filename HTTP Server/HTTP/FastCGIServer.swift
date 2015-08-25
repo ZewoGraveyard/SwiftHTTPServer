@@ -69,7 +69,7 @@ func getRequest() -> HTTPRequest? {
         if let contentLenghtString = env["CONTENT_LENGTH"], contentLenght = Int(contentLenghtString) {
 
             var buffer: [UInt8] = [UInt8](count: contentLenght, repeatedValue: 0)
-            FCGI_fread0(&buffer, contentLenght)
+            FCGI_readBuffer(&buffer, contentLenght)
             return Data(bytes: buffer)
 
         }
@@ -102,17 +102,17 @@ func sendResponse(var response: HTTPResponse) {
 
     }
 
-    FCGI_printf0("Status: \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+    FCGI_writeString("Status: \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
 
     for (name, value) in response.headers {
 
-        FCGI_printf0("\(name): \(value)\r\n")
+        FCGI_writeString("\(name): \(value)\r\n")
 
     }
 
-    FCGI_printf0("\r\n")
+    FCGI_writeString("\r\n")
 
-    FCGI_fwrite0(UnsafeMutablePointer<Void>(response.body.bytes), response.body.length)
+    FCGI_writeBuffer(UnsafeMutablePointer<Void>(response.body.bytes), response.body.length)
 
 }
 

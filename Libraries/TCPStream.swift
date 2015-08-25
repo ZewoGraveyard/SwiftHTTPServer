@@ -1,4 +1,4 @@
-// main.h
+// TCPStream.swift
 //
 // The MIT License (MIT)
 //
@@ -22,10 +22,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BridgingHeader_h
-#define BridgingHeader_h
+class TCPStream: Stream {
 
-#include "ExampleServer.h"
-#include "uv.h"
+    let socket = UnsafeMutablePointer<uv_tcp_t>.alloc(1)
 
-#endif
+    init(loop: RunLoop = RunLoop.defaultLoop) {
+
+        super.init(UnsafeMutablePointer(self.socket))
+        uv_tcp_init(loop.loop, socket)
+
+    }
+
+    func bind(address: SocketAddress) {
+
+        uv_tcp_bind(socket, address.address, 0)
+        
+    }
+    
+}

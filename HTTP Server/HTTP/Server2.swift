@@ -28,6 +28,8 @@ class Server2<Request, Response> {
     let respond: (request: Request) -> Response
     let serializeResponse: (stream: Stream, response: Response) -> Void
 
+    let runLoop = RunLoop.defaultLoop
+
     init(parseRequest: (stream: Stream, completion: Request -> Void) -> Void,
         respond: (request: Request) -> Response,
         serializeResponse: (stream: Stream, response: Response) -> Void,
@@ -43,11 +45,7 @@ class Server2<Request, Response> {
 
         do {
 
-            Log.info("Listening.")
-
             try runTCPServer(port: port) { client in
-
-                Log.info("Connected to client.")
 
                 self.parseRequest(stream: client) { request in
 
@@ -59,7 +57,6 @@ class Server2<Request, Response> {
                     if !keepAlive {
 
                         client.closeAndFree()
-                        Log.info("Closed connection with client.")
                         
                     }
 
@@ -67,11 +64,19 @@ class Server2<Request, Response> {
 
             }
 
+            runLoop.run()
+
         } catch {
 
             failure(error)
 
         }
+
+    }
+
+    func stop() {
+
+        runLoop.close()
 
     }
 

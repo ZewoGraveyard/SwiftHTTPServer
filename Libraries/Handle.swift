@@ -1,4 +1,4 @@
-// main.h
+// Handle.swift
 //
 // The MIT License (MIT)
 //
@@ -22,10 +22,4 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BridgingHeader_h
-#define BridgingHeader_h
-
-#include "ExampleServer.h"
-#include "uv.h"
-
-#endif
+typealias HandleRef = UnsafeMutablePointer<uv_handle_t>

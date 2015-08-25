@@ -1,4 +1,4 @@
-// main.h
+// UVError.swift
 //
 // The MIT License (MIT)
 //
@@ -22,10 +22,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BridgingHeader_h
-#define BridgingHeader_h
+enum UVError: ErrorType {
 
-#include "ExampleServer.h"
-#include "uv.h"
+    case Error(code: Int32)
 
-#endif
+}
+
+extension UVError : CustomStringConvertible {
+
+    var description: String {
+
+        switch self {
+
+        case .Error(let code):
+
+            let errorName = String.fromCString(uv_err_name(code)) ?? "Unknown error"
+            let errorDescription = String.fromCString(uv_strerror(code)) ?? "Unkown Cause"
+
+            return "\(errorName): \(errorDescription)"
+            
+        }
+        
+    }
+    
+}

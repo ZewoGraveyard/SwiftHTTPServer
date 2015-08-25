@@ -227,6 +227,22 @@
 		B04C42A61B6D21D100F39C9F /* http_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = B04C42A41B6D21D100F39C9F /* http_parser.c */; };
 		B04C42A91B6D325300F39C9F /* HTTPRequestParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04C42A81B6D325300F39C9F /* HTTPRequestParser.swift */; };
 		B04C42AA1B6D325300F39C9F /* HTTPRequestParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04C42A81B6D325300F39C9F /* HTTPRequestParser.swift */; };
+		B059A6811B7ADFD700858FC9 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A6801B7ADFD700858FC9 /* Stream.swift */; };
+		B059A6821B7ADFD700858FC9 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A6801B7ADFD700858FC9 /* Stream.swift */; };
+		B059A6841B7AE10C00858FC9 /* SocketAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A6831B7AE10C00858FC9 /* SocketAddress.swift */; };
+		B059A6851B7AE10C00858FC9 /* SocketAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A6831B7AE10C00858FC9 /* SocketAddress.swift */; };
+		B059A6871B7AE1C800858FC9 /* UVError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A6861B7AE1C800858FC9 /* UVError.swift */; };
+		B059A6881B7AE1C800858FC9 /* UVError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A6861B7AE1C800858FC9 /* UVError.swift */; };
+		B059A68A1B7AE27800858FC9 /* RunLoop.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A6891B7AE27800858FC9 /* RunLoop.swift */; };
+		B059A68B1B7AE27800858FC9 /* RunLoop.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A6891B7AE27800858FC9 /* RunLoop.swift */; };
+		B059A68D1B7AE47700858FC9 /* TCPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A68C1B7AE47700858FC9 /* TCPStream.swift */; };
+		B059A68E1B7AE47700858FC9 /* TCPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A68C1B7AE47700858FC9 /* TCPStream.swift */; };
+		B059A6901B7AE6C300858FC9 /* Handle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A68F1B7AE6C300858FC9 /* Handle.swift */; };
+		B059A6911B7AE6C300858FC9 /* Handle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A68F1B7AE6C300858FC9 /* Handle.swift */; };
+		B059A6931B7AE72E00858FC9 /* Pack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A6921B7AE72E00858FC9 /* Pack.swift */; };
+		B059A6941B7AE72E00858FC9 /* Pack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A6921B7AE72E00858FC9 /* Pack.swift */; };
+		B059A6961B7AEB2600858FC9 /* Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A6951B7AEB2600858FC9 /* Buffer.swift */; };
+		B059A6971B7AEB2600858FC9 /* Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B059A6951B7AEB2600858FC9 /* Buffer.swift */; };
 		B05E711D1B69B1B50004DB62 /* JSONParserMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05E711C1B69B1B50004DB62 /* JSONParserMiddleware.swift */; };
 		B05E711E1B69B1B50004DB62 /* JSONParserMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05E711C1B69B1B50004DB62 /* JSONParserMiddleware.swift */; };
 		B05E71201B69B2030004DB62 /* FormURLEncodedParserMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05E711F1B69B2030004DB62 /* FormURLEncodedParserMiddleware.swift */; };
@@ -377,9 +393,7 @@
 		B09DBE301B7997E300DE4ED0 /* HTTPResponseSerializer2.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09DBE2F1B7997E300DE4ED0 /* HTTPResponseSerializer2.swift */; };
 		B09DBE311B7997E300DE4ED0 /* HTTPResponseSerializer2.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09DBE2F1B7997E300DE4ED0 /* HTTPResponseSerializer2.swift */; };
 		B09DBE351B7A3DCF00DE4ED0 /* FCGI.c in Sources */ = {isa = PBXBuildFile; fileRef = B09DBE331B7A3DCF00DE4ED0 /* FCGI.c */; };
-		B09DBE361B7A3DCF00DE4ED0 /* FCGI.c in Sources */ = {isa = PBXBuildFile; fileRef = B09DBE331B7A3DCF00DE4ED0 /* FCGI.c */; };
 		B09DBE391B7A6A9D00DE4ED0 /* FastCGIServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09DBE381B7A6A9D00DE4ED0 /* FastCGIServer.swift */; };
-		B09DBE3A1B7A6A9D00DE4ED0 /* FastCGIServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09DBE381B7A6A9D00DE4ED0 /* FastCGIServer.swift */; };
 		B0A75C5F1B5C0EED00340DD8 /* HTTPRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A75C5E1B5C0EED00340DD8 /* HTTPRouter.swift */; };
 		B0A75C601B5C0EED00340DD8 /* HTTPRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A75C5E1B5C0EED00340DD8 /* HTTPRouter.swift */; };
 		B0A75C621B5D834A00340DD8 /* ParametersResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A75C611B5D834A00340DD8 /* ParametersResponder.swift */; };
@@ -582,6 +596,14 @@
 		B04C42A41B6D21D100F39C9F /* http_parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = http_parser.c; sourceTree = "<group>"; };
 		B04C42A71B6D21DD00F39C9F /* http_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_parser.h; sourceTree = "<group>"; };
 		B04C42A81B6D325300F39C9F /* HTTPRequestParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPRequestParser.swift; path = HTTP/HTTPRequestParser.swift; sourceTree = "<group>"; };
+		B059A6801B7ADFD700858FC9 /* Stream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stream.swift; sourceTree = "<group>"; };
+		B059A6831B7AE10C00858FC9 /* SocketAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAddress.swift; sourceTree = "<group>"; };
+		B059A6861B7AE1C800858FC9 /* UVError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UVError.swift; sourceTree = "<group>"; };
+		B059A6891B7AE27800858FC9 /* RunLoop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RunLoop.swift; sourceTree = "<group>"; };
+		B059A68C1B7AE47700858FC9 /* TCPStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPStream.swift; sourceTree = "<group>"; };
+		B059A68F1B7AE6C300858FC9 /* Handle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Handle.swift; sourceTree = "<group>"; };
+		B059A6921B7AE72E00858FC9 /* Pack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pack.swift; sourceTree = "<group>"; };
+		B059A6951B7AEB2600858FC9 /* Buffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Buffer.swift; sourceTree = "<group>"; };
 		B05E711C1B69B1B50004DB62 /* JSONParserMiddleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParserMiddleware.swift; sourceTree = "<group>"; };
 		B05E711F1B69B2030004DB62 /* FormURLEncodedParserMiddleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormURLEncodedParserMiddleware.swift; sourceTree = "<group>"; };
 		B05E71221B69B2B80004DB62 /* MultipartParserMiddleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartParserMiddleware.swift; sourceTree = "<group>"; };
@@ -1249,6 +1271,14 @@
 				B09DBE261B7984C700DE4ED0 /* Libuv.swift */,
 				B093DA8E1B7972FF00537FFE /* src */,
 				B093DA861B7972DB00537FFE /* include */,
+				B059A6801B7ADFD700858FC9 /* Stream.swift */,
+				B059A6831B7AE10C00858FC9 /* SocketAddress.swift */,
+				B059A6861B7AE1C800858FC9 /* UVError.swift */,
+				B059A6891B7AE27800858FC9 /* RunLoop.swift */,
+				B059A68C1B7AE47700858FC9 /* TCPStream.swift */,
+				B059A68F1B7AE6C300858FC9 /* Handle.swift */,
+				B059A6921B7AE72E00858FC9 /* Pack.swift */,
+				B059A6951B7AEB2600858FC9 /* Buffer.swift */,
 			);
 			name = Libuv;
 			sourceTree = "<group>";
@@ -1677,6 +1707,7 @@
 				B0B9F28A1B74113A00582235 /* MustacheError.swift in Sources */,
 				3AAC2C571B4C5E9100CDB7C9 /* EachFilter.swift in Sources */,
 				B0CD97E81B6AE77600C3F42A /* HTTPResponse+File.swift in Sources */,
+				B059A6911B7AE6C300858FC9 /* Handle.swift in Sources */,
 				3AAC2C3A1B4C5E5200CDB7C9 /* HTTPResponse+Text.swift in Sources */,
 				3AAC2C561B4C5E9100CDB7C9 /* TemplateGenerator.swift in Sources */,
 				3AAC2C611B4C5E9100CDB7C9 /* TemplateToken.swift in Sources */,
@@ -1689,11 +1720,15 @@
 				B05E711E1B69B1B50004DB62 /* JSONParserMiddleware.swift in Sources */,
 				B0609ED61B6DFE9200FC19C8 /* UriCompare.c in Sources */,
 				B0609EF61B6DFE9200FC19C8 /* UriParseBase.c in Sources */,
+				B059A6881B7AE1C800858FC9 /* UVError.swift in Sources */,
+				B059A6851B7AE10C00858FC9 /* SocketAddress.swift in Sources */,
 				3AAC2C071B4C5DA600CDB7C9 /* ViewController.swift in Sources */,
 				3AAC2C2D1B4C5E4D00CDB7C9 /* HTTPMethod.swift in Sources */,
 				B093DAB31B7973A200537FFE /* fs-poll.c in Sources */,
 				3AAC2C661B4C5E9100CDB7C9 /* MustacheBox.swift in Sources */,
 				B0F5DDCA1B6E785200E260CF /* uri_wrapper.c in Sources */,
+				B059A6821B7ADFD700858FC9 /* Stream.swift in Sources */,
+				B059A6941B7AE72E00858FC9 /* Pack.swift in Sources */,
 				B093DAE11B7973A200537FFE /* timer.c in Sources */,
 				3AAC2C331B4C5E4D00CDB7C9 /* MediaType.swift in Sources */,
 				3AAC2C511B4C5E9100CDB7C9 /* TemplateASTNode.swift in Sources */,
@@ -1718,6 +1753,8 @@
 				B04956401B56889800AA2A54 /* ServerOperators.swift in Sources */,
 				3AAC2C2C1B4C5E4D00CDB7C9 /* SimpleHTTPRequestParser.swift in Sources */,
 				3AAC2C051B4C5DA600CDB7C9 /* AppDelegate.swift in Sources */,
+				B059A6971B7AEB2600858FC9 /* Buffer.swift in Sources */,
+				B059A68B1B7AE27800858FC9 /* RunLoop.swift in Sources */,
 				B0DA22EE1B706564008CBAB7 /* HTTPPathRouter.swift in Sources */,
 				3AAC2C541B4C5E9100CDB7C9 /* Configuration.swift in Sources */,
 				3AAC2C421B4C5E9100CDB7C9 /* Error.swift in Sources */,
@@ -1766,7 +1803,6 @@
 				3AAC2C301B4C5E4D00CDB7C9 /* HTTPResponseSerializer.swift in Sources */,
 				B09DBE281B7984C700DE4ED0 /* Libuv.swift in Sources */,
 				B0E3C43F1B581AFB001E8A6A /* HeadersMiddleware.swift in Sources */,
-				B09DBE3A1B7A6A9D00DE4ED0 /* FastCGIServer.swift in Sources */,
 				3AAC2C5C1B4C5E9100CDB7C9 /* StandardLibrary.swift in Sources */,
 				B0609EFA1B6DFE9200FC19C8 /* UriQuery.c in Sources */,
 				B093DADD1B7973A200537FFE /* tcp.c in Sources */,
@@ -1792,7 +1828,7 @@
 				3AAC2C691B4C5E9100CDB7C9 /* TemplateRepository.swift in Sources */,
 				3AAC2C451B4C5E9100CDB7C9 /* HTTPResponse+JSON.swift in Sources */,
 				3AAC2C5B1B4C5E9100CDB7C9 /* NSFormatter.swift in Sources */,
-				B09DBE361B7A3DCF00DE4ED0 /* FCGI.c in Sources */,
+				B059A68E1B7AE47700858FC9 /* TCPStream.swift in Sources */,
 				B05E71271B69B3030004DB62 /* TextParserMiddleware.swift in Sources */,
 				3AAC2C5F1B4C5E9100CDB7C9 /* ExpressionParser.swift in Sources */,
 				B04956101B51715700AA2A54 /* SimpleHTTPParser.swift in Sources */,
@@ -1828,6 +1864,7 @@
 				B093DAB61B7973A200537FFE /* threadpool.c in Sources */,
 				3AAC2BDE1B4C5C6200CDB7C9 /* EachFilter.swift in Sources */,
 				B093DAD21B7973A200537FFE /* poll.c in Sources */,
+				B059A6871B7AE1C800858FC9 /* UVError.swift in Sources */,
 				B09DBE391B7A6A9D00DE4ED0 /* FastCGIServer.swift in Sources */,
 				3AAC2BC11B4C5C6200CDB7C9 /* MediaType.swift in Sources */,
 				3AAC2BDD1B4C5C6200CDB7C9 /* TemplateGenerator.swift in Sources */,
@@ -1873,6 +1910,7 @@
 				B049563F1B56889800AA2A54 /* ServerOperators.swift in Sources */,
 				B05E71231B69B2B80004DB62 /* MultipartParserMiddleware.swift in Sources */,
 				B09DBE241B79844600DE4ED0 /* Server2.swift in Sources */,
+				B059A6901B7AE6C300858FC9 /* Handle.swift in Sources */,
 				3AAC2C211B4C5E0900CDB7C9 /* main.swift in Sources */,
 				3AAC2BDB1B4C5C6200CDB7C9 /* Configuration.swift in Sources */,
 				3AAC2BC91B4C5C6200CDB7C9 /* Error.swift in Sources */,
@@ -1880,6 +1918,7 @@
 				B093DAD61B7973A200537FFE /* proctitle.c in Sources */,
 				B0A75C621B5D834A00340DD8 /* ParametersResponder.swift in Sources */,
 				3AAC2BCD1B4C5C6200CDB7C9 /* JSONParseError.swift in Sources */,
+				B059A6811B7ADFD700858FC9 /* Stream.swift in Sources */,
 				3AAC2BF51B4C5C6200CDB7C9 /* String.swift in Sources */,
 				3AAC2BE51B4C5C6200CDB7C9 /* ZipFilter.swift in Sources */,
 				3AAC2BB31B4C5C6200CDB7C9 /* HTTPResponse+Text.swift in Sources */,
@@ -1905,7 +1944,9 @@
 				B093DAE81B7973A200537FFE /* version.c in Sources */,
 				B093DAB21B7973A200537FFE /* fs-poll.c in Sources */,
 				B093DACC1B7973A200537FFE /* loop-watcher.c in Sources */,
+				B059A6961B7AEB2600858FC9 /* Buffer.swift in Sources */,
 				3AAC2BCB1B4C5C6200CDB7C9 /* JSON.swift in Sources */,
+				B059A68A1B7AE27800858FC9 /* RunLoop.swift in Sources */,
 				3AAC2BF31B4C5C6200CDB7C9 /* RegularExpression.swift in Sources */,
 				B093DABA1B7973A200537FFE /* core.c in Sources */,
 				3AAC2BD41B4C5C6200CDB7C9 /* Expression.swift in Sources */,
@@ -1917,6 +1958,7 @@
 				3AAC2BBD1B4C5C6200CDB7C9 /* ServerRouter.swift in Sources */,
 				3AAC2BE01B4C5C6200CDB7C9 /* JavascriptEscape.swift in Sources */,
 				B04956211B52C86400AA2A54 /* LoggerMiddleware.swift in Sources */,
+				B059A68D1B7AE47700858FC9 /* TCPStream.swift in Sources */,
 				B0609ED81B6DFE9200FC19C8 /* UriEscape.c in Sources */,
 				B093DA751B75A28E00537FFE /* HTTPError.swift in Sources */,
 				B093DADA1B7973A200537FFE /* stream.c in Sources */,
@@ -1926,6 +1968,7 @@
 				B093DAE41B7973A200537FFE /* udp.c in Sources */,
 				3AAC2BE31B4C5C6200CDB7C9 /* StandardLibrary.swift in Sources */,
 				3AAC2BEF1B4C5C6200CDB7C9 /* Template.swift in Sources */,
+				B059A6931B7AE72E00858FC9 /* Pack.swift in Sources */,
 				3AAC2BD01B4C5C6200CDB7C9 /* JSONSerializer.swift in Sources */,
 				3AAC2BBB1B4C5C6200CDB7C9 /* HTTPResponse.swift in Sources */,
 				B0609EF81B6DFE9200FC19C8 /* UriQuery.c in Sources */,
@@ -1941,6 +1984,7 @@
 				3AAC2BD51B4C5C6200CDB7C9 /* SectionTag.swift in Sources */,
 				3AAC2BF01B4C5C6200CDB7C9 /* TemplateRepository.swift in Sources */,
 				B093DAD41B7973A200537FFE /* process.c in Sources */,
+				B059A6841B7AE10C00858FC9 /* SocketAddress.swift in Sources */,
 				3AAC2BCC1B4C5C6200CDB7C9 /* HTTPResponse+JSON.swift in Sources */,
 				B093DAB41B7973A200537FFE /* inet.c in Sources */,
 				3AAC2BE21B4C5C6200CDB7C9 /* NSFormatter.swift in Sources */,

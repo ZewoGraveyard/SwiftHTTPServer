@@ -24,11 +24,11 @@
 
 final class HTTPMethodRouter: ServerRouter<HTTPMethodRoute> {
 
-    let defaultRespond: (method: HTTPMethod) -> HTTPRequest throws -> HTTPResponse
+    let fallback: (method: HTTPMethod) -> HTTPRequest throws -> HTTPResponse
 
-    init(defaultRespond: (method: HTTPMethod) -> HTTPRequest throws -> HTTPResponse) {
+    init(fallback: (method: HTTPMethod) -> HTTPRequest throws -> HTTPResponse) {
 
-        self.defaultRespond = defaultRespond
+        self.fallback = fallback
 
     }
 
@@ -36,7 +36,7 @@ final class HTTPMethodRouter: ServerRouter<HTTPMethodRoute> {
 
         return getRespond(
             key: HTTPRequest.methodRouterKey,
-            defaultRespond: defaultRespond
+            fallback: fallback
         )
 
     }

@@ -70,12 +70,12 @@ class ServerRouter<Route: ServerRoute> {
     }
 
     func getRespond(key getKey: Route.Request -> () -> Route.Key,
-        defaultRespond: (key: Route.Key) -> (Route.Request throws -> Route.Response)) -> (Route.Request throws -> Route.Response) {
+        fallback: (key: Route.Key) -> (Route.Request throws -> Route.Response)) -> (Route.Request throws -> Route.Response) {
 
             return { (request: Route.Request) in
 
                 let key = getKey(request)()
-                let respond = self.routerRespond(key: key) ?? defaultRespond(key: key)
+                let respond = self.routerRespond(key: key) ?? fallback(key: key)
                 return try respond(request)
                 
             }

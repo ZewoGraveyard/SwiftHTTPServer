@@ -24,11 +24,11 @@
 
 final class HTTPPathRouter: ServerRouter<HTTPPathRoute> {
 
-    let defaultRespond: (path: String) -> HTTPRequest throws -> HTTPResponse
+    let fallback: (path: String) -> HTTPRequest throws -> HTTPResponse
 
-    init(defaultRespond: (path: String) -> HTTPRequest throws -> HTTPResponse) {
+    init(fallback: (path: String) -> HTTPRequest throws -> HTTPResponse) {
 
-        self.defaultRespond = defaultRespond
+        self.fallback = fallback
 
     }
 
@@ -36,7 +36,7 @@ final class HTTPPathRouter: ServerRouter<HTTPPathRoute> {
 
         return getRespond(
             key: HTTPRequest.pathRouterKey,
-            defaultRespond: defaultRespond
+            fallback: fallback
         )
 
     }

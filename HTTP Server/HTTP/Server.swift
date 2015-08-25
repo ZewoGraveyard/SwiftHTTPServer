@@ -35,17 +35,13 @@ class Server<Request, Response> {
     let serializeResponse: (socket: Socket, response: Response) throws -> Void
     var socket: Socket?
 
-    let debug: Bool
-
     init(parseRequest: (socket: Socket, completion: Request -> Void) -> Void,
         respond: (request: Request) -> Response,
-        serializeResponse: (socket: Socket, response: Response) throws -> Void,
-        debug: Bool = false) {
+        serializeResponse: (socket: Socket, response: Response) throws -> Void) {
 
             self.parseRequest = parseRequest
             self.respond = respond
             self.serializeResponse = serializeResponse
-            self.debug = debug
 
     }
 
@@ -53,9 +49,9 @@ class Server<Request, Response> {
 
         do {
 
-            try startListening(port: port)
+            socket?.release()
+            socket = try Socket(port: port, maxConnections: 128)
             Dispatch.async(queue: Dispatch.backgroundQueue) { self.waitForClients(port: port, failure: failure) }
-            if debug { Log.info("Server listening at \(socket!.IP):\(socket!.port).") }
             Dispatch.main()
 
         } catch {
@@ -78,35 +74,20 @@ class Server<Request, Response> {
 
 extension Server {
 
-    private func startListening(port port: TCPPort) throws {
-
-        socket?.release()
-        socket = try Socket(port: port, maxConnections: 128)
-
-    }
-
     private func waitForClients(port port: TCPPort, failure: ErrorType -> Void) {
 
-        while true {
+        do {
 
-            do {
+            while true {
 
-                while true {
-
-                    let clientSocket = try socket!.acceptClient()
-                    Dispatch.async(queue: Dispatch.backgroundQueue) { self.processClient(clientSocket: clientSocket, failure: failure) }
-                    if debug { Log.info("Connected to client at \(clientSocket.IP):\(clientSocket.port).") }
-
-                }
-
-            } catch {
-
-                failure(error)
+                let clientSocket = try socket!.acceptClient()
+                Dispatch.async(queue: Dispatch.backgroundQueue) { self.processClient(clientSocket: clientSocket, failure: failure) }
 
             }
 
-            // TODO: Think about this
-            try! startListening(port: port)
+        } catch {
+
+            failure(error)
 
         }
 
@@ -124,7 +105,6 @@ extension Server {
             if !keepAlive {
 
                 clientSocket.release()
-                if self.debug { Log.info("Closed connection with client at \(clientSocket.IP):\(clientSocket.port).") }
 
             }
 

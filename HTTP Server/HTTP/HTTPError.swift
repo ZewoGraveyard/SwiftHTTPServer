@@ -26,6 +26,7 @@ enum HTTPError : ErrorType {
 
     case BadRequest(description: String)
     case Unauthorized(description: String)
+    case NotFound(description: String)
 
     static func respondError(error: ErrorType) -> HTTPResponse {
 
@@ -33,11 +34,14 @@ enum HTTPError : ErrorType {
 
         switch error {
 
-        case HTTPError.BadRequest:
-            response = HTTPResponse(status: .BadRequest, text: "\(error)")
+        case HTTPError.BadRequest(let description):
+            response = HTTPResponse(status: .BadRequest, text: "\(description)")
 
-        case HTTPError.Unauthorized:
-            response = HTTPResponse(status: .Unauthorized, text: "\(error)")
+        case HTTPError.Unauthorized(let description):
+            response = HTTPResponse(status: .Unauthorized, text: "\(description)")
+
+        case HTTPError.NotFound(let description):
+            response = HTTPResponse(status: .NotFound, text: "\(description)")
 
         default:
             response = HTTPResponse(status: .InternalServerError, text: "\(error)")
@@ -62,6 +66,9 @@ extension HTTPError : CustomStringConvertible {
             return description
 
         case .Unauthorized(let description):
+            return description
+
+        case .NotFound(let description):
             return description
 
         }
