@@ -17,11 +17,7 @@ What we have until now:
 - PostgreSQL database
 - Mustache templates
 
-<<<<<<< HEAD
-There's a lot of things happening behind the curtains, but to be brief I will explain only the essential.
-=======
 There's a *lot* of things happening behind the curtains, but to be brief I will explain only the essential.
->>>>>>> origin/master
 
 ## `HTTPRequest`
 
