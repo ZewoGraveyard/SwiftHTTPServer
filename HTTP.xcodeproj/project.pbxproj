@@ -1071,7 +1071,7 @@
 				B05E712C1B6AE0B30004DB62 /* Views */,
 				B0EC729D1B4CCA1000D2D1D9 /* ExampleServer.h */,
 				3AAC2C201B4C5E0900CDB7C9 /* ExampleServer.swift */,
-				B093DA791B763BBC00537FFE /* Helpers */,
+				B093DA791B763BBC00537FFE /* Authentication */,
 				3AAC2C191B4C5E0900CDB7C9 /* Responders */,
 			);
 			name = "Example Server";
@@ -1257,12 +1257,12 @@
 			path = "HTTP Server";
 			sourceTree = "<group>";
 		};
-		B093DA791B763BBC00537FFE /* Helpers */ = {
+		B093DA791B763BBC00537FFE /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
 				B093DA7A1B763BE900537FFE /* Authenticator.swift */,
 			);
-			name = Helpers;
+			name = Authentication;
 			sourceTree = "<group>";
 		};
 		B093DA851B7972D400537FFE /* Libuv */ = {

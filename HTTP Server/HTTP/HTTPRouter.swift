@@ -90,7 +90,7 @@ struct HTTPRouter {
 
         }
 
-        func all(path: String, _ respond: HTTPRequest throws -> HTTPResponse) {
+        func anyMethod(path: String, _ respond: HTTPRequest throws -> HTTPResponse) {
 
             let route = HTTPRoute(
                 path: path,
@@ -102,9 +102,9 @@ struct HTTPRouter {
 
         }
 
-        func all(path: String, respond: Void -> HTTPRequest throws -> HTTPResponse) {
+        func anyMethod(path: String, respond: Void -> HTTPRequest throws -> HTTPResponse) {
 
-            all(path, respond())
+            anyMethod(path, respond())
             
         }
 

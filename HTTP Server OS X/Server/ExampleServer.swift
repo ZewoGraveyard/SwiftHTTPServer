@@ -28,23 +28,9 @@ final class ExampleServer: HTTPServer2 {
 
         let respond = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRouter { router in
 
-            router.get("/oi") { request in
-
-                HTTPResponse()
-
-            }
-
-            router.get("/login") {
-
-                LoginResponder.show
-
-            }
-
-            router.post("/login") {
-
-                LoginResponder.authenticate
-
-            }
+            router.get("/oi") { _ in HTTPResponse() }
+            router.get("/login", LoginResponder.show)
+            router.post("/login", LoginResponder.authenticate)
 
             router.resources("users") {
 
@@ -52,30 +38,10 @@ final class ExampleServer: HTTPServer2 {
 
             }
 
-            router.get("/json") {
-
-                JSONResponder.get
-
-            }
-
-            router.post("/json") {
-
-                Middleware.parseJSON >>> JSONResponder.post
-
-            }
-
-            router.get("/redirect") {
-
-                Responder.redirect("http://www.google.com")
-
-            }
-
-            router.all("/parameters/:id/") {
-
-                ParametersResponder.respond
-
-            }
-
+            router.get("/json", JSONResponder.get)
+            router.post("/json", Middleware.parseJSON >>> JSONResponder.post)
+            router.get("/redirect", Responder.redirect("http://www.google.com"))
+            router.anyMethod("/parameters/:id/", ParametersResponder.respond)
             router.fallback = Responder.file(baseDirectory: "public")
 
         } >>> Middleware.logResponse
