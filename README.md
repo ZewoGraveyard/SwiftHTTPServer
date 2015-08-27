@@ -8,12 +8,13 @@ Actually, the reason this project has so many components is because **it doesn't
 What we have until now:
 
 - No Foundation dependency (has everything needed to run on Linux)
-- FastCGI support
-- Async I/O with Joyent's libuv 
+- FastCGI support (you can use Nginx or Apache through mod_fastcgi)
+- Native server with Async I/O through Joyent's libuv 
 - HTTP parsing with Nginx/Joyent's http_parser 
 - URI parsing 
 - Functional based routing and middleware architecture
 - JSON parsing
+- PostgreSQL database
 - Mustache templates
 
 There's a lot of things happening behind the curtains, but to be brief I will explain only the essential.
