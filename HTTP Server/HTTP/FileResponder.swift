@@ -36,8 +36,7 @@ extension Responder {
 
             }
 
-            let filePath = path.dropFirstCharacter()
-            return try HTTPResponse(filePath: baseDirectory + filePath)
+            return try HTTPResponse(filePath: baseDirectory + path)
 
         }
 

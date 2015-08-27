@@ -83,7 +83,7 @@ func base64Encode(decoded: String) -> String {
 
     func appendCharacterFromBase(character: Int) {
 
-        encoded.append(base64[advance(base64.startIndex, character)])
+        encoded.append(base64[base64.startIndex.advancedBy(character)])
 
     }
 

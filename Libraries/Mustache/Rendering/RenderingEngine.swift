@@ -76,9 +76,9 @@ final class RenderingEngine {
             let rendering = try renderingEngine.render()
             switch (targetContentType, rendering.contentType) {
             case (.HTML, .Text):
-                buffer.extend(escapeHTML(rendering.string))
+                buffer.appendContentsOf(escapeHTML(rendering.string))
             default:
-                buffer.extend(rendering.string)
+                buffer.appendContentsOf(rendering.string)
             }
         }
     }
@@ -115,7 +115,7 @@ final class RenderingEngine {
             
         case .TextNode(let text):
             // text is the trivial case:
-            buffer.extend(text)
+            buffer.appendContentsOf(text)
             
         case .VariableNode(let variable):
             // {{ name }}
@@ -213,7 +213,7 @@ final class RenderingEngine {
 
         }
         
-        buffer.extend(string)
+        buffer.appendContentsOf(string)
         
         
         // 5. Let didRender functions do their job

@@ -149,7 +149,7 @@ public class PrettyJSONSerializer: DefaultJSONSerializer {
         indentLevel++
         var i = 0
 
-        var keys = o.keys.array
+        var keys = Array(o.keys)
         keys.sortInPlace()
 
         for key in keys {

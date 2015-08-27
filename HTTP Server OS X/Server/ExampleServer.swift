@@ -28,7 +28,7 @@ final class ExampleServer: HTTPServer2 {
 
         let respond = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRouter { router in
 
-            router.get("/") { request in
+            router.get("/oi") { request in
 
                 HTTPResponse()
 
@@ -76,7 +76,7 @@ final class ExampleServer: HTTPServer2 {
 
             }
 
-            router.fallback = Responder.file(baseDirectory: "Public/")
+            router.fallback = Responder.file(baseDirectory: "public")
 
         } >>> Middleware.logResponse
 

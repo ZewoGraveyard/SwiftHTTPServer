@@ -232,7 +232,7 @@ extension RegularExpression {
 
             allGroups += RegularExpression.getGroups(regexMatches, string: string)
             let regexMatch = regexMatches.first!
-            let endOfMatchIndex = advance(string.startIndex, Int(regexMatch.rm_eo))
+            let endOfMatchIndex = string.startIndex.advancedBy(Int(regexMatch.rm_eo))
             string = string[endOfMatchIndex ..< string.endIndex]
 
         }
@@ -300,12 +300,12 @@ extension RegularExpression {
         while let regexMatches = try RegularExpression.firstMatch(regex, string: string, maxNumberOfMatches: maxNumberOfMatches, options: options) {
 
             let regexMatch = regexMatches.first!
-            let endOfMatchIndex = advance(string.startIndex, Int(regexMatch.rm_eo))
+            let endOfMatchIndex = string.startIndex.advancedBy(Int(regexMatch.rm_eo))
 
             var replacedString = RegularExpression.replaceMatch(regexMatch, string: string, withTemplate: template)
 
             let templateDelta = template.utf8.count - (regexMatch.rm_eo - regexMatch.rm_so)
-            let templateDeltaIndex = advance(replacedString.startIndex, Int(regexMatch.rm_eo + templateDelta))
+            let templateDeltaIndex = replacedString.startIndex.advancedBy(Int(regexMatch.rm_eo + templateDelta))
 
             replacedString = replacedString[replacedString.startIndex ..< templateDeltaIndex]
 
@@ -329,8 +329,8 @@ extension RegularExpression {
 
     private static func getRange(regexMatch: RegexMatch, string: String) -> Range<String.Index> {
 
-        let start = advance(string.startIndex, Int(regexMatch.rm_so))
-        let end = advance(string.startIndex, Int(regexMatch.rm_eo))
+        let start = string.startIndex.advancedBy(Int(regexMatch.rm_so))
+        let end = string.startIndex.advancedBy(Int(regexMatch.rm_eo))
 
         return start ..< end
         

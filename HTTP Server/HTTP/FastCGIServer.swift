@@ -31,7 +31,7 @@ var environment: [String: String] {
         let envString = String.fromCString(env.memory)!
         let index = envString.characters.indexOf("=")!
         let name = envString.substringToIndex(index)
-        let value = envString.substringFromIndex(advance(index, 1))
+        let value = envString.substringFromIndex(index.advancedBy(1))
 
         envs[name] = value
 
@@ -54,7 +54,7 @@ func getRequest() -> HTTPRequest? {
         for (key, value) in HTTPHeaders {
 
             let index = key.characters.indexOf("_")!
-            let name = key.substringFromIndex(advance(index, 1)).lowercaseString.replaceOccurrencesOfString("_", withString: "-")
+            let name = key.substringFromIndex(index.advancedBy(1)).lowercaseString.replaceOccurrencesOfString("_", withString: "-")
 
             headers[name] = value
 

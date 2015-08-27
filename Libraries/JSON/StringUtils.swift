@@ -89,7 +89,7 @@ public func escapeAsJSONString(source : String) -> String {
 
         if let escapedSymbol = escapeMapping[c] {
 
-            s.extend(escapedSymbol)
+            s.appendContentsOf(escapedSymbol)
 
         } else {
 
@@ -99,7 +99,7 @@ public func escapeAsJSONString(source : String) -> String {
 
     }
 
-    s.extend("\"")
+    s.appendContentsOf("\"")
     
     return s
 

@@ -100,7 +100,7 @@ extension Middleware {
 
                 func getByteForIndex(index: Int) -> UInt8 {
 
-                    return boundary.utf8[advance(boundary.utf8.startIndex, index)]
+                    return boundary.utf8[boundary.utf8.startIndex.advancedBy(index)]
 
                 }
 

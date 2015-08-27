@@ -65,17 +65,17 @@ final class TemplateParser {
                     startLineNumber = lineNumber
                     stateStart = i
                     state = .UnescapedTag
-                    i = advance(i, currentDelimiters.unescapedTagStartLength).predecessor()
+                    i = i.advancedBy(currentDelimiters.unescapedTagStartLength).predecessor()
                 } else if atString(currentDelimiters.setDelimitersStart) {
                     startLineNumber = lineNumber
                     stateStart = i
                     state = .SetDelimitersTag
-                    i = advance(i, currentDelimiters.setDelimitersStartLength).predecessor()
+                    i = i.advancedBy(currentDelimiters.setDelimitersStartLength).predecessor()
                 } else if atString(currentDelimiters.tagDelimiterPair.0) {
                     startLineNumber = lineNumber
                     stateStart = i
                     state = .Tag
-                    i = advance(i, currentDelimiters.tagStartLength).predecessor()
+                    i = i.advancedBy(currentDelimiters.tagStartLength).predecessor()
                 } else {
                     startLineNumber = lineNumber
                     stateStart = i
@@ -100,7 +100,7 @@ final class TemplateParser {
                     startLineNumber = lineNumber
                     stateStart = i
                     state = .UnescapedTag
-                    i = advance(i, currentDelimiters.unescapedTagStartLength).predecessor()
+                    i = i.advancedBy(currentDelimiters.unescapedTagStartLength).predecessor()
                 } else if atString(currentDelimiters.setDelimitersStart) {
                     if stateStart != i {
                         let range = stateStart..<i
@@ -117,7 +117,7 @@ final class TemplateParser {
                     startLineNumber = lineNumber
                     stateStart = i
                     state = .SetDelimitersTag
-                    i = advance(i, currentDelimiters.setDelimitersStartLength).predecessor()
+                    i = i.advancedBy(currentDelimiters.setDelimitersStartLength).predecessor()
                 } else if atString(currentDelimiters.tagDelimiterPair.0) {
                     if stateStart != i {
                         let range = stateStart..<i
@@ -134,15 +134,15 @@ final class TemplateParser {
                     startLineNumber = lineNumber
                     stateStart = i
                     state = .Tag
-                    i = advance(i, currentDelimiters.tagStartLength).predecessor()
+                    i = i.advancedBy(currentDelimiters.tagStartLength).predecessor()
                 }
             case .Tag:
                 if c == "\n" {
                     ++lineNumber
                 } else if atString(currentDelimiters.tagDelimiterPair.1) {
-                    let tagInitialIndex = advance(stateStart, currentDelimiters.tagStartLength)
+                    let tagInitialIndex = stateStart.advancedBy(currentDelimiters.tagStartLength)
                     let tagInitial = templateString[tagInitialIndex]
-                    let tokenRange = stateStart..<advance(i, currentDelimiters.tagEndLength)
+                    let tokenRange = stateStart ..< i.advancedBy(currentDelimiters.tagEndLength)
                     switch tagInitial {
                     case "!":
                         let token = TemplateToken(
@@ -254,35 +254,35 @@ final class TemplateParser {
                             return
                         }
                     }
-                    stateStart = advance(i, currentDelimiters.tagEndLength)
+                    stateStart = i.advancedBy(currentDelimiters.tagEndLength)
                     state = .Start
-                    i = advance(i, currentDelimiters.tagEndLength).predecessor()
+                    i = i.advancedBy(currentDelimiters.tagEndLength).predecessor()
                 }
                 break
             case .UnescapedTag:
                 if c == "\n" {
                     ++lineNumber
                 } else if atString(currentDelimiters.unescapedTagEnd) {
-                    let tagInitialIndex = advance(stateStart, currentDelimiters.unescapedTagStartLength)
+                    let tagInitialIndex = stateStart.advancedBy(currentDelimiters.unescapedTagStartLength)
                     let content = templateString.substringWithRange(tagInitialIndex..<i)
                     let token = TemplateToken(
                         type: .UnescapedVariable(content: content, tagDelimiterPair: currentDelimiters.tagDelimiterPair),
                         lineNumber: startLineNumber,
                         templateID: templateID,
                         templateString: templateString,
-                        range: stateStart..<advance(i, currentDelimiters.unescapedTagEndLength))
+                        range: stateStart ..< i.advancedBy(currentDelimiters.unescapedTagEndLength))
                     if !tokenConsumer.parser(self, shouldContinueAfterParsingToken: token) {
                         return
                     }
-                    stateStart = advance(i, currentDelimiters.unescapedTagEndLength)
+                    stateStart = i.advancedBy(currentDelimiters.unescapedTagEndLength)
                     state = .Start
-                    i = advance(i, currentDelimiters.unescapedTagEndLength).predecessor()
+                    i = i.advancedBy(currentDelimiters.unescapedTagEndLength).predecessor()
                 }
             case .SetDelimitersTag:
                 if c == "\n" {
                     ++lineNumber
                 } else if atString(currentDelimiters.setDelimitersEnd) {
-                    let tagInitialIndex = advance(stateStart, currentDelimiters.setDelimitersStartLength)
+                    let tagInitialIndex = stateStart.advancedBy(currentDelimiters.setDelimitersStartLength)
                     let content = templateString.substringWithRange(tagInitialIndex..<i)
                     let newDelimiters = content.componentsSeparatedByCharactersInSet(CharacterSet.whitespaceAndNewline).filter { $0.characters.count > 0 }
                     if (newDelimiters.count != 2) {
@@ -304,14 +304,14 @@ final class TemplateParser {
                         lineNumber: startLineNumber,
                         templateID: templateID,
                         templateString: templateString,
-                        range: stateStart..<advance(i, currentDelimiters.setDelimitersEndLength))
+                        range: stateStart ..< i.advancedBy(currentDelimiters.setDelimitersEndLength))
                     if !tokenConsumer.parser(self, shouldContinueAfterParsingToken: token) {
                         return
                     }
                     
-                    stateStart = advance(i, currentDelimiters.setDelimitersEndLength)
+                    stateStart = i.advancedBy(currentDelimiters.setDelimitersEndLength)
                     state = .Start
-                    i = advance(i, currentDelimiters.setDelimitersEndLength).predecessor()
+                    i = i.advancedBy(currentDelimiters.setDelimitersEndLength).predecessor()
                     
                     currentDelimiters = ParserTagDelimiters(tagDelimiterPair: (newDelimiters[0], newDelimiters[1]))
                 }
@@ -377,19 +377,19 @@ final class TemplateParser {
         init(tagDelimiterPair : TagDelimiterPair) {
             self.tagDelimiterPair = tagDelimiterPair
             
-            tagStartLength = distance(tagDelimiterPair.0.startIndex, tagDelimiterPair.0.endIndex)
-            tagEndLength = distance(tagDelimiterPair.1.startIndex, tagDelimiterPair.1.endIndex)
+            tagStartLength = tagDelimiterPair.0.startIndex.distanceTo(tagDelimiterPair.0.endIndex)
+            tagEndLength = tagDelimiterPair.1.startIndex.distanceTo(tagDelimiterPair.1.endIndex)
             
             let usesStandardDelimiters = (tagDelimiterPair.0 == "{{") && (tagDelimiterPair.1 == "}}")
             unescapedTagStart = usesStandardDelimiters ? "{{{" : nil
-            unescapedTagStartLength = unescapedTagStart != nil ? distance(unescapedTagStart!.startIndex, unescapedTagStart!.endIndex) : 0
+            unescapedTagStartLength = unescapedTagStart != nil ? unescapedTagStart!.startIndex.distanceTo(unescapedTagStart!.endIndex) : 0
             unescapedTagEnd = usesStandardDelimiters ? "}}}" : nil
-            unescapedTagEndLength = unescapedTagEnd != nil ? distance(unescapedTagEnd!.startIndex, unescapedTagEnd!.endIndex) : 0
+            unescapedTagEndLength = unescapedTagEnd != nil ? unescapedTagEnd!.startIndex.distanceTo(unescapedTagEnd!.endIndex) : 0
             
             setDelimitersStart = "\(tagDelimiterPair.0)="
-            setDelimitersStartLength = distance(setDelimitersStart.startIndex, setDelimitersStart.endIndex)
+            setDelimitersStartLength = setDelimitersStart.startIndex.distanceTo(setDelimitersStart.endIndex)
             setDelimitersEnd = "=\(tagDelimiterPair.1)"
-            setDelimitersEndLength = distance(setDelimitersEnd.startIndex, setDelimitersEnd.endIndex)
+            setDelimitersEndLength = setDelimitersEnd.startIndex.distanceTo(setDelimitersEnd.endIndex)
         }
     }
 }

@@ -32,7 +32,7 @@ extension HTTPResponse {
 
             guard let file = File(path: filePath) else {
 
-                throw HTTPError.BadRequest(description: "Could not find file \(filePath)")
+                throw HTTPError.NotFound(description: "Could not find file \(filePath)")
 
             }
 

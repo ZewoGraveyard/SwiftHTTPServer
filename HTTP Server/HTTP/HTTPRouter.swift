@@ -37,7 +37,7 @@ struct HTTPRouter {
 
     var paths: [String] {
 
-        return routes.keys.array
+        return Array(routes.keys)
 
     }
 
@@ -74,7 +74,15 @@ struct HTTPRouter {
     final class HTTPRouterBuilder {
 
         private var routes: [HTTPRoute] = []
-        var fallback: (path: String) -> HTTPRequest throws -> HTTPResponse = Responder.file(baseDirectory: "Public/")
+        var fallback: (path: String) -> HTTPRequest throws -> HTTPResponse = { path in
+
+            return { request in
+
+                HTTPResponse(status: .NotFound)
+
+            }
+
+        }
 
         func fallback(f: (path: String) -> HTTPRequest throws -> HTTPResponse) {
 

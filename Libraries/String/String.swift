@@ -521,14 +521,20 @@ extension String {
 
         }
 
-        var i = distance(self.startIndex, startIndex)
+        var i = self.startIndex.distanceTo(startIndex)
 
         while i <= self.characters.count - string.characters.count {
 
-            if self[advance(self.startIndex, i)..<advance(self.startIndex, i+string.characters.count)] == string {
+            if self[self.startIndex.advancedBy(i) ..< self.startIndex.advancedBy(i+string.characters.count)] == string {
 
-                ranges.append(Range(start:advance(self.startIndex, i),end:advance(self.startIndex, i+string.characters.count)))
-                i = i+string.characters.count
+                ranges.append(
+                    Range(
+                        start: self.startIndex.advancedBy(i),
+                        end: self.startIndex.advancedBy(i+string.characters.count)
+                    )
+                )
+                
+                i = i + string.characters.count
 
             } else {
 
@@ -658,7 +664,7 @@ extension String {
 
         }
 
-        return self[advance(startIndex, trimStartIndex) ..< endIndex]
+        return self[startIndex.advancedBy(trimStartIndex) ..< endIndex]
 
     }
 
@@ -677,7 +683,7 @@ extension String {
 
         }
 
-        return self[startIndex ..< advance(startIndex, characters.count - trimEndIndex)]
+        return self[startIndex ..< startIndex.advancedBy(characters.count - trimEndIndex)]
 
     }
 
