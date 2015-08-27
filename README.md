@@ -9,19 +9,15 @@ What we have until now:
 
 - **No Foundation dependency** (has everything needed to run on Linux)
 - FastCGI support (you can use Nginx or Apache through mod_fastcgi)
-- Native server with Async I/O through Joyent's libuv 
-- HTTP parsing with Nginx/Joyent's http_parser 
-- URI parsing 
+- Native server with Async I/O through Joyent's libuv
+- HTTP parsing with Nginx/Joyent's http_parser
+- URI parsing
 - Functional based routing and middleware architecture
 - JSON parsing
 - PostgreSQL database
 - Mustache templates
 
-<<<<<<< HEAD
 There's a lot of things happening behind the curtains, but to be brief I will explain only the essential.
-=======
-There's a *lot* of things happening behind the curtains, but to be brief I will explain only the essential.
->>>>>>> origin/master
 
 ## `HTTPRequest`
 
@@ -35,12 +31,12 @@ struct HTTPRequest {
     let version: String
     var headers: [String: String]
     let body: Data
-    
+
     var parameters: [String: String]
     var data: [String: Any]
-    
+
     ...
-    
+
 }
 ```
 
@@ -57,9 +53,9 @@ struct HTTPResponse {
     let version: String
     var headers: [String: String]
     let body: Data
-    
+
     ...
-    
+
 }
 ```
 
@@ -106,7 +102,7 @@ func >>>(middleware: HTTPRequestMiddleware, respond: HTTPRespond) -> HTTPRespond
     return { request in
 
         switch try middleware(request) {
-        
+
         case .Response(let response):
             return response
 
@@ -141,13 +137,13 @@ An `HTTPRouter` routes an `HTTPRequest` to a respond function based on it's `URI
 ```swift
 let simpleRouter = HTTPRouter { router in
 
-	router.post("/foo", someRespondFunction)	
-	
+	router.post("/foo", someRespondFunction)
+
 	router.get("/baz/:id") { request in
-	
+
 		let id = request.parameter["id"]
 		return HTTPResponse()
-		
+
 	}
 
 }
@@ -155,7 +151,7 @@ let simpleRouter = HTTPRouter { router in
 
 `router` is an instance of `HTTPRouterBuilder` which has a lot of methods that associate an HTTP method and an URI path to a respond function. For example `router.post("/foo", someRespondFunction)` will associate a request with the POST method and the "/foo" URI path to the respond function called `someRespondFunction`. `HTTPRouterBuilder` also has the `resource` and `resources` functions which work kinda like `rails` routing, but we won't go in detail about it now.
 
-If you define a route with a `:placeholder` in the path, the router will match any text and save it in the `parameters` dictionary of the request with `placeholder` as a key. Using the route defined above and the request below: 
+If you define a route with a `:placeholder` in the path, the router will match any text and save it in the `parameters` dictionary of the request with `placeholder` as a key. Using the route defined above and the request below:
 
 ```
 GET /baz/1969 HTTP/1.1
@@ -233,7 +229,7 @@ let respond = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRoute
 } >>> Middleware.logResponse
 
 let server = HTTPServer(respond: respond)
-server.start()    
+server.start()
 ```
 
 ## `HTTPParser`
