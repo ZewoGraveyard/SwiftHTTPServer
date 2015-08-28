@@ -162,10 +162,10 @@ struct RegularExpression {
     let pattern: String
     let regex: CompiledRegex
 
-    init(pattern: String) throws {
+    init(pattern: String, options: CompileRegexOptions = [.Extended]) throws {
 
         self.pattern = pattern
-        self.regex = try RegularExpression.compileRegex(pattern)
+        self.regex = try RegularExpression.compileRegex(pattern, options: options)
 
     }
 

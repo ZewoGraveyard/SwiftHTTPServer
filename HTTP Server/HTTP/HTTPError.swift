@@ -49,7 +49,6 @@ enum HTTPError : ErrorType {
         }
 
         Log.error(error)
-        Log.info(response)
         return response
         
     }

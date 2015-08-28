@@ -26,8 +26,21 @@ final class ExampleServer: HTTPServer2 {
 
     init() {
 
+        func alwaysFails(request: HTTPRequest) throws -> HTTPResponse {
+
+            throw HTTPError.BadRequest(description: "Yo!")
+
+        }
+
+        func failureHandler(error: ErrorType) -> HTTPResponse {
+
+            return HTTPResponse(status: .OK, text: "Just kidding")
+            
+        }
+
         let respond = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRouter { router in
 
+            router.get("/fail", alwaysFails >>> failureHandler)
             router.get("/oi") { _ in HTTPResponse() }
             router.get("/login", LoginResponder.show)
             router.post("/login", LoginResponder.authenticate)
@@ -39,10 +52,11 @@ final class ExampleServer: HTTPServer2 {
             router.get("/json", JSONResponder.get)
             router.post("/json", Middleware.parseJSON >>> JSONResponder.post)
             router.get("/redirect", Responder.redirect("http://www.google.com"))
-            router.anyMethod("/parameters/:id/", ParametersResponder.respond)
+            router.any("/parameters/:id/", ParametersResponder.respond)
+
             router.fallback = Responder.file(baseDirectory: "public")
 
-        } >>> Middleware.logResponse
+        } >>> HTTPError.respondError >>> Middleware.logResponse
 
         super.init(respond: respond)
 

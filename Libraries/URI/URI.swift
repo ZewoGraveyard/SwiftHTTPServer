@@ -24,65 +24,84 @@
 
 struct URI {
 
-    let scheme: String?
-    let userInfo: String?
-    let host: String?
-    let port: String?
-    let path: String?
-    let query: [String: String?]
-    let fragment: String?
+//    let scheme: String?
+//    let userInfo: String?
+//    let host: String?
+//    let port: String?
+    let path: String
+    let query: String
+//    let query: [String: String?]
+//    let fragment: String?
 
     let absolute: String
 
     init?(text: String) {
 
-        let uriInfo = get_uri_info(text)
+        let tokens = text.splitBy("?")
 
-        if uriInfo != nil {
+        self.path = tokens[0]
 
-            var query: [String: String?] = [:]
+        if tokens.count > 1 {
 
-            var queryList = uriInfo.memory.queryList
+            self.query = tokens[1]
 
-            while queryList != nil {
-
-                if let key = String.fromCString(queryList.memory.key) {
-
-                    let value = String.fromCString(queryList.memory.value)
-                    query[key] = value
-
-                }
-
-                queryList = queryList.memory.next
-
-            }
-
-            self.scheme = String.fromCString(uriInfo.memory.scheme)
-            self.userInfo = String.fromCString(uriInfo.memory.userInfo)
-            self.host = String.fromCString(uriInfo.memory.host)
-            self.port = String.fromCString(uriInfo.memory.port)
-
-            if let path = String.fromCString(uriInfo.memory.path) {
-
-                self.path = "/" + path
-
-            } else {
-
-                self.path = nil
-
-            }
-
-            self.query = query
-            self.fragment = String.fromCString(uriInfo.memory.fragment)
-            self.absolute = text
-            
-            free_uri_info(uriInfo)
-            
         } else {
 
-            return nil
+            self.query = ""
 
         }
+
+        self.absolute = text
+
+
+
+//        let uriInfo = get_uri_info(text)
+//
+//        if uriInfo != nil {
+//
+//            var query: [String: String?] = [:]
+//
+//            var queryList = uriInfo.memory.queryList
+//
+//            while queryList != nil {
+//
+//                if let key = String.fromCString(queryList.memory.key) {
+//
+//                    let value = String.fromCString(queryList.memory.value)
+//                    query[key] = value
+//
+//                }
+//
+//                queryList = queryList.memory.next
+//
+//            }
+//
+//            self.scheme = String.fromCString(uriInfo.memory.scheme)
+//            self.userInfo = String.fromCString(uriInfo.memory.userInfo)
+//            self.host = String.fromCString(uriInfo.memory.host)
+//            self.port = String.fromCString(uriInfo.memory.port)
+//
+//            if let path = String.fromCString(uriInfo.memory.path) {
+//
+//                self.path = "/" + path
+//
+//            } else {
+//
+//                self.path = nil
+//
+//            }
+//
+//            self.query = query
+//            self.fragment = String.fromCString(uriInfo.memory.fragment)
+//            self.absolute = text
+//            
+//            free_uri_info(uriInfo)
+//            
+//        } else {
+//
+//            return nil
+//
+//        }
 
     }
 

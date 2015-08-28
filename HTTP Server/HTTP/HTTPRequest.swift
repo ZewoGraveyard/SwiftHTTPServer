@@ -80,7 +80,7 @@ struct HTTPRequest: Parameterizable, KeepAliveType {
 
     func pathRouterKey() -> String {
 
-        return uri.path!
+        return uri.path
         
     }
 

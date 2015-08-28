@@ -30,12 +30,9 @@ struct ParametersResponder {
             "URI": request.uri.absolute,
             "method": request.method.description,
             "headers": request.headers,
-            "params": request.parameters
+            "params": request.parameters,
+            "data": request.data
         ]
-
-        let user: User = try request.getData("user")
-
-        print(user)
 
         return try HTTPResponse(templatePath: "Views/user.html", templateData: info)
         

@@ -16,5 +16,9 @@
         {{# each(params) }}
             <div>{{ @key }}: {{.}}</div>
         {{/}}
+        <h3>Data:</h3>
+        {{# each(data) }}
+        <div>{{ @key }}: {{.}}</div>
+        {{/}}
     </body>
 </html>
