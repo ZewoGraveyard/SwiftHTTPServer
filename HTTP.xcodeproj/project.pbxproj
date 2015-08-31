@@ -366,27 +366,27 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3A4DEF901B4D4A1D00E6F465 /* SimpleHTTPResponseParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SimpleHTTPResponseParser.swift; path = "HTTP Client/SimpleHTTPResponseParser.swift"; sourceTree = SOURCE_ROOT; };
-		3A4DEF921B4D4A3700E6F465 /* HTTPRequestSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPRequestSerializer.swift; path = "HTTP Client/HTTPRequestSerializer.swift"; sourceTree = SOURCE_ROOT; };
+		3A4DEF901B4D4A1D00E6F465 /* SimpleHTTPResponseParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleHTTPResponseParser.swift; sourceTree = "<group>"; };
+		3A4DEF921B4D4A3700E6F465 /* HTTPRequestSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPRequestSerializer.swift; sourceTree = "<group>"; };
 		3AAC2B3B1B4C5C6100CDB7C9 /* HTTPResponse+HTML.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HTTPResponse+HTML.swift"; sourceTree = "<group>"; };
 		3AAC2B3D1B4C5C6100CDB7C9 /* HTTPResponse+Text.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HTTPResponse+Text.swift"; sourceTree = "<group>"; };
-		3AAC2B3F1B4C5C6100CDB7C9 /* HTTPMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPMethod.swift; path = HTTP/HTTPMethod.swift; sourceTree = "<group>"; };
-		3AAC2B401B4C5C6100CDB7C9 /* SimpleHTTPRequestParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SimpleHTTPRequestParser.swift; path = HTTP/SimpleHTTPRequestParser.swift; sourceTree = "<group>"; };
-		3AAC2B411B4C5C6100CDB7C9 /* HTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPRequest.swift; path = HTTP/HTTPRequest.swift; sourceTree = "<group>"; };
-		3AAC2B461B4C5C6100CDB7C9 /* HTTPResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPResponse.swift; path = HTTP/HTTPResponse.swift; sourceTree = "<group>"; };
+		3AAC2B3F1B4C5C6100CDB7C9 /* HTTPMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
+		3AAC2B401B4C5C6100CDB7C9 /* SimpleHTTPRequestParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleHTTPRequestParser.swift; sourceTree = "<group>"; };
+		3AAC2B411B4C5C6100CDB7C9 /* HTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
+		3AAC2B461B4C5C6100CDB7C9 /* HTTPResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPResponse.swift; sourceTree = "<group>"; };
 		3AAC2B481B4C5C6200CDB7C9 /* ServerRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerRouter.swift; sourceTree = "<group>"; };
-		3AAC2B491B4C5C6200CDB7C9 /* HTTPResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPResponseSerializer.swift; path = HTTP/HTTPResponseSerializer.swift; sourceTree = "<group>"; };
+		3AAC2B491B4C5C6200CDB7C9 /* HTTPResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPResponseSerializer.swift; sourceTree = "<group>"; };
 		3AAC2B4A1B4C5C6200CDB7C9 /* HTTPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPServer.h; sourceTree = "<group>"; };
 		3AAC2B4B1B4C5C6200CDB7C9 /* HTTPServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPServer.swift; sourceTree = "<group>"; };
-		3AAC2B4C1B4C5C6200CDB7C9 /* HTTPStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPStatus.swift; path = HTTP/HTTPStatus.swift; sourceTree = "<group>"; };
-		3AAC2B4D1B4C5C6200CDB7C9 /* MediaType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaType.swift; path = "HTTP Server/HTTP/MediaType.swift"; sourceTree = "<group>"; };
+		3AAC2B4C1B4C5C6200CDB7C9 /* HTTPStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPStatus.swift; sourceTree = "<group>"; };
+		3AAC2B4D1B4C5C6200CDB7C9 /* MediaType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaType.swift; sourceTree = "<group>"; };
 		3AAC2B5D1B4C5C6200CDB7C9 /* Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		3AAC2B5F1B4C5C6200CDB7C9 /* Dictionary+Lexicon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Lexicon.swift"; sourceTree = "<group>"; };
 		3AAC2B611B4C5C6200CDB7C9 /* Dispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dispatch.swift; sourceTree = "<group>"; };
 		3AAC2B631B4C5C6200CDB7C9 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		3AAC2B651B4C5C6200CDB7C9 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		3AAC2B671B4C5C6200CDB7C9 /* JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
-		3AAC2B681B4C5C6200CDB7C9 /* HTTPResponse+JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "HTTPResponse+JSON.swift"; path = "../../../Libraries/JSON/HTTPResponse+JSON.swift"; sourceTree = "<group>"; };
+		3AAC2B681B4C5C6200CDB7C9 /* HTTPResponse+JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HTTPResponse+JSON.swift"; sourceTree = "<group>"; };
 		3AAC2B691B4C5C6200CDB7C9 /* JSONParseError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParseError.swift; sourceTree = "<group>"; };
 		3AAC2B6A1B4C5C6200CDB7C9 /* JSONParser+Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONParser+Data.swift"; sourceTree = "<group>"; };
 		3AAC2B6B1B4C5C6200CDB7C9 /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
@@ -423,25 +423,25 @@
 		3AAC2B941B4C5C6200CDB7C9 /* RenderingEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenderingEngine.swift; sourceTree = "<group>"; };
 		3AAC2B961B4C5C6200CDB7C9 /* Template.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Template.swift; sourceTree = "<group>"; };
 		3AAC2B971B4C5C6200CDB7C9 /* TemplateRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateRepository.swift; sourceTree = "<group>"; };
-		3AAC2B981B4C5C6200CDB7C9 /* HTTPResponse+Template.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "HTTPResponse+Template.swift"; path = "../../../Libraries/Mustache/HTTPResponse+Template.swift"; sourceTree = "<group>"; };
+		3AAC2B981B4C5C6200CDB7C9 /* HTTPResponse+Template.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HTTPResponse+Template.swift"; sourceTree = "<group>"; };
 		3AAC2B9A1B4C5C6200CDB7C9 /* PostgreSQL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostgreSQL.swift; sourceTree = "<group>"; };
 		3AAC2B9C1B4C5C6200CDB7C9 /* RegularExpression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegularExpression.swift; sourceTree = "<group>"; };
 		3AAC2B9E1B4C5C6200CDB7C9 /* Socket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Socket.swift; sourceTree = "<group>"; };
 		3AAC2BA01B4C5C6200CDB7C9 /* String+Rope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Rope.swift"; sourceTree = "<group>"; };
-		3AAC2C161B4C5E0900CDB7C9 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = main.h; path = ../Main/main.h; sourceTree = "<group>"; };
+		3AAC2C161B4C5E0900CDB7C9 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		3AAC2C1B1B4C5E0900CDB7C9 /* JSONResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONResponder.swift; sourceTree = "<group>"; };
 		3AAC2C1C1B4C5E0900CDB7C9 /* LoginResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginResponder.swift; sourceTree = "<group>"; };
-		3AAC2C1D1B4C5E0900CDB7C9 /* RedirectResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RedirectResponder.swift; path = "../../HTTP Server OS X/Server/Controllers/RedirectResponder.swift"; sourceTree = "<group>"; };
+		3AAC2C1D1B4C5E0900CDB7C9 /* RedirectResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedirectResponder.swift; sourceTree = "<group>"; };
 		3AAC2C1F1B4C5E0900CDB7C9 /* UserResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserResponder.swift; sourceTree = "<group>"; };
 		3AAC2C201B4C5E0900CDB7C9 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		B049560D1B51715700AA2A54 /* SimpleHTTPParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SimpleHTTPParser.swift; path = HTTP/SimpleHTTPParser.swift; sourceTree = "<group>"; };
+		B049560D1B51715700AA2A54 /* SimpleHTTPParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleHTTPParser.swift; sourceTree = "<group>"; };
 		B049561D1B52C38C00AA2A54 /* ParametersMiddleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParametersMiddleware.swift; sourceTree = "<group>"; };
 		B04956201B52C86400AA2A54 /* LoggerMiddleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggerMiddleware.swift; sourceTree = "<group>"; };
 		B049563B1B532F5C00AA2A54 /* BasicAuthenticationMiddleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicAuthenticationMiddleware.swift; sourceTree = "<group>"; };
 		B049563E1B56889800AA2A54 /* ServerOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerOperators.swift; sourceTree = "<group>"; };
 		B04C42A41B6D21D100F39C9F /* http_parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = http_parser.c; sourceTree = "<group>"; };
 		B04C42A71B6D21DD00F39C9F /* http_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_parser.h; sourceTree = "<group>"; };
-		B04C42A81B6D325300F39C9F /* HTTPRequestParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPRequestParser.swift; path = HTTP/HTTPRequestParser.swift; sourceTree = "<group>"; };
+		B04C42A81B6D325300F39C9F /* HTTPRequestParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPRequestParser.swift; sourceTree = "<group>"; };
 		B04FE2321B94D1F400ACD50F /* Server */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Server; sourceTree = BUILT_PRODUCTS_DIR; };
 		B04FE2331B94D20000ACD50F /* Client */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Client; sourceTree = BUILT_PRODUCTS_DIR; };
 		B04FE2341B94D3E800ACD50F /* Libuv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Libuv.h; sourceTree = "<group>"; };
@@ -463,11 +463,11 @@
 		B05E711F1B69B2030004DB62 /* FormURLEncodedParserMiddleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormURLEncodedParserMiddleware.swift; sourceTree = "<group>"; };
 		B05E71221B69B2B80004DB62 /* MultipartParserMiddleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartParserMiddleware.swift; sourceTree = "<group>"; };
 		B05E71251B69B3030004DB62 /* TextParserMiddleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextParserMiddleware.swift; sourceTree = "<group>"; };
-		B05E712C1B6AE0B30004DB62 /* Views */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Views; sourceTree = SOURCE_ROOT; };
-		B05E712E1B6AE3970004DB62 /* Public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Public; sourceTree = SOURCE_ROOT; };
+		B05E712C1B6AE0B30004DB62 /* Views */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Views; sourceTree = "<group>"; };
+		B05E712E1B6AE3970004DB62 /* Public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Public; sourceTree = "<group>"; };
 		B0609E651B6DC76D00FC19C8 /* HTTPResponseParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPResponseParser.swift; sourceTree = "<group>"; };
 		B093DA741B75A28E00537FFE /* HTTPError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPError.swift; sourceTree = "<group>"; };
-		B093DA7A1B763BE900537FFE /* Authenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Authenticator.swift; path = Helpers/Authenticator.swift; sourceTree = "<group>"; };
+		B093DA7A1B763BE900537FFE /* Authenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authenticator.swift; sourceTree = "<group>"; };
 		B093DA871B7972E700537FFE /* tree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tree.h; sourceTree = "<group>"; };
 		B093DA881B7972E700537FFE /* uv-darwin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "uv-darwin.h"; sourceTree = "<group>"; };
 		B093DA891B7972E700537FFE /* uv-errno.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "uv-errno.h"; sourceTree = "<group>"; };
@@ -510,35 +510,35 @@
 		B093DAB01B7973A100537FFE /* uv-common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "uv-common.h"; sourceTree = "<group>"; };
 		B093DAB11B7973A200537FFE /* version.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = version.c; sourceTree = "<group>"; };
 		B09DBE231B79844600DE4ED0 /* Server2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server2.swift; sourceTree = "<group>"; };
-		B09DBE261B7984C700DE4ED0 /* Libuv.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Libuv.swift; path = "../HTTP Server/HTTP/Libuv.swift"; sourceTree = "<group>"; };
+		B09DBE261B7984C700DE4ED0 /* Libuv.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Libuv.swift; sourceTree = "<group>"; };
 		B09DBE291B79882300DE4ED0 /* HTTPServer2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPServer2.swift; sourceTree = "<group>"; };
-		B09DBE2C1B79885D00DE4ED0 /* HTTPRequestParser2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPRequestParser2.swift; path = HTTP/HTTPRequestParser2.swift; sourceTree = "<group>"; };
-		B09DBE2F1B7997E300DE4ED0 /* HTTPResponseSerializer2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPResponseSerializer2.swift; path = HTTP/HTTPResponseSerializer2.swift; sourceTree = "<group>"; };
-		B09DBE331B7A3DCF00DE4ED0 /* FCGI.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = FCGI.c; path = "HTTP Server OS X/FCGI.c"; sourceTree = SOURCE_ROOT; };
-		B09DBE341B7A3DCF00DE4ED0 /* FCGI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FCGI.h; path = "HTTP Server OS X/FCGI.h"; sourceTree = SOURCE_ROOT; };
-		B09DBE381B7A6A9D00DE4ED0 /* FastCGIServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FastCGIServer.swift; path = HTTP/FastCGIServer.swift; sourceTree = "<group>"; };
+		B09DBE2C1B79885D00DE4ED0 /* HTTPRequestParser2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPRequestParser2.swift; sourceTree = "<group>"; };
+		B09DBE2F1B7997E300DE4ED0 /* HTTPResponseSerializer2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPResponseSerializer2.swift; sourceTree = "<group>"; };
+		B09DBE331B7A3DCF00DE4ED0 /* FCGI.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FCGI.c; sourceTree = "<group>"; };
+		B09DBE341B7A3DCF00DE4ED0 /* FCGI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCGI.h; sourceTree = "<group>"; };
+		B09DBE381B7A6A9D00DE4ED0 /* FastCGIServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastCGIServer.swift; sourceTree = "<group>"; };
 		B0A75C5E1B5C0EED00340DD8 /* HTTPRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPRouter.swift; sourceTree = "<group>"; };
 		B0A75C611B5D834A00340DD8 /* ParametersResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParametersResponder.swift; sourceTree = "<group>"; };
 		B0B51EDA1B5895040007A0A3 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
-		B0B9F2881B74113A00582235 /* MustacheError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MustacheError.swift; path = Error/MustacheError.swift; sourceTree = "<group>"; };
+		B0B9F2881B74113A00582235 /* MustacheError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MustacheError.swift; sourceTree = "<group>"; };
 		B0CD97E61B6AE77600C3F42A /* HTTPResponse+File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HTTPResponse+File.swift"; sourceTree = "<group>"; };
 		B0DA22EC1B706564008CBAB7 /* HTTPPathRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPPathRouter.swift; sourceTree = "<group>"; };
 		B0DA22EF1B7065EE008CBAB7 /* HTTPMethodRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPMethodRouter.swift; sourceTree = "<group>"; };
 		B0DA22F61B707097008CBAB7 /* Server.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Server.h; sourceTree = "<group>"; };
 		B0DA22F81B70713B008CBAB7 /* HTTPRouter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HTTPRouter.h; sourceTree = "<group>"; };
 		B0E3C4331B573EEA001E8A6A /* FileResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileResponder.swift; sourceTree = "<group>"; };
-		B0E3C43A1B57FEEB001E8A6A /* CollectionType+Anthology.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CollectionType+Anthology.swift"; path = "Array/CollectionType+Anthology.swift"; sourceTree = "<group>"; };
+		B0E3C43A1B57FEEB001E8A6A /* CollectionType+Anthology.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CollectionType+Anthology.swift"; sourceTree = "<group>"; };
 		B0E3C43D1B581AFB001E8A6A /* HeadersMiddleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeadersMiddleware.swift; sourceTree = "<group>"; };
 		B0EC72951B4CC46C00D2D1D9 /* DatabaseResponder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseResponder.swift; sourceTree = "<group>"; };
 		B0EC72991B4CC8B300D2D1D9 /* Socket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Socket.h; sourceTree = "<group>"; };
 		B0EC729A1B4CC90500D2D1D9 /* RegularExpression.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RegularExpression.h; sourceTree = "<group>"; };
 		B0EC729B1B4CC93B00D2D1D9 /* Dispatch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Dispatch.h; sourceTree = "<group>"; };
 		B0EC729C1B4CC99700D2D1D9 /* PostgreSQL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PostgreSQL.h; sourceTree = "<group>"; };
-		B0EC72F81B4CD0C400D2D1D9 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = main.h; path = "HTTP Client OS X/main.h"; sourceTree = SOURCE_ROOT; };
-		B0EC72F91B4CD0C400D2D1D9 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = main.swift; path = "HTTP Client OS X/main.swift"; sourceTree = SOURCE_ROOT; };
-		B0EC72FF1B4CD1A400D2D1D9 /* HTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HTTPClient.h; path = "HTTP Client/HTTPClient.h"; sourceTree = SOURCE_ROOT; };
-		B0EC73001B4CD26400D2D1D9 /* HTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPClient.swift; path = "HTTP Client/HTTPClient.swift"; sourceTree = SOURCE_ROOT; };
-		B0F5DDCC1B6E9DA700E260CF /* URI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = URI.swift; path = URI/URI.swift; sourceTree = "<group>"; };
+		B0EC72F81B4CD0C400D2D1D9 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
+		B0EC72F91B4CD0C400D2D1D9 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		B0EC72FF1B4CD1A400D2D1D9 /* HTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPClient.h; sourceTree = "<group>"; };
+		B0EC73001B4CD26400D2D1D9 /* HTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
+		B0F5DDCC1B6E9DA700E260CF /* URI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -574,8 +574,7 @@
 				B09DBE291B79882300DE4ED0 /* HTTPServer2.swift */,
 				B093DA741B75A28E00537FFE /* HTTPError.swift */,
 			);
-			name = "HTTP Server";
-			path = "HTTP Server/HTTP";
+			path = "HTTP Server";
 			sourceTree = "<group>";
 		};
 		3AAC2B5C1B4C5C6200CDB7C9 /* Data */ = {
@@ -583,8 +582,7 @@
 			children = (
 				3AAC2B5D1B4C5C6200CDB7C9 /* Data.swift */,
 			);
-			name = Data;
-			path = Libraries/Data;
+			path = Data;
 			sourceTree = "<group>";
 		};
 		3AAC2B5E1B4C5C6200CDB7C9 /* Lexicon */ = {
@@ -592,8 +590,7 @@
 			children = (
 				3AAC2B5F1B4C5C6200CDB7C9 /* Dictionary+Lexicon.swift */,
 			);
-			name = Lexicon;
-			path = Libraries/Dictionary;
+			path = Lexicon;
 			sourceTree = "<group>";
 		};
 		3AAC2B601B4C5C6200CDB7C9 /* Dispatch */ = {
@@ -602,8 +599,7 @@
 				B0EC729B1B4CC93B00D2D1D9 /* Dispatch.h */,
 				3AAC2B611B4C5C6200CDB7C9 /* Dispatch.swift */,
 			);
-			name = Dispatch;
-			path = Libraries/Dispatch;
+			path = Dispatch;
 			sourceTree = "<group>";
 		};
 		3AAC2B621B4C5C6200CDB7C9 /* Error */ = {
@@ -611,8 +607,7 @@
 			children = (
 				3AAC2B631B4C5C6200CDB7C9 /* Error.swift */,
 			);
-			name = Error;
-			path = Libraries/Error;
+			path = Error;
 			sourceTree = "<group>";
 		};
 		3AAC2B641B4C5C6200CDB7C9 /* File */ = {
@@ -620,8 +615,7 @@
 			children = (
 				3AAC2B651B4C5C6200CDB7C9 /* File.swift */,
 			);
-			name = File;
-			path = Libraries/File;
+			path = File;
 			sourceTree = "<group>";
 		};
 		3AAC2B661B4C5C6200CDB7C9 /* JSON */ = {
@@ -634,8 +628,7 @@
 				3AAC2B6C1B4C5C6200CDB7C9 /* JSONSerializer.swift */,
 				3AAC2B6D1B4C5C6200CDB7C9 /* StringUtils.swift */,
 			);
-			name = JSON;
-			path = Libraries/JSON;
+			path = JSON;
 			sourceTree = "<group>";
 		};
 		3AAC2B6E1B4C5C6200CDB7C9 /* Log */ = {
@@ -643,8 +636,7 @@
 			children = (
 				3AAC2B6F1B4C5C6200CDB7C9 /* Log.swift */,
 			);
-			name = Log;
-			path = Libraries/Log;
+			path = Log;
 			sourceTree = "<group>";
 		};
 		3AAC2B701B4C5C6200CDB7C9 /* Mustache */ = {
@@ -660,8 +652,7 @@
 				3AAC2B8E1B4C5C6200CDB7C9 /* Rendering */,
 				3AAC2B951B4C5C6200CDB7C9 /* Template */,
 			);
-			name = Mustache;
-			path = Libraries/Mustache;
+			path = Mustache;
 			sourceTree = "<group>";
 		};
 		3AAC2B711B4C5C6200CDB7C9 /* Common */ = {
@@ -764,8 +755,7 @@
 				B0EC729C1B4CC99700D2D1D9 /* PostgreSQL.h */,
 				3AAC2B9A1B4C5C6200CDB7C9 /* PostgreSQL.swift */,
 			);
-			name = PostgreSQL;
-			path = Libraries/PostgreSQL;
+			path = PostgreSQL;
 			sourceTree = "<group>";
 		};
 		3AAC2B9B1B4C5C6200CDB7C9 /* Regular Expression */ = {
@@ -774,8 +764,7 @@
 				B0EC729A1B4CC90500D2D1D9 /* RegularExpression.h */,
 				3AAC2B9C1B4C5C6200CDB7C9 /* RegularExpression.swift */,
 			);
-			name = "Regular Expression";
-			path = "Libraries/Regular Expression";
+			path = "Regular Expression";
 			sourceTree = "<group>";
 		};
 		3AAC2B9D1B4C5C6200CDB7C9 /* Socket */ = {
@@ -784,8 +773,7 @@
 				B0EC72991B4CC8B300D2D1D9 /* Socket.h */,
 				3AAC2B9E1B4C5C6200CDB7C9 /* Socket.swift */,
 			);
-			name = Socket;
-			path = Libraries/Socket;
+			path = Socket;
 			sourceTree = "<group>";
 		};
 		3AAC2B9F1B4C5C6200CDB7C9 /* Rope */ = {
@@ -793,8 +781,7 @@
 			children = (
 				3AAC2BA01B4C5C6200CDB7C9 /* String+Rope.swift */,
 			);
-			name = Rope;
-			path = Libraries/String;
+			path = Rope;
 			sourceTree = "<group>";
 		};
 		3AAC2C181B4C5E0900CDB7C9 /* Example Server */ = {
@@ -808,8 +795,7 @@
 				3AAC2C161B4C5E0900CDB7C9 /* main.h */,
 				3AAC2C201B4C5E0900CDB7C9 /* main.swift */,
 			);
-			name = "Example Server";
-			path = "HTTP Server OS X/Server";
+			path = "Example Server";
 			sourceTree = "<group>";
 		};
 		3AAC2C191B4C5E0900CDB7C9 /* Responders */ = {
@@ -821,8 +807,7 @@
 				B0EC72951B4CC46C00D2D1D9 /* DatabaseResponder.swift */,
 				B0A75C611B5D834A00340DD8 /* ParametersResponder.swift */,
 			);
-			name = Responders;
-			path = Controllers;
+			path = Responders;
 			sourceTree = "<group>";
 		};
 		7C839B6519422CFF003A6950 = {
@@ -880,8 +865,7 @@
 				B09DBE2F1B7997E300DE4ED0 /* HTTPResponseSerializer2.swift */,
 				3A4DEF921B4D4A3700E6F465 /* HTTPRequestSerializer.swift */,
 			);
-			name = "HTTP Serializer";
-			path = "HTTP Server";
+			path = "HTTP Serializer";
 			sourceTree = "<group>";
 		};
 		B04C42A11B6C271800F39C9F /* Middlewares */ = {
@@ -891,7 +875,7 @@
 				B04956201B52C86400AA2A54 /* LoggerMiddleware.swift */,
 				B0E3C43D1B581AFB001E8A6A /* HeadersMiddleware.swift */,
 			);
-			name = Middlewares;
+			path = Middlewares;
 			sourceTree = "<group>";
 		};
 		B04C42A21B6C291300F39C9F /* HTTP Request */ = {
@@ -900,8 +884,7 @@
 				3AAC2B411B4C5C6100CDB7C9 /* HTTPRequest.swift */,
 				3AAC2B3F1B4C5C6100CDB7C9 /* HTTPMethod.swift */,
 			);
-			name = "HTTP Request";
-			path = "HTTP Server";
+			path = "HTTP Request";
 			sourceTree = "<group>";
 		};
 		B04C42A31B6C292000F39C9F /* HTTP Response */ = {
@@ -910,8 +893,7 @@
 				3AAC2B461B4C5C6100CDB7C9 /* HTTPResponse.swift */,
 				3AAC2B4C1B4C5C6200CDB7C9 /* HTTPStatus.swift */,
 			);
-			name = "HTTP Response";
-			path = "HTTP Server";
+			path = "HTTP Response";
 			sourceTree = "<group>";
 		};
 		B04FE23A1B94DE2600ACD50F /* Products */ = {
@@ -929,8 +911,7 @@
 			children = (
 				B0E3C4331B573EEA001E8A6A /* FileResponder.swift */,
 			);
-			name = "File Responder";
-			path = "HTTP Server/HTTP";
+			path = "File Responder";
 			sourceTree = "<group>";
 		};
 		B04FE23C1B94E01300ACD50F /* Multipart Parser Middleware */ = {
@@ -938,8 +919,7 @@
 			children = (
 				B05E71221B69B2B80004DB62 /* MultipartParserMiddleware.swift */,
 			);
-			name = "Multipart Parser Middleware";
-			path = "HTTP Server/HTTP";
+			path = "Multipart Parser Middleware";
 			sourceTree = "<group>";
 		};
 		B04FE23D1B94E02000ACD50F /* Basic Authentication Middleware */ = {
@@ -947,8 +927,7 @@
 			children = (
 				B049563B1B532F5C00AA2A54 /* BasicAuthenticationMiddleware.swift */,
 			);
-			name = "Basic Authentication Middleware";
-			path = "HTTP Server/HTTP";
+			path = "Basic Authentication Middleware";
 			sourceTree = "<group>";
 		};
 		B04FE23E1B94E02C00ACD50F /* JSON Parser Middleware */ = {
@@ -956,8 +935,7 @@
 			children = (
 				B05E711C1B69B1B50004DB62 /* JSONParserMiddleware.swift */,
 			);
-			name = "JSON Parser Middleware";
-			path = "HTTP Server/HTTP";
+			path = "JSON Parser Middleware";
 			sourceTree = "<group>";
 		};
 		B04FE23F1B94E03700ACD50F /* URL Encoded Parser Middleware */ = {
@@ -965,8 +943,7 @@
 			children = (
 				B05E711F1B69B2030004DB62 /* FormURLEncodedParserMiddleware.swift */,
 			);
-			name = "URL Encoded Parser Middleware";
-			path = "HTTP Server/HTTP";
+			path = "URL Encoded Parser Middleware";
 			sourceTree = "<group>";
 		};
 		B04FE2401B94E04B00ACD50F /* Text Parser Middleware */ = {
@@ -974,8 +951,7 @@
 			children = (
 				B05E71251B69B3030004DB62 /* TextParserMiddleware.swift */,
 			);
-			name = "Text Parser Middleware";
-			path = "HTTP Server/HTTP";
+			path = "Text Parser Middleware";
 			sourceTree = "<group>";
 		};
 		B04FE2411B94E09B00ACD50F /* File Response */ = {
@@ -983,8 +959,7 @@
 			children = (
 				B0CD97E61B6AE77600C3F42A /* HTTPResponse+File.swift */,
 			);
-			name = "File Response";
-			path = "HTTP Server/HTTP/HTTPBodies";
+			path = "File Response";
 			sourceTree = "<group>";
 		};
 		B04FE2421B94E0A500ACD50F /* Template Response */ = {
@@ -992,8 +967,7 @@
 			children = (
 				3AAC2B981B4C5C6200CDB7C9 /* HTTPResponse+Template.swift */,
 			);
-			name = "Template Response";
-			path = "HTTP Server/HTTP/HTTPBodies";
+			path = "Template Response";
 			sourceTree = "<group>";
 		};
 		B04FE2431B94E0AD00ACD50F /* JSON Response */ = {
@@ -1001,8 +975,7 @@
 			children = (
 				3AAC2B681B4C5C6200CDB7C9 /* HTTPResponse+JSON.swift */,
 			);
-			name = "JSON Response";
-			path = "HTTP Server/HTTP/HTTPBodies";
+			path = "JSON Response";
 			sourceTree = "<group>";
 		};
 		B04FE2441B94E0B400ACD50F /* HTML Response */ = {
@@ -1010,8 +983,7 @@
 			children = (
 				3AAC2B3B1B4C5C6100CDB7C9 /* HTTPResponse+HTML.swift */,
 			);
-			name = "HTML Response";
-			path = "HTTP Server/HTTP/HTTPBodies";
+			path = "HTML Response";
 			sourceTree = "<group>";
 		};
 		B04FE2451B94E0BA00ACD50F /* Text Response */ = {
@@ -1019,8 +991,7 @@
 			children = (
 				3AAC2B3D1B4C5C6100CDB7C9 /* HTTPResponse+Text.swift */,
 			);
-			name = "Text Response";
-			path = "HTTP Server/HTTP/HTTPBodies";
+			path = "Text Response";
 			sourceTree = "<group>";
 		};
 		B05372C21B927D5B00FC2B07 /* ServerTests */ = {
@@ -1038,8 +1009,7 @@
 			children = (
 				B0F5DDCC1B6E9DA700E260CF /* URI.swift */,
 			);
-			name = URI;
-			path = Libraries;
+			path = URI;
 			sourceTree = "<group>";
 		};
 		B085B8161B594EE6007F9612 /* Server */ = {
@@ -1052,8 +1022,7 @@
 				B049563E1B56889800AA2A54 /* ServerOperators.swift */,
 				B04C42A11B6C271800F39C9F /* Middlewares */,
 			);
-			name = Server;
-			path = "HTTP Server/HTTP";
+			path = Server;
 			sourceTree = "<group>";
 		};
 		B085B81C1B59A5D9007F9612 /* HTTP Parser */ = {
@@ -1066,8 +1035,7 @@
 				B09DBE2C1B79885D00DE4ED0 /* HTTPRequestParser2.swift */,
 				B0609E651B6DC76D00FC19C8 /* HTTPResponseParser.swift */,
 			);
-			name = "HTTP Parser";
-			path = "HTTP Server";
+			path = "HTTP Parser";
 			sourceTree = "<group>";
 		};
 		B093DA791B763BBC00537FFE /* Authentication */ = {
@@ -1075,7 +1043,7 @@
 			children = (
 				B093DA7A1B763BE900537FFE /* Authenticator.swift */,
 			);
-			name = Authentication;
+			path = Authentication;
 			sourceTree = "<group>";
 		};
 		B093DA851B7972D400537FFE /* Libuv */ = {
@@ -1094,8 +1062,7 @@
 				B059A6921B7AE72E00858FC9 /* Pack.swift */,
 				B059A6951B7AEB2600858FC9 /* Buffer.swift */,
 			);
-			name = Libuv;
-			path = Libraries;
+			path = Libuv;
 			sourceTree = "<group>";
 		};
 		B093DA861B7972DB00537FFE /* include */ = {
@@ -1109,7 +1076,7 @@
 				B093DA8C1B7972E700537FFE /* uv-version.h */,
 				B093DA8D1B7972E700537FFE /* uv.h */,
 			);
-			name = include;
+			path = include;
 			sourceTree = "<group>";
 		};
 		B093DA8E1B7972FF00537FFE /* src */ = {
@@ -1125,7 +1092,7 @@
 				B093DAB01B7973A100537FFE /* uv-common.h */,
 				B093DAB11B7973A200537FFE /* version.c */,
 			);
-			name = src;
+			path = src;
 			sourceTree = "<group>";
 		};
 		B093DA941B7973A100537FFE /* unix */ = {
@@ -1168,8 +1135,7 @@
 				B09DBE341B7A3DCF00DE4ED0 /* FCGI.h */,
 				B09DBE381B7A6A9D00DE4ED0 /* FastCGIServer.swift */,
 			);
-			name = FastCGIServer;
-			path = "HTTP Server";
+			path = FastCGIServer;
 			sourceTree = "<group>";
 		};
 		B0B9F2871B74111700582235 /* Error */ = {
@@ -1177,7 +1143,7 @@
 			children = (
 				B0B9F2881B74113A00582235 /* MustacheError.swift */,
 			);
-			name = Error;
+			path = Error;
 			sourceTree = "<group>";
 		};
 		B0DA22F21B7069D7008CBAB7 /* Media Type */ = {
@@ -1185,7 +1151,7 @@
 			children = (
 				3AAC2B4D1B4C5C6200CDB7C9 /* MediaType.swift */,
 			);
-			name = "Media Type";
+			path = "Media Type";
 			sourceTree = "<group>";
 		};
 		B0DA22F31B706D45008CBAB7 /* Simple HTTP Parser */ = {
@@ -1195,8 +1161,7 @@
 				3AAC2B401B4C5C6100CDB7C9 /* SimpleHTTPRequestParser.swift */,
 				3A4DEF901B4D4A1D00E6F465 /* SimpleHTTPResponseParser.swift */,
 			);
-			name = "Simple HTTP Parser";
-			path = "HTTP Server";
+			path = "Simple HTTP Parser";
 			sourceTree = "<group>";
 		};
 		B0DA22F71B707117008CBAB7 /* HTTP Router */ = {
@@ -1207,8 +1172,7 @@
 				B0DA22EC1B706564008CBAB7 /* HTTPPathRouter.swift */,
 				B0DA22EF1B7065EE008CBAB7 /* HTTPMethodRouter.swift */,
 			);
-			name = "HTTP Router";
-			path = "HTTP Server/HTTP";
+			path = "HTTP Router";
 			sourceTree = "<group>";
 		};
 		B0E3C4321B573ED1001E8A6A /* Redirect Responder */ = {
@@ -1216,8 +1180,7 @@
 			children = (
 				3AAC2C1D1B4C5E0900CDB7C9 /* RedirectResponder.swift */,
 			);
-			name = "Redirect Responder";
-			path = "HTTP Server/HTTP";
+			path = "Redirect Responder";
 			sourceTree = "<group>";
 		};
 		B0E3C4391B57FED7001E8A6A /* Anthology */ = {
@@ -1225,8 +1188,7 @@
 			children = (
 				B0E3C43A1B57FEEB001E8A6A /* CollectionType+Anthology.swift */,
 			);
-			name = Anthology;
-			path = Libraries;
+			path = Anthology;
 			sourceTree = "<group>";
 		};
 		B0EC72981B4CC5B500D2D1D9 /* HTTP Client */ = {
@@ -1235,8 +1197,7 @@
 				B0EC72FF1B4CD1A400D2D1D9 /* HTTPClient.h */,
 				B0EC73001B4CD26400D2D1D9 /* HTTPClient.swift */,
 			);
-			name = "HTTP Client";
-			path = "HTTP Server";
+			path = "HTTP Client";
 			sourceTree = "<group>";
 		};
 		B0EC72FB1B4CD0DC00D2D1D9 /* Example Client */ = {
@@ -1245,8 +1206,7 @@
 				B0EC72F81B4CD0C400D2D1D9 /* main.h */,
 				B0EC72F91B4CD0C400D2D1D9 /* main.swift */,
 			);
-			name = "Example Client";
-			path = "HTTP Server OS X";
+			path = "Example Client";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1335,8 +1295,8 @@
 			projectRoot = "";
 			targets = (
 				7CA4813A19A2EA8D0030B30D /* Server */,
-				B0EC729E1B4CCFE700D2D1D9 /* Client */,
 				B05372C01B927D5B00FC2B07 /* ServerTests */,
+				B0EC729E1B4CCFE700D2D1D9 /* Client */,
 			);
 		};
 /* End PBXProject section */
@@ -1827,7 +1787,7 @@
 				OTHER_LDFLAGS = "-lfcgi";
 				PRODUCT_NAME = Server;
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)HTTP Server OS X/Main/main.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)Example Server/main.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				USER_HEADER_SEARCH_PATHS = "";
 			};
@@ -1857,7 +1817,7 @@
 				OTHER_LDFLAGS = "-lfcgi";
 				PRODUCT_NAME = Server;
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)HTTP Server OS X/Main/main.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)Example Server/main.h";
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
@@ -1888,7 +1848,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.zewo.ServerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)HTTP Server OS X/Main/main.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)Example Server/main.h";
 				TEST_HOST = "";
 			};
 			name = Debug;
@@ -1920,7 +1880,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.zewo.ServerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)HTTP Server OS X/Main/main.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)Example Server/main.h";
 				TEST_HOST = "";
 			};
 			name = Release;
@@ -1953,7 +1913,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = Client;
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)HTTP Client OS X/main.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)Example Client/main.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				USER_HEADER_SEARCH_PATHS = "";
 			};
@@ -1983,7 +1943,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = Client;
 				SDKROOT = macosx;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)HTTP Client OS X/main.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SCROOT)Example Client/main.h";
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
