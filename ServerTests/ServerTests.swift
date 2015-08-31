@@ -18,8 +18,8 @@ class ServerTests: XCTestCase {
     
     func testExample() {
 
-        let request = HTTPRequest(method: .GET, uri: URI("/ok")!)
-        let response = responder(request)
+        let request = HTTPRequest(method: .GET, uri: URI("/api/v1/ok")!)
+        let response = ExampleServer.respond(request)
         XCTAssert(response.status == .OK)
 
     }
@@ -51,8 +51,8 @@ class ServerTests: XCTestCase {
 
         ]
 
-        let request = HTTPRequest(method: .GET, uri: URI("/json")!)
-        let response = responder(request)
+        let request = HTTPRequest(method: .GET, uri: URI("/api/json")!)
+        let response = ExampleServer.respond(request)
         XCTAssert(response.status == .OK)
         XCTAssert(response.equalsJSON(json))
 

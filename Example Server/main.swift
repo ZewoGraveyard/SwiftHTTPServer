@@ -22,31 +22,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-let responder = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRouter(basePath: "/api") { router in
+struct ExampleServer {
 
-    router.group("/v1") { group in
+    static let respond = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRouter(basePath: "/api") { router in
 
-        group.get("/ok") { _ in HTTPResponse() }
+        router.group("/v1") { group in
 
-    }
+            group.get("/ok") { _ in HTTPResponse() }
 
-    router.get("/login", LoginResponder.show)
-    router.post("/login", LoginResponder.authenticate)
+        }
 
-    router.resources("/users") {
+        router.get("/login", LoginResponder.show)
+        router.post("/login", LoginResponder.authenticate)
 
-        Middleware.basicAuthentication(Authenticator.authenticate) >>> UserResponder()
+        router.resources("/users") {
 
-    }
+            Middleware.basicAuthentication(Authenticator.authenticate) >>> UserResponder()
 
-    router.get("/json", JSONResponder.get)
-    router.post("/json", Middleware.parseJSON >>> JSONResponder.post)
-    router.get("/redirect", Responder.redirect("http://www.google.com"))
-    router.any("/parameters/:id/", ParametersResponder.respond)
+        }
 
-    router.fallback = Responder.file(baseDirectory: "public")
+        router.get("/json", JSONResponder.get)
+        router.post("/json", Middleware.parseJSON >>> JSONResponder.post)
+        router.get("/redirect", Responder.redirect("http://www.google.com"))
+        router.any("/parameters/:id/", ParametersResponder.respond)
 
-} >>> HTTPError.respondError >>> Middleware.logResponse
+        router.fallback = Responder.file(baseDirectory: "public")
 
-HTTPServer2(respond: responder).start()
+    } >>> HTTPError.respondError >>> Middleware.logResponse
+
+}
+
+HTTPServer2(respond: ExampleServer.respond).start()
 
