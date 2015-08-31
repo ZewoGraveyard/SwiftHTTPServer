@@ -22,25 +22,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// TODO: Method that creates a directory
 struct File {
 
     let data: Data
+    let path: String
 
+    // TODO: make it throw
     init?(path: String) {
 
-        guard let data = File.getData(path)
-        else { return nil }
+        guard let data = File.getData(path) else {
+
+            return nil
+
+        }
 
         self.data = data
+        self.path = path
 
     }
 
+    // TODO: make it throw
     init?(path: String, data: Data) {
 
-        guard let data = File.saveData(data, atPath: path)
-        else { return nil }
+        guard let data = File.saveData(data, atPath: path) else {
+
+            return nil
+
+        }
 
         self.data = data
+        self.path = path
 
     }
 

@@ -337,3 +337,24 @@ extension RegularExpression {
     }
 
 }
+
+
+
+extension String {
+
+    func replaceOccurrencesOfString(string: String, withString replaceString: String) -> String {
+
+        do {
+            
+            let regularExpression = try RegularExpression(pattern: string)
+            return try regularExpression.replace(self, withTemplate: replaceString)
+
+        } catch {
+
+            return self
+
+        }
+
+    }
+
+}

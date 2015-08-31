@@ -1,4 +1,4 @@
-// ViewController.swift
+// ExampleServer.swift
 //
 // The MIT License (MIT)
 //
@@ -22,7 +22,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+let responder = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRouter { router in
 
-class ViewController: UIViewController {}
+    router.get("/ok") { _ in HTTPResponse() }
+    router.get("/login", LoginResponder.show)
+    router.post("/login", LoginResponder.authenticate)
+    router.resources("users") {
+
+        Middleware.basicAuthentication(Authenticator.authenticate) >>> UserResponder()
+
+    }
+    router.get("/json", JSONResponder.get)
+    router.post("/json", Middleware.parseJSON >>> JSONResponder.post)
+    router.get("/redirect", Responder.redirect("http://www.google.com"))
+    router.any("/parameters/:id/", ParametersResponder.respond)
+
+    router.fallback = Responder.file(baseDirectory: "public")
+
+} >>> HTTPError.respondError >>> Middleware.logResponse
+
+HTTPServer2(respond: responder).start()
 

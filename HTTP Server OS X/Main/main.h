@@ -25,8 +25,8 @@
 #ifndef BridgingHeader_h
 #define BridgingHeader_h
 
-#include "ExampleServer.h"
-#include "uv.h"
+#include "HTTPServer.h"
+#include "Libuv.h"
 #include "FCGI.h"
 
 #endif

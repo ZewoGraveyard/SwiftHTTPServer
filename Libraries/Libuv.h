@@ -1,4 +1,4 @@
-// Array.swift
+// Libuv.h
 //
 // The MIT License (MIT)
 //
@@ -22,42 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension CollectionType {
+#ifndef Libuv_h
+#define Libuv_h
 
-    /// Returns the first value of `self`
-    /// that satisfy the predicate `isMatch`.
-    func find(@noescape isMatch: (Self.Generator.Element) -> Bool) -> Self.Generator.Element? {
+#include "uv.h"
 
-        for element in self {
-
-            if isMatch(element) {
-
-                return element
-
-            }
-
-        }
-        
-        return .None
-        
-    }
-
-    /// Returns the first value of index
-    /// that satisfy the predicate `isMatch`.
-    func findIndex(@noescape isMatch: (Self.Generator.Element) -> Bool) -> Int? {
-
-        for (index, element) in self.enumerate() {
-
-            if isMatch(element) {
-
-                return index
-
-            }
-
-        }
-        
-        return .None
-        
-    }
-    
-}
+#endif /* Libuv_h */

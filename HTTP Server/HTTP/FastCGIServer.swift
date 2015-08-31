@@ -78,7 +78,7 @@ func getRequest() -> HTTPRequest? {
 
     }
 
-    if let method = env["REQUEST_METHOD"], uriString = env["REQUEST_URI"], uri = URI(text: uriString), version = env["SERVER_PROTOCOL"] {
+    if let method = env["REQUEST_METHOD"], uriString = env["REQUEST_URI"], uri = URI(uriString), version = env["SERVER_PROTOCOL"] {
 
         return HTTPRequest(
             method: HTTPMethod(string: method),

@@ -61,7 +61,7 @@ struct SimpleHTTPRequestParser {
 
         let method = HTTPMethod(string: requestLineTokens[0])
 
-        guard let uri = URI(text: requestLineTokens[1]) else {
+        guard let uri = URI(requestLineTokens[1]) else {
 
             throw Error.Generic("Impossible to create HTTP Request", "Invalid request line")
 

@@ -38,7 +38,7 @@ extension Middleware {
 
         }
 
-        guard let uri = URI(text: bodyString) else {
+        guard let uri = URI(bodyString) else {
 
             throw Error.Generic("Could not create FormURLEncodedBody from data", "Data is not UTF-8 URL encoded")
 

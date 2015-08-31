@@ -33,7 +33,7 @@ extension Middleware {
             if authorizationTokens.count == 2 && authorizationTokens[0] == "Basic" {
 
                 let encodedCredentials = authorizationTokens[1]
-                let decodedCredentials = base64Decode(encodedCredentials)
+                let decodedCredentials = encodedCredentials.base64Decode
 
                 let decodedCredentialsTokens = decodedCredentials.splitBy(":")
 

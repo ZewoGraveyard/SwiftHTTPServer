@@ -233,11 +233,11 @@ extension Middleware {
                     let key = multipart.contentDispositionParameters["name"]!
                     let filename = multipart.contentDispositionParameters["filename"]!
                     let value = multipart.body
-                    
-                    // TODO: Create media directory if it doesn't exist. Remove this Media type, use only File.
-                    if let media = Media(path: filename, data: value) {
+
+                    // TODO: put the data in the data dictionary instead of the parameters
+                    if let file = File(path: "Media/" + filename, data: value) {
                         
-                        parameters[key] = media.path
+                        parameters[key] = file.path
                         
                     }
                     

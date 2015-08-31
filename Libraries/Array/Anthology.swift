@@ -1,4 +1,4 @@
-// main.h
+// Anthology.swift
 //
 // The MIT License (MIT)
 //
@@ -22,10 +22,42 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef BridgingHeader_h
-#define BridgingHeader_h
+extension CollectionType {
 
-#include "ExampleServer.h"
-#include "uv.h"
+    /// Returns the first value of `self`
+    /// that satisfy the predicate `isMatch`.
+    func find(@noescape isMatch: (Self.Generator.Element) -> Bool) -> Self.Generator.Element? {
 
-#endif
+        for element in self {
+
+            if isMatch(element) {
+
+                return element
+
+            }
+
+        }
+        
+        return .None
+        
+    }
+
+    /// Returns the first value of index
+    /// that satisfy the predicate `isMatch`.
+    func findIndex(@noescape isMatch: (Self.Generator.Element) -> Bool) -> Int? {
+
+        for (index, element) in self.enumerate() {
+
+            if isMatch(element) {
+
+                return index
+
+            }
+
+        }
+        
+        return .None
+        
+    }
+    
+}

@@ -99,7 +99,7 @@ struct HTTPRequestParser2 {
         func onMessageComplete(parser: UnsafeMutablePointer<http_parser>) -> Int32 {
 
 
-            guard let uri = URI(text: request.uri) else {
+            guard let uri = URI(request.uri) else {
 
                 print("Error parsing URI. Invalid URI")
                 return -1

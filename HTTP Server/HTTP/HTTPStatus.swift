@@ -313,3 +313,9 @@ enum HTTPStatus {
     }
     
 }
+
+func ==(lhs: HTTPStatus, rhs: HTTPStatus) -> Bool {
+
+    return lhs.statusCode == rhs.statusCode
+    
+}

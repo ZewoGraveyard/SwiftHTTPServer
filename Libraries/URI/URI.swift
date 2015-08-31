@@ -35,9 +35,9 @@ struct URI {
 
     let absolute: String
 
-    init?(text: String) {
+    init?(_ string: String) {
 
-        let tokens = text.splitBy("?")
+        let tokens = string.splitBy("?")
 
         self.path = tokens[0]
 
@@ -51,7 +51,7 @@ struct URI {
 
         }
 
-        self.absolute = text
+        self.absolute = string
 
 
 

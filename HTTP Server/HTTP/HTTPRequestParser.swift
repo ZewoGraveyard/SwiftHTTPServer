@@ -24,41 +24,6 @@
 
 struct HTTPRequestParser {
 
-//    func shit(socket: Socket, queue: DispatchQueue) {
-//
-//        return
-//
-//        let fd = socket.socketFileDescriptor
-//
-//        swift_fcntl(fd, F_SETFL, O_NONBLOCK)
-//
-//        let readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, UInt(fd), 0, queue)
-//
-//        if (readSource == nil) {
-//
-//            close(fd)
-//            return
-//
-//        }
-//
-//        dispatch_source_set_event_handler(readSource) {
-//
-//            let estimated = Int(dispatch_source_get_data(readSource) + 1)
-//            var buffer = [UInt8](count: estimated, repeatedValue: 0)
-//            recv(fd, &buffer, estimated, 0)
-//
-//            let string = String(bytes: buffer)
-//
-//            print(string)
-//
-//            dispatch_source_cancel(readSource)
-//
-//        }
-//
-//        dispatch_resume(readSource)
-//
-//    }
-
     func parseRequest(socket socket: Socket, completion: HTTPRequest -> Void) {
 
         struct RawHTTPRequest {
@@ -133,20 +98,12 @@ struct HTTPRequestParser {
 
         func onMessageComplete(parser: UnsafeMutablePointer<http_parser>) -> Int32 {
 
-
-            guard let uri = URI(text: request.uri) else {
+            guard let uri = URI(request.uri) else {
     
                 print("Error parsing URI. Invalid URI")
                 return -1
     
             }
-    
-//            if uri.path == nil {
-//    
-//                print("Error parsing URI. Path not present")
-//                return -1
-//    
-//            }
 
             let request = HTTPRequest(
                 method: HTTPMethod(string: request.method),
@@ -167,8 +124,6 @@ struct HTTPRequestParser {
         http_parser_init(&parser, HTTP_REQUEST)
 
         Dispatch.read(socket.socketFileDescriptor) { (buffer: UnsafePointer<Int8>, length: Int) in
-
-            print("called")
 
             let bytesParsed = http_parser_execute(
                 &parser,

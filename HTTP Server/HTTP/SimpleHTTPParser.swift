@@ -108,7 +108,11 @@ struct SimpleHTTPParser {
 
             let chunkSizeString = try getLine(socket: socket)
 
-            let chunkSize = try chunkSizeString.integerFromHexadecimalString()
+            guard let chunkSize = chunkSizeString.integerFromHexadecimalString() else {
+
+                throw Error.Generic("Could not parse chunked body", "Malformed chunk size")
+
+            }
 
             if chunkSize == 0 {
 
