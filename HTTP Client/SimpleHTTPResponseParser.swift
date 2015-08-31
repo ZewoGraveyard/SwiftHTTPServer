@@ -59,7 +59,7 @@ struct SimpleHTTPResponseParser {
 
         }
         
-        let reasonPhrase = " ".join(statusLineTokens[2 ..< statusLineTokens.count])
+        let reasonPhrase = statusLineTokens[2 ..< statusLineTokens.count].joinWithSeparator(" ")
         
         let status = HTTPStatus(statusCode: statusCode, reasonPhrase: reasonPhrase)
 

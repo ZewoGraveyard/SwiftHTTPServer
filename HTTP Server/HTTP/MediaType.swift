@@ -22,7 +22,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct MediaType {
+// TODO: Think a better way to deal with media types
+struct MediaType : CustomStringConvertible {
 
     let type: String
     let parameters: [String: String]

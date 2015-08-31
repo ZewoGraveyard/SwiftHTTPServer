@@ -1,4 +1,4 @@
-// Anthology.swift
+// CollectionType+Anthology.swift
 //
 // The MIT License (MIT)
 //

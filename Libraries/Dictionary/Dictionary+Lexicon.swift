@@ -1,4 +1,4 @@
-// HTTPRedirectResponder.swift
+// Dictionary+Lexicon.swift
 //
 // The MIT License (MIT)
 //
@@ -22,16 +22,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension Responder {
+func +<Key, Value>(var lhs: [Key: Value], rhs: [Key: Value]) -> [Key: Value] {
 
-    static func redirect(location: String) -> HTTPRequest -> HTTPResponse {
+    for (key, value) in rhs {
 
-        return { request in
-
-            return HTTPResponse(status: .MovedPermanently, headers: ["location": location])
-            
-        }
+        lhs[key] = value
 
     }
 
+    return lhs
+
+}
+
+func dictionaryFromKeys<Key, Value>(keys: [Key], values: [Value]) throws -> [Key: Value] {
+
+    if keys.count != values.count {
+
+        throw Error.Generic("Could not create dictionary from arrays of values and keys" , "Size of the arrays don't match. Keys array size is \(keys.count), values array size is \(values.count)")
+
+    }
+
+    var dictionary: [Key: Value] = [:]
+
+    for (index, key) in keys.enumerate() {
+
+        dictionary[key] = values[index]
+        
+    }
+    
+    return dictionary
+    
 }

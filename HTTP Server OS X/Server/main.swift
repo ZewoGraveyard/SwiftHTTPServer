@@ -22,16 +22,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-let responder = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRouter { router in
+let responder = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRouter(basePath: "/api") { router in
 
-    router.get("/ok") { _ in HTTPResponse() }
+    router.group("/v1") { group in
+
+        group.get("/ok") { _ in HTTPResponse() }
+
+    }
+
     router.get("/login", LoginResponder.show)
     router.post("/login", LoginResponder.authenticate)
-    router.resources("users") {
+
+    router.resources("/users") {
 
         Middleware.basicAuthentication(Authenticator.authenticate) >>> UserResponder()
 
     }
+
     router.get("/json", JSONResponder.get)
     router.post("/json", Middleware.parseJSON >>> JSONResponder.post)
     router.get("/redirect", Responder.redirect("http://www.google.com"))

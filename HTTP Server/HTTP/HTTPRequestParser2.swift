@@ -106,13 +106,6 @@ struct HTTPRequestParser2 {
 
             }
 
-//            if uri.path == nil {
-//
-//                print("Error parsing URI. Path not present")
-//                return -1
-//
-//            }
-
             let request = HTTPRequest(
                 method: HTTPMethod(string: request.method),
                 uri: uri,

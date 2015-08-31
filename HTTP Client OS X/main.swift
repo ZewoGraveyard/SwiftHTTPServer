@@ -22,5 +22,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-Client().send()
+let address: String = "localhost"
+let port: TCPPort = 9090
+
+let request =  HTTPRequest(
+    method: .GET,
+    uri: URI("/over/there/index.dtb?type=animal&name=narwhal#nose")!,
+    headers: [
+        "host": "localhost",
+        "accept": "*/*",
+        "user-agent": "HTTP Client",
+        "csp": "active",
+        "accept-encoding": "gzip, deflate, sdch",
+        "accept-language": "pt-BR,pt;q=0.8,en-US;q=0.6,en;q=0.4,en-GB;q=0.2,de;q=0.2",
+        "cache-control": "no-cache",
+        "connection": "keep-alive"
+    ]
+)
+
+Log.info(request)
+
+HTTPClient.sendRequest(request, address: address, port: port) { response in
+
+    Log.info(response)
+
+}
+
 Dispatch.main()

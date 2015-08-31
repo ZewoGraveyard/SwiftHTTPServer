@@ -22,15 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-final class HTTPClient {
+struct HTTPClient {
 
-    func sendRequest(request: HTTPRequest, address: String, port: TCPPort) throws -> HTTPResponse {
+    // TODO: User Result<HTTPResponse>
+    static func sendRequest(request: HTTPRequest, address: String, port: TCPPort, completion: HTTPResponse -> Void) {
 
-        let socket = try Socket(IP: address, port: port)
-        try HTTPRequestSerializer.serializeRequest(socket, request: request)
-        let response = try HTTPResponseParser.parseResponse(socket: socket)
-        socket.release()
-        return response
+        Dispatch.async {
+
+            let socket = try! Socket(IP: address, port: port)
+            try! HTTPRequestSerializer.serializeRequest(socket, request: request)
+            let response = try! HTTPResponseParser.parseResponse(socket: socket)
+            socket.release()
+            completion(response)
+
+        }
     
     }
 

@@ -25,6 +25,6 @@
 #ifndef BridgingHeader_h
 #define BridgingHeader_h
 
-#include "Server.h"
+#include "HTTPClient.h"
 
 #endif

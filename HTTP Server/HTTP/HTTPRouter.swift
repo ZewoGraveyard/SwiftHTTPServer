@@ -64,7 +64,7 @@ struct HTTPRouter {
         fallback = routerBuilder.fallback
 
         for route in routerBuilder.routes {
-            
+
             addRoute(route.methods, path: route.path, respond: route.respond)
 
         }

@@ -51,15 +51,7 @@ extension HTTPRequest {
 
     var json: JSON? {
 
-        do {
-
-            return try getData("JSON")
-
-        } catch {
-
-            return nil
-
-        }
+        return try? getData("JSON")
 
     }
 
