@@ -56,15 +56,15 @@ struct HTTPRouter {
 
     }
 
-    init(_ build: (router: HTTPRouterBuilder) -> Void) {
+    init(basePath: String = "", _ build: (router: HTTPRouterBuilder) -> Void) {
 
-        let routerBuilder = HTTPRouterBuilder()
+        let routerBuilder = HTTPRouterBuilder(basePath: basePath)
         build(router: routerBuilder)
 
         fallback = routerBuilder.fallback
 
         for route in routerBuilder.routes {
-
+            
             addRoute(route.methods, path: route.path, respond: route.respond)
 
         }
@@ -73,7 +73,15 @@ struct HTTPRouter {
 
     final class HTTPRouterBuilder {
 
+        private let basePath: String
         private var routes: [HTTPRoute] = []
+        
+        init(basePath: String) {
+            
+            self.basePath = basePath
+            
+        }
+        
         var fallback: (path: String) -> HTTPRequest throws -> HTTPResponse = { path in
 
             return { request in
@@ -82,6 +90,19 @@ struct HTTPRouter {
 
             }
 
+        }
+        
+        func group(basePath: String, _ build: (group: HTTPRouterBuilder) -> Void) {
+            
+            let groupBuilder = HTTPRouterBuilder(basePath: basePath)
+            build(group: groupBuilder)
+            
+            for route in groupBuilder.routes {
+                
+                routes.append(HTTPRoute(path: self.basePath + route.path, methods: route.methods, respond: route.respond))
+                
+            }
+            
         }
 
         func fallback(f: (path: String) -> HTTPRequest throws -> HTTPResponse) {
@@ -93,7 +114,7 @@ struct HTTPRouter {
         func any(path: String, _ respond: HTTPRequest throws -> HTTPResponse) {
 
             let route = HTTPRoute(
-                path: path,
+                path: basePath + path,
                 methods: [.GET, .POST, .PUT, .PATCH, .DELETE],
                 respond: respond
             )
@@ -111,7 +132,7 @@ struct HTTPRouter {
         func get(path: String, _ respond: HTTPRequest throws -> HTTPResponse) {
 
             let route = HTTPRoute(
-                path: path,
+                path: basePath + path,
                 methods: [.GET],
                 respond: respond
             )
@@ -129,7 +150,7 @@ struct HTTPRouter {
         func post(path: String, _ respond: HTTPRequest throws -> HTTPResponse) {
 
             let route = HTTPRoute(
-                path: path,
+                path: basePath + path,
                 methods: [.POST],
                 respond: respond
             )
@@ -147,7 +168,7 @@ struct HTTPRouter {
         func put(path: String, _ respond: HTTPRequest throws -> HTTPResponse) {
 
             let route = HTTPRoute(
-                path: path,
+                path: basePath + path,
                 methods: [.PUT],
                 respond: respond
             )
@@ -165,7 +186,7 @@ struct HTTPRouter {
         func patch(path: String, _ respond: HTTPRequest throws -> HTTPResponse) {
 
             let route = HTTPRoute(
-                path: path,
+                path: basePath + path,
                 methods: [.PATCH],
                 respond: respond
             )
@@ -183,7 +204,7 @@ struct HTTPRouter {
         func delete(path: String, _ respond: HTTPRequest throws -> HTTPResponse) {
 
             let route = HTTPRoute(
-                path: path,
+                path: basePath + path,
                 methods: [.DELETE],
                 respond: respond
             )
@@ -202,31 +223,31 @@ struct HTTPRouter {
         func resources<T: ResourcefulResponder>(path: String, _ responder: T) {
 
             let indexRoute = HTTPRoute(
-                path: "/\(path)",
+                path: basePath + path,
                 methods: [.GET],
                 respond: responder.index
             )
 
             let createRoute = HTTPRoute(
-                path: "/\(path)",
+                path: basePath + path,
                 methods: [.POST],
                 respond: responder.create
             )
 
             let showRoute = HTTPRoute(
-                path: "/\(path)/:id",
+                path: basePath + path + "/:id",
                 methods: [.GET],
                 respond: responder.show
             )
 
             let updateRoute = HTTPRoute(
-                path: "/\(path)/:id",
+                path: basePath + path + "/:id",
                 methods: [.PUT, .PATCH],
                 respond: responder.update
             )
 
             let destroyRoute = HTTPRoute(
-                path: "/\(path)/:id",
+                path: basePath + path + "/:id",
                 methods: [.DELETE],
                 respond: responder.destroy
             )
@@ -246,25 +267,25 @@ struct HTTPRouter {
         func resource<T: ResourcefulResponder>(path: String, _ responder: T) {
 
             let showRoute = HTTPRoute(
-                path: "/\(path)",
+                path: basePath + path,
                 methods: [.GET],
                 respond: responder.show
             )
             
             let createRoute = HTTPRoute(
-                path: "/\(path)",
+                path: basePath + path,
                 methods: [.POST],
                 respond: responder.create
             )
             
             let updateRoute = HTTPRoute(
-                path: "/\(path)",
+                path: basePath + path,
                 methods: [.PUT, .PATCH],
                 respond: responder.update
             )
             
             let destroyRoute = HTTPRoute(
-                path: "/\(path)",
+                path: basePath + path,
                 methods: [.DELETE],
                 respond: responder.destroy
             )
