@@ -24,16 +24,16 @@
 
 infix operator >>> { associativity left }
 
+func >>><A, B, C>(f: (A -> B), g: (B -> C)) -> (A -> C) {
+
+    return { x in g(f(x)) }
+
+}
+
 func >>><A, B, C>(f: (A throws -> B), g: (B throws -> C)) -> (A throws -> C) {
 
     return { x in try g(f(x)) }
 
-}
-
-func >>><Request, Response>(respond: Request -> Response, middleware: Response -> Response) -> (Request -> Response) {
-
-    return { request in middleware(respond(request)) }
-    
 }
 
 func >>><Request, Response>(respond: (Request -> Response), middleware: (Request -> Response) -> (Request -> Response)) -> (Request -> Response) {
@@ -47,24 +47,22 @@ func >>><Request, Response>(respond: (Request -> Response), middleware: ((Reques
     return { request in
 
         let response = respond(request)
-
         middleware(request, response)
-
         return response
-
+        
     }
-
+    
 }
 
-func ??<Request, Response>(respondA: (Request throws -> Response)?, respondB: Request throws -> Response) -> (Request throws -> Response) {
+func >>><Request, Response>(respond: (Request throws -> Response), middleware: ((Request, Response) -> Void)) -> (Request throws -> Response) {
 
-    if let respondA = respondA {
+    return { request in
 
-        return respondA
-
+        let response = try respond(request)
+        middleware(request, response)
+        return response
+        
     }
-
-    return respondB
     
 }
 
@@ -83,5 +81,17 @@ func >>><Request, Response>(respond: Request throws -> Response, respondError: E
         }
         
     }
+    
+}
+
+func ??<Request, Response>(respondA: (Request throws -> Response)?, respondB: Request throws -> Response) -> (Request throws -> Response) {
+
+    if let respondA = respondA {
+
+        return respondA
+
+    }
+
+    return respondB
     
 }

@@ -48,8 +48,8 @@ struct ExampleServer {
 
         router.fallback = Responder.file(baseDirectory: "Public")
 
-    } >>> HTTPError.respondError >>> Middleware.log
+    }  >>> Middleware.log >>> HTTPError.respondError
 
 }
 
-UVHTTPServer(respond: ExampleServer.respond).start(port: 9090)
+HTTPServer(respond: ExampleServer.respond).start(port: 9090)
