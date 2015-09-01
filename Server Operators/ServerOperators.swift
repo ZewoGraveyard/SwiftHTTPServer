@@ -24,15 +24,35 @@
 
 infix operator >>> { associativity left }
 
-func >>><A, B, C>(f: (A -> B), g: (B -> C)) -> (A -> C) {
-
-    return { x in g(f(x)) }
-    
-}
-
 func >>><A, B, C>(f: (A throws -> B), g: (B throws -> C)) -> (A throws -> C) {
 
     return { x in try g(f(x)) }
+
+}
+
+func >>><Request, Response>(respond: Request -> Response, middleware: Response -> Response) -> (Request -> Response) {
+
+    return { request in middleware(respond(request)) }
+    
+}
+
+func >>><Request, Response>(respond: (Request -> Response), middleware: (Request -> Response) -> (Request -> Response)) -> (Request -> Response) {
+
+    return middleware(respond)
+
+}
+
+func >>><Request, Response>(respond: (Request -> Response), middleware: ((Request, Response) -> Void)) -> (Request -> Response) {
+
+    return { request in
+
+        let response = respond(request)
+
+        middleware(request, response)
+
+        return response
+
+    }
 
 }
 

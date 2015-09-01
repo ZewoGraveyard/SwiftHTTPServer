@@ -177,6 +177,30 @@ public struct Dispatch {
 
     }
 
+    public enum QueueType {
+
+        case Serial
+        case Concurrent
+
+        var value: dispatch_queue_attr_t!  {
+
+            switch self {
+
+            case Serial: return DISPATCH_QUEUE_SERIAL
+            case Concurrent: return DISPATCH_QUEUE_CONCURRENT
+
+            }
+
+        }
+
+    }
+
+    public static func createQueue(label: String = "", type: QueueType = .Serial) -> DispatchQueue {
+
+        return dispatch_queue_create(label, type.value)
+
+    }
+
     /**
     Submits a closure for asynchronous execution on a dispatch queue.
 

@@ -24,7 +24,7 @@
 
 struct ExampleServer {
 
-    static let respond = Middleware.logRequest >>> Middleware.parseURLEncoded >>> HTTPRouter(basePath: "/api") { router in
+    static let respond = Middleware.parseURLEncoded >>> HTTPRouter(basePath: "/api") { router in
 
         router.group("/v1") { group in
 
@@ -46,24 +46,10 @@ struct ExampleServer {
         router.get("/redirect", Responder.redirect("http://www.google.com"))
         router.any("/parameters/:id/", ParametersResponder.respond)
 
-        router.fallback = Responder.file(baseDirectory: "public")
+        router.fallback = Responder.file(baseDirectory: "Public")
 
     } >>> HTTPError.respondError >>> Middleware.log
 
-}
-
-func >>><Request, Response>(respond: (Request -> Response), f: ((Request, Response) -> Void)) -> (Request -> Response) {
-    
-    return { request in
-     
-        let response = respond(request)
-        
-        f(request, response)
-        
-        return response
-        
-    }
-    
 }
 
 UVHTTPServer(respond: ExampleServer.respond).start(port: 9090)

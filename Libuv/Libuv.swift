@@ -33,7 +33,7 @@ extension Data {
 
 }
 
-func UVAcceptTCPClient(port port: TCPPort, handleClient: (client: Stream) -> Void) throws {
+func UVAcceptTCPClient(port port: Int, handleClient: (client: Stream) -> Void) throws {
     
     let server = TCPStream()
     let address = SocketAddress(host: "0.0.0.0", port: port)

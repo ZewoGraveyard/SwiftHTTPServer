@@ -24,6 +24,6 @@
 
 protocol KeepAliveType {
 
-    var keepAlive: Bool { get set }
+    var keepAlive: Bool { get }
     
 }

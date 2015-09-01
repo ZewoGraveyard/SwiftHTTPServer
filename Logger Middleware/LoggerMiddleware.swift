@@ -22,37 +22,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+private let logQueue = Dispatch.createQueue()
+
 extension Middleware {
-    
-    static func log<Request: CustomColorLogStringConvertible, Response: CustomColorLogStringConvertible>(request: Request, response: Response) {
-        
-        Log.info(request)
-        Log.info(response)
-        
-    }
 
-    static func logRequest<Request: CustomColorLogStringConvertible, Response>(request: Request) -> RequestMiddlewareResult<Request, Response> {
+    static func log(request: HTTPRequest, response: HTTPResponse) {
 
-        Log.info(request)
-        return .Request(request)
+        Dispatch.async(queue: logQueue) {
+
+            Log.info(request)
+            Log.info(response)
+
+        }
         
     }
 
-    static func logResponse<Response: CustomColorLogStringConvertible>(response: Response) -> Response {
-
-        Log.info(response)
-        return response
-        
-    }
-
-    static func logRequest<Request, Response>(request: Request) -> RequestMiddlewareResult<Request, Response> {
+    static func logRequest(request: HTTPRequest) -> RequestMiddlewareResult<HTTPRequest, HTTPResponse> {
 
         Log.info(request)
         return .Request(request)
 
     }
 
-    static func logResponse<Response>(response: Response) -> Response {
+    static func logResponse(response: HTTPResponse) -> HTTPResponse {
 
         Log.info(response)
         return response

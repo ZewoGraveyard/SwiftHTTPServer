@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct UVHTTPServer: RequestResponseServer {
+struct UVHTTPServer: Server {
 
     let runLoop: RunLoop = UVRunLoop.defaultLoop
     let acceptTCPClient = UVAcceptTCPClient
@@ -32,7 +32,7 @@ struct UVHTTPServer: RequestResponseServer {
 
     init(respond: (request: HTTPRequest) -> HTTPResponse) {
 
-        self.respond = respond >>> Middleware.addHeaders(["server": "HTTP Server"])
+        self.respond = respond >>> Middleware.keepAlive >>> Middleware.addHeaders(["server": "HTTP Server"])
         
     }
     

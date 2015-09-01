@@ -22,22 +22,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol RequestResponseServer {
+protocol Server {
 
     typealias Request
     typealias Response
 
     var runLoop: RunLoop { get }
-    var acceptTCPClient: (port: TCPPort, handleClient: (client: Stream) -> Void) throws -> Void { get }
+    var acceptTCPClient: (port: Int, handleClient: (client: Stream) -> Void) throws -> Void { get }
     var parseRequest: (stream: Stream, completion: Request -> Void) -> Void { get }
     var respond: (request: Request) -> Response { get }
     var serializeResponse: (stream: Stream, response: Response) -> Void { get }
 
 }
 
-extension RequestResponseServer {
+extension Server {
 
-    func start(port port: TCPPort = 8080, failure: ErrorType -> Void = Error.defaultFailureHandler) {
+    func start(port port: Int = 8080, failure: ErrorType -> Void = Error.defaultFailureHandler) {
 
         do {
 
@@ -45,12 +45,14 @@ extension RequestResponseServer {
 
                 self.parseRequest(stream: client) { request in
 
-                    let keepAlive = self.keepAliveRequest(request)
-                    let respond = self.respond >>> self.keepAliveResponse(keepAlive: keepAlive)
-                    let response = respond(request)
+                    let response = self.respond(request: request)
                     self.serializeResponse(stream: client, response: response)
 
-                    if !keepAlive { client.close() }
+                    if !self.keepAliveRequest(request) {
+
+                        client.close()
+
+                    }
 
                 }
 
@@ -76,25 +78,6 @@ extension RequestResponseServer {
 
         return (request as? KeepAliveType)?.keepAlive ?? false
 
-    }
-
-    private func keepAliveResponse<Response>(keepAlive keepAlive: Bool) -> (Response -> Response) {
-
-        return { response in
-
-            if var response = response as? KeepAliveType {
-                
-                response.keepAlive = keepAlive
-                return response as! Response
-                
-            } else {
-                
-                return response
-                
-            }
-            
-        }
-        
     }
 
 }

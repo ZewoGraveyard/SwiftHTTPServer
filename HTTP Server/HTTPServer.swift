@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPServer : RequestResponseServer {
+struct HTTPServer : Server {
 
     let runLoop: RunLoop = FakeRunLoop()
     let acceptTCPClient = acceptClient
@@ -32,7 +32,7 @@ struct HTTPServer : RequestResponseServer {
 
     init(respond: (request: HTTPRequest) -> HTTPResponse) {
 
-        self.respond = respond >>> Middleware.addHeaders(["server": "HTTP Server"])
+        self.respond = respond >>> Middleware.keepAlive >>> Middleware.addHeaders(["server": "HTTP Server"])
 
     }
     

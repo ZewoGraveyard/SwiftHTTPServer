@@ -22,47 +22,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol HeaderType {
-
-    var headers: [String: String] { get set }
-    
-}
-
 extension Middleware {
 
-    static func addHeaders<Request, Response>(headers: [String: String]) -> Request -> RequestMiddlewareResult<Request, Response> {
+    static func addHeaders(headers: [String: String]) -> HTTPRequest -> RequestMiddlewareResult<HTTPRequest, HTTPResponse> {
 
-        return { request in
+        return { (var request) in
 
-            if var request = request as? HeaderType {
+            request.headers = request.headers + headers
+            return .Request(request)
 
-                request.headers = request.headers + headers
-                return .Request(request as! Request)
-
-            } else {
-
-                return .Request(request)
-                
-            }
-            
         }
         
     }
 
-    static func addHeaders<Response>(headers: [String: String]) -> (Response -> Response) {
+    static func addHeaders(headers: [String: String]) -> (HTTPResponse -> HTTPResponse) {
 
-        return { response in
+        return { (var response) in
 
-            if var response = response as? HeaderType {
-
-                response.headers = response.headers + headers
-                return response as! Response
-
-            } else {
-
-                return response
-                
-            }
+            response.headers = response.headers + headers
+            return response
             
         }
         

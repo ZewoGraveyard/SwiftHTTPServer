@@ -72,9 +72,9 @@ final class SocketStream : Stream {
     
 }
 
-func acceptClient(port port: TCPPort, handleClient: (client: Stream) -> Void) throws {
+func acceptClient(port port: Int, handleClient: (client: Stream) -> Void) throws {
 
-    let socket = try Socket(port: port, maxConnections: 128)
+    let socket = try Socket(port: TCPPort(port), maxConnections: 128)
 
     Dispatch.async {
 

@@ -1,4 +1,4 @@
-// SocketAddress.swift
+// KeepAliveMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,26 +22,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class SocketAddress {
+extension Middleware {
 
-    var internetAdress = UnsafeMutablePointer<sockaddr_in>.alloc(1)
+    static func keepAlive(respond: HTTPRequest -> HTTPResponse) -> (HTTPRequest -> HTTPResponse) {
 
-    var address: UnsafePointer<sockaddr> {
+        return { request in
 
-        return UnsafePointer(internetAdress)
+            var response = respond(request)
 
-    }
+            if request.keepAlive {
 
-    init(host: String, port: Int) {
+                response.headers = response.headers + ["connection": "keep-alive"]
 
-        uv_ip4_addr(host, Int32(port), internetAdress)
+            }
+            
+            return response
 
-    }
-
-    deinit {
-        
-        internetAdress.dealloc(1)
+        }
         
     }
-    
+
 }

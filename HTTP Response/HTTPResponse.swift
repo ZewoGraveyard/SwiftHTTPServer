@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPResponse: KeepAliveType {
+struct HTTPResponse {
 
     let status: HTTPStatus
     let version: String
@@ -40,22 +40,6 @@ struct HTTPResponse: KeepAliveType {
         self.headers = headers + ["content-length": "\(body.length)"]
         self.body = body
 
-    }
-
-    var keepAlive: Bool {
-
-        set {
-
-            if (newValue) { headers["connection"] = "keep-alive" }
-
-        }
-
-        get {
-
-            return (headers["connection"]?.trim().lowercaseString == "keep-alive") ?? false
-            
-        }
-        
     }
 
 }
