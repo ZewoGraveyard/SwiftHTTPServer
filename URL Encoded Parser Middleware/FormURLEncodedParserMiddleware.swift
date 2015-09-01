@@ -24,7 +24,7 @@
 
 extension Middleware {
 
-    static func parseURLEncoded(var request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+    static func parseURLEncoded(var request: HTTPRequest) throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse> {
 
         guard let contentType = request.headers["content-type"] where MediaType(contentType).type == "application/x-www-form-urlencoded" else {
 

@@ -1,4 +1,4 @@
-// ServerOperators.swift
+// RequestMiddlewareResult.swift
 //
 // The MIT License (MIT)
 //
@@ -22,39 +22,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct Middleware {}
-struct Responder {}
-
 enum RequestMiddlewareResult<RequestType, ResponseType> {
 
     case Request(RequestType)
     case Response(ResponseType)
-
-}
-
-infix operator >>> { associativity left }
-
-func >>> <A, B, C>(f: (A -> B), g: (B -> C)) -> (A -> C) {
-
-    return { x in g(f(x)) }
-    
-}
-
-func >>> <A, B, C>(f: (A throws -> B), g: (B throws -> C)) -> (A throws -> C) {
-
-    return { x in try g(f(x)) }
-
-}
-
-func >>><Request, Response>(middlewareA: (Request throws -> RequestMiddlewareResult<Request, Response>)?, middlewareB: Request throws -> RequestMiddlewareResult<Request, Response>) -> Request throws -> RequestMiddlewareResult<Request, Response> {
-
-    if let middlewareA = middlewareA {
-
-        return middlewareA >>> middlewareB
-
-    }
-
-    return middlewareB
     
 }
 
@@ -89,74 +60,12 @@ func >>><Request, Response>(middleware: (Request throws -> RequestMiddlewareResu
 
             case .Response(let response):
                 return response
-
+                
             }
-
+            
         } else {
-
+            
             return try respond(request)
-
-        }
-
-    }
-
-}
-
-func >>><Response>(middlewareA: (Response throws -> Response)?, middlewareB: Response throws -> Response) -> (Response throws -> Response) {
-
-    if let middlewareA = middlewareA {
-
-        return middlewareA >>> middlewareB
-
-    } else {
-
-        return middlewareB
-        
-    }
-
-}
-
-func >>><Request, Response>(respond: Request throws -> Response, middleware: (Response throws -> Response)?) -> (Request throws -> Response) {
-
-    return { request in
-
-        if let middleware = middleware {
-
-            return try middleware(respond(request))
-
-        } else {
-
-            return try respond(request)
-
-        }
-
-    }
-    
-}
-
-func ??<Request, Response>(respondA: (Request throws -> Response)?, respondB: Request throws -> Response) -> (Request throws -> Response) {
-
-    if let respondA = respondA {
-
-        return respondA
-
-    }
-
-    return respondB
-
-}
-
-func >>><Request, Response>(respond: Request throws -> Response, respondError: ErrorType -> Response) -> ((request: Request) -> Response) {
-
-    return { request in
-
-        do {
-
-            return try respond(request)
-
-        } catch {
-
-            return respondError(error)
             
         }
         

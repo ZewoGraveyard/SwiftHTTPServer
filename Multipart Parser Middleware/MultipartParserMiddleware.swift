@@ -24,7 +24,7 @@
 
 extension Middleware {
 
-    static func parseMultipart(var request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+    static func parseMultipart(var request: HTTPRequest) throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse> {
 
         guard let contentType = request.headers["content-type"] else {
 

@@ -1,4 +1,4 @@
-// HTTPServerSerializer.swift
+// Stream.swift
 //
 // The MIT License (MIT)
 //
@@ -22,22 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPResponseSerializer2 {
+protocol Stream {
 
-    func serializeResponse(stream stream: Stream, response: HTTPResponse) {
-
-        stream.writeData(Data(string: "\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")) {}
-
-        for (name, value) in response.headers {
-
-            stream.writeData(Data(string: "\(name): \(value)\r\n")) {}
-
-        }
-
-        stream.writeData(Data(string: "\r\n")) {}
-        stream.writeData(response.body) {}
-
-    }
+    func readData(handler: Data -> Void) throws
+    func writeData(data: Data, completion: (Void -> Void)?)
+    func close()
     
 }
 
+extension Stream {
+
+    func writeData(data: Data) {
+
+        writeData(data, completion: nil)
+        
+    }
+    
+}

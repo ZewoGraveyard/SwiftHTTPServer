@@ -1,4 +1,4 @@
-// HTTPServerSerializer.swift
+// HTTPResponseSerializer.swift
 //
 // The MIT License (MIT)
 //
@@ -24,23 +24,20 @@
 
 struct HTTPResponseSerializer {
 
-    func serializeResponse(socket socket: Socket, response: HTTPResponse) throws {
+    static func serializeResponse(stream stream: Stream, response: HTTPResponse) {
 
-        var headers = ""
-
-        headers += "\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n"
+        stream.writeData(Data(string: "\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n"))
 
         for (name, value) in response.headers {
 
-            headers += "\(name): \(value)\r\n"
+            stream.writeData(Data(string: "\(name): \(value)\r\n"))
 
         }
 
-        headers += "\r\n"
-        
-        try socket.writeData(Data(string: headers) + response.body)
+        stream.writeData(Data(string: "\r\n"))
+        stream.writeData(response.body)
 
     }
-
+    
 }
 

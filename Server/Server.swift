@@ -22,100 +22,60 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol KeepAliveType {
+protocol RequestResponseServer {
 
-    var keepAlive: Bool { get set }
-    
+    typealias Request
+    typealias Response
+
+    var runLoop: RunLoop { get }
+    var acceptTCPClient: (port: TCPPort, handleClient: (client: Stream) -> Void) throws -> Void { get }
+    var parseRequest: (stream: Stream, completion: Request -> Void) -> Void { get }
+    var respond: (request: Request) -> Response { get }
+    var serializeResponse: (stream: Stream, response: Response) -> Void { get }
+
 }
 
-class Server<Request, Response> {
-
-    let parseRequest: (socket: Socket, completion: Request -> Void) -> Void
-    let respond: (request: Request) -> Response
-    let serializeResponse: (socket: Socket, response: Response) throws -> Void
-    var socket: Socket?
-
-    init(parseRequest: (socket: Socket, completion: Request -> Void) -> Void,
-        respond: (request: Request) -> Response,
-        serializeResponse: (socket: Socket, response: Response) throws -> Void) {
-
-            self.parseRequest = parseRequest
-            self.respond = respond
-            self.serializeResponse = serializeResponse
-
-    }
+extension RequestResponseServer {
 
     func start(port port: TCPPort = 8080, failure: ErrorType -> Void = Error.defaultFailureHandler) {
 
         do {
 
-            socket?.release()
-            socket = try Socket(port: port, maxConnections: 128)
-            Dispatch.async(queue: Dispatch.backgroundQueue) { self.waitForClients(port: port, failure: failure) }
-            Dispatch.main()
+            try acceptTCPClient(port: port) { client in
+
+                self.parseRequest(stream: client) { request in
+
+                    let keepAlive = self.keepAliveRequest(request)
+                    let respond = self.respond >>> self.keepAliveResponse(keepAlive: keepAlive)
+                    let response = respond(request)
+                    self.serializeResponse(stream: client, response: response)
+
+                    if !keepAlive { client.close() }
+
+                }
+
+            }
+
+            runLoop.run()
 
         } catch {
 
             failure(error)
-            
+
         }
-        
+
     }
 
     func stop() {
 
-        socket?.release()
+        runLoop.close()
 
     }
 
-}
-
-// MARK: - Private
-
-extension Server {
-
-    private func waitForClients(port port: TCPPort, failure: ErrorType -> Void) {
-
-        do {
-
-            while true {
-
-                let clientSocket = try socket!.acceptClient()
-                Dispatch.async(queue: Dispatch.backgroundQueue) { self.processClient(clientSocket: clientSocket, failure: failure) }
-
-            }
-
-        } catch {
-
-            failure(error)
-
-        }
-
-    }
-
-    private func processClient(clientSocket clientSocket: Socket, failure: ErrorType -> Void) {
-
-        self.parseRequest(socket: clientSocket) { request in
-
-            let keepAlive = self.keepAliveRequest(request)
-            let respond = self.respond >>> self.keepAliveResponse(keepAlive: keepAlive)
-            let response = respond(request)
-            try! self.serializeResponse(socket: clientSocket, response: response)
-
-            if !keepAlive {
-
-                clientSocket.release()
-
-            }
-
-        }
-
-    }
-    
     private func keepAliveRequest(request: Request) -> Bool {
-        
+
         return (request as? KeepAliveType)?.keepAlive ?? false
-        
+
     }
 
     private func keepAliveResponse<Response>(keepAlive keepAlive: Bool) -> (Response -> Response) {
@@ -123,18 +83,18 @@ extension Server {
         return { response in
 
             if var response = response as? KeepAliveType {
-
+                
                 response.keepAlive = keepAlive
                 return response as! Response
-
+                
             } else {
-
+                
                 return response
                 
             }
-
+            
         }
         
     }
-    
+
 }

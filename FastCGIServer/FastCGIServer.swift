@@ -120,9 +120,9 @@ class FastCGIServer {
 
     let respond: (request: HTTPRequest) -> HTTPResponse
 
-    init(respond: (request: HTTPRequest) throws -> HTTPResponse) {
+    init(respond: (request: HTTPRequest) -> HTTPResponse) {
 
-        self.respond = respond >>> HTTPError.respondError >>> Middleware.addHeaders(["server": "HTTP Server"])
+        self.respond = respond >>> Middleware.addHeaders(["server": "HTTP Server"])
 
     }
 

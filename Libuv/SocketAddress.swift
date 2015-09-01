@@ -32,7 +32,7 @@ class SocketAddress {
 
     }
 
-    init(host: String, port: Int) {
+    init(host: String, port: TCPPort) {
 
         uv_ip4_addr(host, Int32(port), internetAdress)
 

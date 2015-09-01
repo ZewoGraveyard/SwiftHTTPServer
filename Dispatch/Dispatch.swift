@@ -25,6 +25,28 @@
 // MARK: - Dispatch
 
 public typealias DispatchQueue = dispatch_queue_t
+public typealias DispatchFileDescriptor = dispatch_fd_t
+public typealias DispatchChannel = dispatch_io_t
+public typealias DispatchSemaphore = dispatch_semaphore_t
+public typealias DispatchTime = dispatch_time_t
+
+struct DispatchError : ErrorType, CustomStringConvertible {
+
+    let description: String
+
+    init(_ description: String) {
+
+        self.description = description
+
+    }
+
+    static func fromPOSIXErrorNumber(errorNumber: Int32) -> DispatchError {
+
+        return POSIXErrorDescription(errorNumber).map { DispatchError($0) } ?? DispatchError("Unknown Error")
+
+    }
+
+}
 
 public struct Dispatch {
 
@@ -42,7 +64,7 @@ public struct Dispatch {
         case Background
 
 
-        var value: qos_class_t {
+        private var value: qos_class_t {
 
             switch self {
 
@@ -110,6 +132,8 @@ public struct Dispatch {
         }
 
     }
+
+    public static let forever: DispatchTime = DISPATCH_TIME_FOREVER
 
     public static var mainQueue: DispatchQueue {
 
@@ -198,27 +222,188 @@ public struct Dispatch {
         
     }
 
-    public static func read<T>(
-        fileDescriptor: dispatch_fd_t,
+    public static func read(
+        fileDescriptor: DispatchFileDescriptor,
         lenght: Int = Int.max,
         queue: DispatchQueue = Dispatch.defaultQueue,
-        completion: (buffer: UnsafePointer<T>, length: Int) -> Void) {
+        completion: (buffer: UnsafePointer<Void>, length: Int) -> Void) {
 
         dispatch_read(fileDescriptor, Int.max, queue) { (data: dispatch_data_t!, error: Int32) in
 
-            var buffer: UnsafePointer<Void> = nil
-            var length: Int = 0
-            let _ = dispatch_data_create_map(data, &buffer, &length)
-            completion(buffer: UnsafePointer<T>(buffer), length: length)
+            if error == 0 {
+
+                var buffer: UnsafePointer<Void> = nil
+                var length: Int = 0
+                let _ = dispatch_data_create_map(data, &buffer, &length)
+                completion(buffer: buffer, length: length)
+
+            } else {
+
+                print("error: \(error)")
+                completion(buffer: nil, length: 0)
+
+            }
 
         }
 
+    }
+
+    public enum ChannelType {
+
+        case Stream
+        case RandomAccess
+
+        private var value: dispatch_io_type_t {
+
+            switch self {
+
+            case .Stream: return DISPATCH_IO_STREAM
+            case .RandomAccess: return DISPATCH_IO_RANDOM
+
+            }
+        }
+
+    }
+
+    public static func createChannel(
+        type: ChannelType,
+        fileDescriptor: DispatchFileDescriptor,
+        queue: DispatchQueue = Dispatch.defaultQueue,
+        cleanupHandler: ErrorType? -> Void) -> DispatchChannel {
+
+        return dispatch_io_create(type.value, fileDescriptor, queue) { errorNumber in
+
+            if errorNumber == 0 {
+
+                cleanupHandler(nil)
+
+            } else {
+
+                let error = DispatchError.fromPOSIXErrorNumber(errorNumber)
+                cleanupHandler(error)
+
+            }
+
+        }!
+
+    }
+
+    public static func read(
+        channel: DispatchChannel,
+        offset: Int64 = 0,
+        length: Int = Int.max,
+        queue: DispatchQueue = Dispatch.defaultQueue,
+        handler: (done: Bool, buffer: UnsafePointer<Void>, length: Int, error: ErrorType?) -> Void) {
+
+            dispatch_io_read(channel, offset, length, queue) { done, data, errorNumber in
+
+                struct Error : ErrorType { let description: String }
+
+                if errorNumber == 0 {
+
+                    var buffer: UnsafePointer<Void> = nil
+                    var length: Int = 0
+                    let _ = dispatch_data_create_map(data, &buffer, &length)
+                    handler(done: done, buffer: buffer, length: length, error: nil)
+
+                } else {
+
+                    let error = DispatchError.fromPOSIXErrorNumber(errorNumber)
+                    handler(done: done, buffer: nil, length: 0, error: error)
+                    
+                }
+                
+            }
+            
+    }
+
+    public static func write(
+        channel: DispatchChannel,
+        offset: Int64 = 0,
+        length: Int = Int.max,
+        queue: DispatchQueue = Dispatch.defaultQueue,
+        dataBuffer: UnsafePointer<Void>,
+        dataLength: Int,
+        handler: (done: Bool, buffer: UnsafePointer<Void>, length: Int, error: ErrorType?) -> Void) {
+
+            let data = dispatch_data_create(dataBuffer, dataLength, queue, nil)
+
+            dispatch_io_write(channel, offset, data, queue) { done, data, errorNumber in
+
+                struct Error : ErrorType { let description: String }
+
+                if errorNumber == 0 {
+
+                    var buffer: UnsafePointer<Void> = nil
+                    var length: Int = 0
+
+                    if data != nil {
+
+                        let _ = dispatch_data_create_map(data, &buffer, &length)
+
+                    }
+
+                    handler(done: done, buffer: buffer, length: length, error: nil)
+
+                } else {
+
+                    let error = DispatchError.fromPOSIXErrorNumber(errorNumber)
+                    handler(done: done, buffer: nil, length: 0, error: error)
+                    
+                }
+                
+            }
+            
     }
 
     public static func main() {
 
         dispatch_main()
         
+    }
+
+    public static func createSemaphore(resourceCount: Int) -> DispatchSemaphore {
+
+        return dispatch_semaphore_create(resourceCount)!
+
+    }
+
+}
+
+extension DispatchSemaphore {
+
+    func signal() {
+
+        dispatch_semaphore_signal(self)
+
+    }
+
+    func wait(time: DispatchTime = Dispatch.forever) {
+
+        dispatch_semaphore_wait(self, time)
+
+    }
+
+}
+
+extension DispatchChannel {
+
+    func setLowWater(lowWater: Int)  {
+
+        dispatch_io_set_low_water(self, lowWater)
+
+    }
+
+    var fileDescriptor: DispatchFileDescriptor {
+
+        return dispatch_io_get_descriptor(self)
+
+    }
+
+    func close() {
+
+        dispatch_io_close(self, DISPATCH_IO_STOP)
+
     }
 
 }

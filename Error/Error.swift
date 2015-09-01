@@ -25,13 +25,25 @@
 typealias ErrorDescription = String
 typealias ErrorReason = String
 
+var lastPOSIXErrorDescription: String? {
+
+    return POSIXErrorDescription(errno)
+
+}
+
+func POSIXErrorDescription(errorNumber: Int32) -> String? {
+
+    return  String.fromCString(UnsafePointer(strerror(errorNumber)))
+
+}
+
 enum Error: ErrorType {
 
     case Generic(ErrorDescription, ErrorReason)
 
     static func lastSystemError(reason reason: String) -> Error {
 
-        if let errorDescription = String.fromCString(UnsafePointer(strerror(errno))) {
+        if let errorDescription = lastPOSIXErrorDescription {
 
             return Error.Generic(errorDescription, reason)
 

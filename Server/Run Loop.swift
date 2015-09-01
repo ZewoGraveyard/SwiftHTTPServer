@@ -1,4 +1,4 @@
-// HTTPServer.swift
+// RunLoop.swift
 //
 // The MIT License (MIT)
 //
@@ -22,20 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class HTTPServer2: Server2<HTTPRequest, HTTPResponse> {
+protocol RunLoop {
 
-    init(respond: (request: HTTPRequest) -> HTTPResponse) {
-
-        let parser = HTTPRequestParser2()
-        let serializer = HTTPResponseSerializer2()
-
-        super.init(
-            parseRequest: parser.parseRequest,
-            respond: respond >>> Middleware.addHeaders(["server": "HTTP Server"]),
-            serializeResponse: serializer.serializeResponse,
-            debug: true
-        )
-        
-    }
+    func run()
+    func close()
     
 }

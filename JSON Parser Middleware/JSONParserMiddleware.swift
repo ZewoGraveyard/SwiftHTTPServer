@@ -24,7 +24,7 @@
 
 extension Middleware {
 
-    static func parseJSON(key key: String)(var request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+    static func parseJSON(key key: String)(var request: HTTPRequest) throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse> {
 
         guard let contentType = request.headers["content-type"] where MediaType(contentType).type == "application/json" else {
 
@@ -39,7 +39,7 @@ extension Middleware {
         
     }
 
-    static func parseJSON(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+    static func parseJSON(request: HTTPRequest) throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse> {
 
         return try parseJSON(key: "JSON")(request: request)
         

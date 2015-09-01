@@ -24,7 +24,7 @@
 
 extension Middleware {
 
-    static func parseText(key key: String)(var request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+    static func parseText(key key: String)(var request: HTTPRequest) throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse> {
 
         guard let contentType = request.headers["content-type"] where MediaType(contentType).type == "text/plain" else {
 
@@ -44,7 +44,7 @@ extension Middleware {
         
     }
 
-    static func parseText(request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+    static func parseText(request: HTTPRequest) throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse> {
 
         return try parseText(key: "body")(request: request)
         

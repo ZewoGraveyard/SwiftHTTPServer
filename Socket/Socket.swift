@@ -33,14 +33,14 @@ enum SocketError: ErrorType {
 
 struct Socket {
 
-    let socketFileDescriptor: SocketFileDescriptor
+    let fileDescriptor: SocketFileDescriptor
 
     private(set) var IP: String
     private(set) var port: TCPPort
 
     init(port: TCPPort, maxConnections: Int = 20) throws {
 
-        self.socketFileDescriptor = try Socket.createSocketHandler()
+        self.fileDescriptor = try Socket.createSocketHandler()
         self.IP = "0.0.0.0"
         self.port = port
 
@@ -53,7 +53,7 @@ struct Socket {
 
     init(IP: String, port: TCPPort) throws {
 
-        self.socketFileDescriptor = try Socket.createSocketHandler()
+        self.fileDescriptor = try Socket.createSocketHandler()
         self.IP = "0.0.0.0"
         self.port = port
 
@@ -69,7 +69,7 @@ struct Socket {
 
         var address = addresses.first!
 
-        if connect(socketFileDescriptor, &address, socklen_t(sizeof(sockaddr_in))) == -1 {
+        if connect(fileDescriptor, &address, socklen_t(sizeof(sockaddr_in))) == -1 {
 
             release()
             throw Error.lastSystemError(reason: "connect() failed")
@@ -88,7 +88,7 @@ struct Socket {
 
         self.IP = IP
         self.port = port
-        self.socketFileDescriptor = socketHandler
+        self.fileDescriptor = socketHandler
 
     }
 
@@ -96,7 +96,7 @@ struct Socket {
 
         var buffer = [Int8](count: bufferSize, repeatedValue: 0)
 
-        let result = recv(socketFileDescriptor, &buffer, bufferSize, 0)
+        let result = recv(fileDescriptor, &buffer, bufferSize, 0)
 
         if result == -1 {
 
@@ -118,7 +118,7 @@ struct Socket {
 
         var buffer = [UInt8](count: 1, repeatedValue: 0)
 
-        let result = recv(socketFileDescriptor, &buffer, buffer.count, 0)
+        let result = recv(fileDescriptor, &buffer, buffer.count, 0)
 
         if result == -1 {
 
@@ -140,7 +140,7 @@ struct Socket {
 
         var buffer = [UInt8](count: 1, repeatedValue: 0)
 
-        let result = recv(socketFileDescriptor, &buffer, Int(buffer.count), MSG_PEEK)
+        let result = recv(fileDescriptor, &buffer, Int(buffer.count), MSG_PEEK)
 
         if result == -1 {
 
@@ -171,7 +171,7 @@ struct Socket {
 
         while sent < data.length {
 
-            let s = write(socketFileDescriptor, unsafePointer + sent, Int(data.length - sent))
+            let s = write(fileDescriptor, unsafePointer + sent, Int(data.length - sent))
 
             if s <= 0 {
 
@@ -195,7 +195,7 @@ struct Socket {
 
         var length: socklen_t = socklen_t(sizeof(sockaddr))
 
-        let clientSocketHandler = accept(socketFileDescriptor, &clientAddress, &length)
+        let clientSocketHandler = accept(fileDescriptor, &clientAddress, &length)
 
         if clientSocketHandler == -1 {
 
@@ -257,7 +257,7 @@ struct Socket {
 
         var reuseAddressValue: Int32 = 1
 
-        if setsockopt(socketFileDescriptor, SOL_SOCKET, SO_REUSEADDR, &reuseAddressValue, socklen_t(sizeof(Int32))) == -1  {
+        if setsockopt(fileDescriptor, SOL_SOCKET, SO_REUSEADDR, &reuseAddressValue, socklen_t(sizeof(Int32))) == -1  {
 
             release()
             throw Error.lastSystemError(reason: "reuseAddress() failed")
@@ -270,7 +270,7 @@ struct Socket {
 
         var noSigPipeValue: Int32 = 1
 
-        if setsockopt(socketFileDescriptor, SOL_SOCKET, SO_NOSIGPIPE, &noSigPipeValue, socklen_t(sizeof(Int32))) == -1  {
+        if setsockopt(fileDescriptor, SOL_SOCKET, SO_NOSIGPIPE, &noSigPipeValue, socklen_t(sizeof(Int32))) == -1  {
 
             release()
             throw Error.lastSystemError(reason: "noSigPipe() failed")
@@ -297,7 +297,7 @@ struct Socket {
         
         memcpy(&address, &addressIn, Int(sizeof(sockaddr_in)))
         
-        if bind(socketFileDescriptor, &address, socklen_t(sizeof(sockaddr_in))) == -1 {
+        if bind(fileDescriptor, &address, socklen_t(sizeof(sockaddr_in))) == -1 {
             
             release()
             throw Error.lastSystemError(reason: "bind() failed")
@@ -362,7 +362,7 @@ struct Socket {
 
     private func listenWithMaxConnections(maxConnections: Int) throws {
 
-        if listen(socketFileDescriptor, Int32(maxConnections)) == -1 {
+        if listen(fileDescriptor, Int32(maxConnections)) == -1 {
 
             release()
             throw Error.lastSystemError(reason: "listen() failed")
@@ -373,8 +373,8 @@ struct Socket {
     
     func release() {
         
-        shutdown(socketFileDescriptor, SHUT_RDWR)
-        close(socketFileDescriptor)
+        shutdown(fileDescriptor, SHUT_RDWR)
+        close(fileDescriptor)
         
     }
     

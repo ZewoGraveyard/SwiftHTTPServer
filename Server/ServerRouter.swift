@@ -24,7 +24,7 @@
 
 protocol ServerRoute {
 
-    typealias Key: Hashable
+    typealias Key
     typealias Request
     typealias Response
 
@@ -36,9 +36,14 @@ protocol ServerRoute {
     
 }
 
-class ServerRouter<Route: ServerRoute> {
+protocol ServerRouter {
 
-    var routes: [Route] = []
+    typealias Route : ServerRoute
+    var routes: [Route] { get set }
+
+}
+
+extension ServerRouter {
 
     var keys: [Route.Key] {
 
@@ -46,7 +51,7 @@ class ServerRouter<Route: ServerRoute> {
 
     }
 
-    func route(key: Route.Key, respond: Route.Request throws -> Route.Response) {
+    mutating func route(key: Route.Key, respond: Route.Request throws -> Route.Response) {
 
         let route = Route(key: key, respond: respond)
         routes.append(route)

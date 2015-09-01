@@ -52,5 +52,5 @@ struct ExampleServer {
 
 }
 
-HTTPServer2(respond: ExampleServer.respond).start()
+HTTPServer(respond: ExampleServer.respond).start(port: 8080)
 

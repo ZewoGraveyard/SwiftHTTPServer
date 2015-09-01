@@ -24,7 +24,7 @@
 
 extension Middleware {
 
-    static func basicAuthentication(authenticate: (username: String, password: String) throws -> [String: Any])(var request: HTTPRequest) throws -> HTTPRequestMiddlewareResult {
+    static func basicAuthentication(authenticate: (username: String, password: String) throws -> [String: Any])(var request: HTTPRequest) throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse> {
 
         if let authorization = request.headers["authorization"] {
 

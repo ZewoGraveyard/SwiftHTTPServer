@@ -1,4 +1,4 @@
-// HTTPServer.h
+// KeepAliveType.swift
 //
 // The MIT License (MIT)
 //
@@ -22,12 +22,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPServer_h
-#define HTTPServer_h
+protocol KeepAliveType {
 
-#include "Dispatch.h"
-#include "Socket.h"
-#include "HTTPParser.h"
-#include "HTTPRouter.h"
-
-#endif /* HTTPServer_h */
+    var keepAlive: Bool { get set }
+    
+}

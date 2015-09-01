@@ -43,7 +43,7 @@ struct HTTPRouter {
 
     var respond: (request: HTTPRequest) throws -> HTTPResponse {
 
-        let pathRouter = HTTPPathRouter(fallback: fallback)
+        var pathRouter = HTTPPathRouter(fallback: fallback)
 
         // WARNING: Because of the nature of dictionaries (unordered), if a path matches more than one route. The route that is chosen is undefined. It could be any of them.
         for (path, methodRouter) in routes {
@@ -327,7 +327,7 @@ struct HTTPRouter {
 
 }
 
-func >>>(middleware: HTTPRequestMiddleware, router: HTTPRouter) -> HTTPRequest throws -> HTTPResponse {
+func >>>(middleware: HTTPRequest throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse>, router: HTTPRouter) -> HTTPRequest throws -> HTTPResponse {
 
     return middleware >>> router.respond
 
@@ -417,7 +417,7 @@ struct SimpleResourcefulResponder: ResourcefulResponder {
 
 }
 
-func >>><T: ResourcefulResponder>(middleware: HTTPRequestMiddleware, responder: T) -> SimpleResourcefulResponder {
+func >>><T: ResourcefulResponder>(middleware: HTTPRequest throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse>, responder: T) -> SimpleResourcefulResponder {
 
     return SimpleResourcefulResponder(
         indexFunction:   middleware >>> responder.index,
@@ -429,7 +429,7 @@ func >>><T: ResourcefulResponder>(middleware: HTTPRequestMiddleware, responder: 
 
 }
 
-func >>><T: ResourcefulResponder>(responder: T, middleware: HTTPResponseMiddleware) -> SimpleResourcefulResponder {
+func >>><T: ResourcefulResponder>(responder: T, middleware: HTTPResponse throws -> HTTPResponse) -> SimpleResourcefulResponder {
     
     return SimpleResourcefulResponder(
         indexFunction:   responder.index   >>> middleware,

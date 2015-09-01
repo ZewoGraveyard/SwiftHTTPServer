@@ -1,4 +1,4 @@
-// RunLoop.swift
+// Responder.swift
 //
 // The MIT License (MIT)
 //
@@ -22,58 +22,4 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-typealias LoopRef = UnsafeMutablePointer<uv_loop_t>
-
-class RunLoop {
-
-    enum RunMode {
-
-        case Default
-        case Once
-        case NoWait
-
-        var rawValue: uv_run_mode {
-
-            switch self {
-
-            case Default: return UV_RUN_DEFAULT
-            case Once:    return UV_RUN_ONCE
-            case NoWait:  return UV_RUN_NOWAIT
-
-            }
-
-        }
-        
-    }
-
-    let loop: LoopRef
-
-    init(loop: LoopRef = UnsafeMutablePointer.alloc(1)) {
-
-        self.loop = loop
-        uv_loop_init(loop)
-
-    }
-
-    deinit {
-
-        close()
-
-    }
-
-    func run(mode: RunMode = .Default) {
-
-        uv_run(loop, mode.rawValue)
-
-    }
-
-    func close() {
-
-        uv_loop_close(loop)
-        loop.dealloc(1)
-
-    }
-    
-    static let defaultLoop = RunLoop(loop: uv_default_loop())
-    
-}
+struct Responder {}

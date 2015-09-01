@@ -1,4 +1,4 @@
-// HTTPServer.swift
+// RunLoop.swift
 //
 // The MIT License (MIT)
 //
@@ -22,23 +22,58 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-typealias HTTPRequestMiddlewareResult = RequestMiddlewareResult<HTTPRequest, HTTPResponse>
-typealias HTTPRequestMiddleware = HTTPRequest throws -> HTTPRequestMiddlewareResult
-typealias HTTPResponseMiddleware = HTTPResponse throws -> HTTPResponse
+typealias LoopRef = UnsafeMutablePointer<uv_loop_t>
 
-class HTTPServer: Server<HTTPRequest, HTTPResponse> {
+class UVRunLoop : RunLoop {
 
-    init(respond: (request: HTTPRequest) throws -> HTTPResponse) {
+    enum RunMode {
 
-        let parser = HTTPRequestParser()
-        let serializer = HTTPResponseSerializer()
+        case Default
+        case Once
+        case NoWait
 
-        super.init(
-            parseRequest: parser.parseRequest,
-            respond: respond >>> HTTPError.respondError >>> Middleware.addHeaders(["server": "HTTP Server"]),
-            serializeResponse: serializer.serializeResponse
-        )
+        var rawValue: uv_run_mode {
+
+            switch self {
+
+            case Default: return UV_RUN_DEFAULT
+            case Once:    return UV_RUN_ONCE
+            case NoWait:  return UV_RUN_NOWAIT
+
+            }
+
+        }
+        
+    }
+
+    let loop: LoopRef
+
+    init(loop: LoopRef = UnsafeMutablePointer.alloc(1)) {
+
+        self.loop = loop
+        uv_loop_init(loop)
 
     }
+
+    deinit {
+
+        close()
+
+    }
+
+    func run() {
+
+        uv_run(loop, RunMode.Default.rawValue)
+
+    }
+
+    func close() {
+
+        uv_loop_close(loop)
+        loop.dealloc(1)
+
+    }
+    
+    static let defaultLoop = UVRunLoop(loop: uv_default_loop())
     
 }

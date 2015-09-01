@@ -24,7 +24,7 @@
 
 struct HTTPRequestParser {
 
-    func parseRequest(socket socket: Socket, completion: HTTPRequest -> Void) {
+    static func parseRequest(stream stream: Stream, completion: HTTPRequest -> Void) {
 
         struct RawHTTPRequest {
             var method: String = ""
@@ -54,7 +54,7 @@ struct HTTPRequestParser {
             strncpy(&buffer, data, length)
 
             request.currentHeaderField = String.fromCString(buffer)!
-            
+
             return 0
 
         }
@@ -91,18 +91,19 @@ struct HTTPRequestParser {
             memcpy(&buffer, data, length)
 
             request.body = buffer
-            
+
             return 0
-            
+
         }
 
         func onMessageComplete(parser: UnsafeMutablePointer<http_parser>) -> Int32 {
 
+
             guard let uri = URI(request.uri) else {
-    
+
                 print("Error parsing URI. Invalid URI")
                 return -1
-    
+
             }
 
             let request = HTTPRequest(
@@ -123,7 +124,7 @@ struct HTTPRequestParser {
 
         http_parser_init(&parser, HTTP_REQUEST)
 
-        Dispatch.read(socket.socketFileDescriptor) { (buffer: UnsafePointer<Int8>, length: Int) in
+        try! stream.readData { data in
 
             let bytesParsed = http_parser_execute(
                 &parser,
@@ -135,25 +136,25 @@ struct HTTPRequestParser {
                 onHeadersComplete,
                 onBody,
                 onMessageComplete,
-                buffer,
-                length
+                UnsafePointer<Int8>(data.bytes),
+                data.length
             )
-
+            
             if parser.upgrade == 1 {
-    
+                
                 print("Error parsing request: Protocol upgrade unsupported")
-    
+                
             }
-
-            if bytesParsed != length {
-    
+            
+            if bytesParsed != data.length {
+                
                 let error = http_errno_name(http_errno(parser.http_errno))
                 print("Error parsing request: " + String.fromCString(error)!)
-    
+                
             }
-
+            
         }
-
+        
     }
-
+    
 }

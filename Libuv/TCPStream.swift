@@ -22,11 +22,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class TCPStream: Stream {
+class TCPStream: UVStream {
 
     let socket = UnsafeMutablePointer<uv_tcp_t>.alloc(1)
 
-    init(loop: RunLoop = RunLoop.defaultLoop) {
+    init(loop: UVRunLoop = UVRunLoop.defaultLoop) {
 
         super.init(UnsafeMutablePointer(self.socket))
         uv_tcp_init(loop.loop, socket)

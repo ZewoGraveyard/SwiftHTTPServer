@@ -22,7 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-final class HTTPPathRouter: ServerRouter<HTTPPathRoute> {
+struct HTTPPathRouter : ServerRouter {
+
+    var routes: [HTTPPathRoute] = []
 
     let fallback: (path: String) -> HTTPRequest throws -> HTTPResponse
 

@@ -42,7 +42,7 @@ class StreamContext {
     
 }
 
-class Stream {
+class UVStream {
 
     var stream: StreamRef
 
@@ -52,7 +52,7 @@ class Stream {
 
     }
 
-    func accept(client: Stream) throws {
+    func accept(client: UVStream) throws {
 
         let result = uv_accept(stream, client.stream)
 
@@ -76,7 +76,7 @@ class Stream {
 
     }
 
-    func closeAndFree() {
+    func close() {
 
         _context = nil
 
@@ -92,9 +92,9 @@ class Stream {
 
 class WriteCompletionHandler {
 
-    var completion: Void -> Void
+    var completion: (Void -> Void)?
 
-    init(_ completion: Void -> Void) {
+    init(_ completion: (Void -> Void)?) {
 
         self.completion = completion
         
@@ -102,7 +102,7 @@ class WriteCompletionHandler {
     
 }
 
-extension Stream {
+extension UVStream {
 
     var context: StreamContext {
 
@@ -141,7 +141,7 @@ extension Stream {
 
             defer { free_buffer(buf) }
 
-            let stream = Stream(serverStream)
+            let stream = UVStream(serverStream)
 
             let data: ReadResult
 
@@ -171,14 +171,14 @@ extension Stream {
 
         try listen(backlog: numConnections) { serverStream, status in
             
-            let stream = Stream(serverStream)
+            let stream = UVStream(serverStream)
             stream.context.listenBlock?(status: Int(status))
             
         }
         
     }
 
-    func writeAndFree(buffer: BufferRef, completion: Void -> Void) {
+    func writeAndFree(buffer: BufferRef, completion: (Void -> Void)?) {
 
         let writeRef: WriteRef = WriteRef.alloc(1) // dealloced in the write callback
 
@@ -189,13 +189,13 @@ extension Stream {
             let completionHandler = Unmanaged<WriteCompletionHandler>.fromOpaque(COpaquePointer(request.memory.data)).takeRetainedValue().completion
             free(request.memory.bufs)
             free(request)
-            completionHandler()
+            completionHandler?()
             
         }
         
     }
     
-    func write(completion: Void -> Void)(buffer: BufferRef) {
+    func write(completion: (Void -> Void)?)(buffer: BufferRef) {
         
         writeAndFree(buffer, completion: completion)
         
@@ -203,29 +203,25 @@ extension Stream {
     
 }
 
-extension Stream {
+extension UVStream : Stream  {
 
-    func writeData(data: Data, completion: Void -> Void) {
+    func writeData(data: Data, completion: (Void -> Void)? = nil) {
 
         data.withBufferRef(write(completion))
 
     }
 
-}
-
-extension Stream {
-
-    func bufferedRead(callback: Data -> Void) throws {
+    func readData(handler: Data -> Void) throws {
 
         try read { [unowned self] result in
 
             if case let .Chunk(data) = result {
 
-                callback(data)
+                handler(data)
 
             } else {
 
-                self.closeAndFree()
+                self.close()
 
             }
             
