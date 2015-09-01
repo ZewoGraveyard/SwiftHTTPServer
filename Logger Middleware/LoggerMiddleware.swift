@@ -23,6 +23,13 @@
 // SOFTWARE.
 
 extension Middleware {
+    
+    static func log<Request: CustomColorLogStringConvertible, Response: CustomColorLogStringConvertible>(request: Request, response: Response) {
+        
+        Log.info(request)
+        Log.info(response)
+        
+    }
 
     static func logRequest<Request: CustomColorLogStringConvertible, Response>(request: Request) -> RequestMiddlewareResult<Request, Response> {
 

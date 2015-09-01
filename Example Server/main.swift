@@ -48,8 +48,22 @@ struct ExampleServer {
 
         router.fallback = Responder.file(baseDirectory: "public")
 
-    } >>> HTTPError.respondError >>> Middleware.logResponse
+    } >>> HTTPError.respondError >>> Middleware.log
 
 }
 
-UVHTTPServer(respond: ExampleServer.respond).start()
+func >>><Request, Response>(respond: (Request -> Response), f: ((Request, Response) -> Void)) -> (Request -> Response) {
+    
+    return { request in
+     
+        let response = respond(request)
+        
+        f(request, response)
+        
+        return response
+        
+    }
+    
+}
+
+UVHTTPServer(respond: ExampleServer.respond).start(port: 9090)
