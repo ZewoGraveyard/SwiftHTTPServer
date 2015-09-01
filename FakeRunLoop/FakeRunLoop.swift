@@ -1,4 +1,4 @@
-// ParametersMiddleware.swift
+// FakeRunLoop.swift
 //
 // The MIT License (MIT)
 //
@@ -22,31 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol Parameterizable {
+struct FakeRunLoop : RunLoop {
 
-    var parameters: [String: String] { get set }
+    let semaphore = Dispatch.createSemaphore(0)
 
-}
+    func run() {
 
-extension Middleware {
+        semaphore.wait()
 
-    static func addParameters<Request, Response>(parameters: [String: String]) -> Request throws -> RequestMiddlewareResult<Request, Response> {
-
-        return { request in
-
-            if var request = request as? Parameterizable {
-
-                request.parameters = request.parameters + parameters
-                return .Request(request as! Request)
-
-            } else {
-
-                return .Request(request)
-
-            }
-            
-        }
-        
     }
 
+    func close() {
+
+        semaphore.signal()
+        
+    }
+    
 }

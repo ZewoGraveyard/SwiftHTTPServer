@@ -25,9 +25,7 @@
 #ifndef HTTPServer_h
 #define HTTPServer_h
 
-#include "Dispatch.h"
-#include "Socket.h"
+#include "SocketStream.h"
 #include "HTTPParser.h"
-#include "HTTPRouter.h"
 
 #endif /* HTTPServer_h */

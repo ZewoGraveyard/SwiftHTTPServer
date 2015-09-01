@@ -1,4 +1,4 @@
-// HTTPParser.h
+// UVHTTPServer.h
 //
 // The MIT License (MIT)
 //
@@ -22,9 +22,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPRouter_h
-#define HTTPRouter_h
+#ifndef UVHTTPServer_h
+#define UVHTTPServer_h
 
-#include "RegularExpression.h"
+#include "Libuv.h"
+#include "HTTPParser.h"
 
-#endif /* HTTPRouter_h */
+#endif /* UVHTTPServer_h */

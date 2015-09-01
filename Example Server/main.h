@@ -26,7 +26,9 @@
 #define BridgingHeader_h
 
 #include "HTTPServer.h"
-#include "Libuv.h"
-#include "FCGI.h"
+#include "UVHTTPServer.h"
+#include "FastCGIServer.h"
+
+#include "HTTPRouter.h"
 
 #endif

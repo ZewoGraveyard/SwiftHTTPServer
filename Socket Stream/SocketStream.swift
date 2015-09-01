@@ -1,4 +1,4 @@
-// HTTPServer.swift
+// SocketStream.swift
 //
 // The MIT License (MIT)
 //
@@ -22,25 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct FakeRunLoop : RunLoop {
-
-    let semaphore = Dispatch.createSemaphore(0)
-
-    func run() {
-
-        semaphore.wait()
-
-    }
-
-    func close() {
-
-        semaphore.signal()
-
-    }
-
-}
-
-class SocketStream : Stream {
+final class SocketStream : Stream {
 
     let socket: Socket
     let channel: DispatchChannel
@@ -51,7 +33,7 @@ class SocketStream : Stream {
         self.channel = Dispatch.createChannel(.Stream, fileDescriptor: socket.fileDescriptor) { error in
 
             if let error = error { Log.error(error) }
-            
+
         }
 
         self.channel.setLowWater(1)
@@ -64,7 +46,7 @@ class SocketStream : Stream {
 
             let data = Data(bytes: buffer, length: length)
             handler(data)
-            
+
         }
 
     }
@@ -77,19 +59,18 @@ class SocketStream : Stream {
         Dispatch.write(channel, dataBuffer: buffer, dataLength: length) { (done: Bool, buffer: UnsafePointer<Void>, length: Int, error: ErrorType?) in
 
             completion?()
-
+            
         }
-
+        
     }
-
+    
     func close() {
-
+        
         channel.close()
-
+        
     }
-
+    
 }
-
 
 func acceptClient(port port: TCPPort, handleClient: (client: Stream) -> Void) throws {
 
@@ -108,27 +89,11 @@ func acceptClient(port port: TCPPort, handleClient: (client: Stream) -> Void) th
             } catch {
 
                 Log.error(error)
-
+                
             }
             
         }
-
-    }
-
-}
-
-class HTTPServer : RequestResponseServer {
-
-    let runLoop: RunLoop = FakeRunLoop()
-    let acceptTCPClient = acceptClient
-    let parseRequest = HTTPRequestParser.parseRequest
-    let respond: (request: HTTPRequest) -> HTTPResponse
-    let serializeResponse = HTTPResponseSerializer.serializeResponse
-
-    init(respond: (request: HTTPRequest) -> HTTPResponse) {
-
-        self.respond = respond >>> Middleware.addHeaders(["server": "HTTP Server"])
-
+        
     }
     
 }

@@ -22,101 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-var environment: [String: String] {
-
-    var envs: [String: String] = [:]
-
-    for (var env = environ; env.memory != nil; ++env) {
-
-        let envString = String.fromCString(env.memory)!
-        let index = envString.characters.indexOf("=")!
-        let name = envString.substringToIndex(index)
-        let value = envString.substringFromIndex(index.advancedBy(1))
-
-        envs[name] = value
-
-    }
-
-    return envs
-
-}
-
-func getRequest() -> HTTPRequest? {
-
-    let env = environment
-
-    func getHeaders() -> [String: String] {
-
-        var headers: [String: String] = [:]
-
-        let HTTPHeaders = env.filter { $0.0.hasPrefix("HTTP_") }
-
-        for (key, value) in HTTPHeaders {
-
-            let index = key.characters.indexOf("_")!
-            let name = key.substringFromIndex(index.advancedBy(1)).lowercaseString.replaceOccurrencesOfString("_", withString: "-")
-
-            headers[name] = value
-
-        }
-
-        return headers
-
-    }
-
-    func getBody() -> Data {
-
-        if let contentLenghtString = env["CONTENT_LENGTH"], contentLenght = Int(contentLenghtString) {
-
-            var buffer: [UInt8] = [UInt8](count: contentLenght, repeatedValue: 0)
-            FCGI_readBuffer(&buffer, contentLenght)
-            return Data(bytes: buffer)
-
-        }
-
-        return Data()
-
-    }
-
-    if let method = env["REQUEST_METHOD"], uriString = env["REQUEST_URI"], uri = URI(uriString), version = env["SERVER_PROTOCOL"] {
-
-        return HTTPRequest(
-            method: HTTPMethod(string: method),
-            uri: uri,
-            version: version,
-            headers: getHeaders(),
-            body: getBody()
-        )
-
-    }
-
-    return nil
-
-}
-
-func sendResponse(var response: HTTPResponse) {
-
-    if response.headers["content-type"] == nil {
-
-        response.headers["content-type"] = ""
-
-    }
-
-    FCGI_writeString("Status: \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
-
-    for (name, value) in response.headers {
-
-        FCGI_writeString("\(name): \(value)\r\n")
-
-    }
-
-    FCGI_writeString("\r\n")
-
-    FCGI_writeBuffer(UnsafeMutablePointer<Void>(response.body.bytes), response.body.length)
-
-}
-
-class FastCGIServer {
+struct FastCGIServer {
 
     let respond: (request: HTTPRequest) -> HTTPResponse
 
@@ -128,7 +34,7 @@ class FastCGIServer {
 
     func start() {
 
-        while(FCGI_Accept() >= 0) {
+        while(FCGIAccept() >= 0) {
             
             if let request = getRequest() {
                 
@@ -138,6 +44,100 @@ class FastCGIServer {
             }
             
         }
+        
+    }
+
+    var environment: [String: String] {
+
+        var envs: [String: String] = [:]
+
+        for (var env = environ; env.memory != nil; ++env) {
+
+            let envString = String.fromCString(env.memory)!
+            let index = envString.characters.indexOf("=")!
+            let name = envString.substringToIndex(index)
+            let value = envString.substringFromIndex(index.advancedBy(1))
+
+            envs[name] = value
+
+        }
+
+        return envs
+
+    }
+
+    func getRequest() -> HTTPRequest? {
+
+        let env = environment
+
+        func getHeaders() -> [String: String] {
+
+            var headers: [String: String] = [:]
+
+            let HTTPHeaders = env.filter { $0.0.hasPrefix("HTTP_") }
+
+            for (key, value) in HTTPHeaders {
+
+                let index = key.characters.indexOf("_")!
+                let name = key.substringFromIndex(index.advancedBy(1)).lowercaseString.replaceOccurrencesOfString("_", withString: "-")
+
+                headers[name] = value
+
+            }
+
+            return headers
+
+        }
+
+        func getBody() -> Data {
+
+            if let contentLenghtString = env["CONTENT_LENGTH"], contentLenght = Int(contentLenghtString) {
+
+                var buffer: [UInt8] = [UInt8](count: contentLenght, repeatedValue: 0)
+                FCGIReadBuffer(&buffer, contentLenght)
+                return Data(bytes: buffer)
+
+            }
+
+            return Data()
+
+        }
+
+        if let method = env["REQUEST_METHOD"], uriString = env["REQUEST_URI"], uri = URI(uriString), version = env["SERVER_PROTOCOL"] {
+
+            return HTTPRequest(
+                method: HTTPMethod(string: method),
+                uri: uri,
+                version: version,
+                headers: getHeaders(),
+                body: getBody()
+            )
+
+        }
+
+        return nil
+
+    }
+    
+    func sendResponse(var response: HTTPResponse) {
+        
+        if response.headers["content-type"] == nil {
+            
+            response.headers["content-type"] = ""
+            
+        }
+        
+        FCGIWriteString("Status: \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
+        
+        for (name, value) in response.headers {
+            
+            FCGIWriteString("\(name): \(value)\r\n")
+            
+        }
+        
+        FCGIWriteString("\r\n")
+        
+        FCGIWriteBuffer(UnsafeMutablePointer<Void>(response.body.bytes), response.body.length)
         
     }
     

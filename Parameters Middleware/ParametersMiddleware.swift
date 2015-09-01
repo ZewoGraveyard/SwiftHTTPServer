@@ -1,4 +1,4 @@
-// HTTPParser.h
+// ParametersMiddleware.swift
 //
 // The MIT License (MIT)
 //
@@ -22,9 +22,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPRouter_h
-#define HTTPRouter_h
+extension Middleware {
 
-#include "RegularExpression.h"
+    static func addParameters<Request, Response>(parameters: [String: String]) -> Request throws -> RequestMiddlewareResult<Request, Response> {
 
-#endif /* HTTPRouter_h */
+        return { request in
+
+            if var request = request as? Parameterizable {
+
+                request.parameters = request.parameters + parameters
+                return .Request(request as! Request)
+
+            } else {
+
+                return .Request(request)
+
+            }
+            
+        }
+        
+    }
+
+}

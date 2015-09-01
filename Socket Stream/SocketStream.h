@@ -1,4 +1,4 @@
-// UVHTTPServer.swift
+// SocketStream.h
 //
 // The MIT License (MIT)
 //
@@ -22,18 +22,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class UVHTTPServer: RequestResponseServer {
+#ifndef SocketStream_h
+#define SocketStream_h
 
-    let runLoop: RunLoop = UVRunLoop.defaultLoop
-    let acceptTCPClient = UVAcceptTCPClient
-    let parseRequest = HTTPRequestParser.parseRequest
-    let respond: (request: HTTPRequest) -> HTTPResponse
-    let serializeResponse = HTTPResponseSerializer.serializeResponse
+#include "Dispatch.h"
+#include "Socket.h"
 
-    init(respond: (request: HTTPRequest) -> HTTPResponse) {
-
-        self.respond = respond >>> Middleware.addHeaders(["server": "HTTP Server"])
-        
-    }
-    
-}
+#endif /* SocketStream_h */

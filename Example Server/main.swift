@@ -52,5 +52,4 @@ struct ExampleServer {
 
 }
 
-HTTPServer(respond: ExampleServer.respond).start(port: 8080)
-
+UVHTTPServer(respond: ExampleServer.respond).start()

@@ -1,4 +1,4 @@
-// HTTPParser.h
+// Parameterizable.swift
 //
 // The MIT License (MIT)
 //
@@ -22,9 +22,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPRouter_h
-#define HTTPRouter_h
+protocol Parameterizable {
 
-#include "RegularExpression.h"
-
-#endif /* HTTPRouter_h */
+    var parameters: [String: String] { get set }
+    
+}

@@ -1,4 +1,4 @@
-// HTTPParser.h
+// FCGI.h
 //
 // The MIT License (MIT)
 //
@@ -22,9 +22,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef HTTPRouter_h
-#define HTTPRouter_h
+#ifndef FCGI_h
+#define FCGI_h
 
-#include "RegularExpression.h"
+#include <stdlib.h>
 
-#endif /* HTTPRouter_h */
+extern char **environ;
+int FCGIAccept();
+int FCGIWriteString(const char *string);
+size_t FCGIReadBuffer(void *buffer, size_t size);
+size_t FCGIWriteBuffer(void *buffer, size_t size);
+
+#endif /* FCGI_h */
