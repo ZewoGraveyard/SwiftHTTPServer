@@ -46,6 +46,12 @@ struct HTTPResponse {
             
         }
 
+        if body.length > 0 {
+
+            self.headers = self.headers + ["content-length": "\(body.length)"]
+
+        }
+
     }
 
 }

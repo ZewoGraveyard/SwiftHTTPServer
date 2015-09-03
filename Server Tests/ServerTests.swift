@@ -31,16 +31,8 @@ class ServerTests: XCTestCase {
         super.setUp()
 
     }
-    
-    func testExample() {
 
-        let request = HTTPRequest(method: .GET, uri: URI("/api/v1/ok")!)
-        let response = ExampleServer.respond(request)
-        XCTAssert(response.status == .OK)
-
-    }
-
-    func testExample2() {
+    func testJSON() {
 
         let json: JSON = [
 
@@ -67,7 +59,7 @@ class ServerTests: XCTestCase {
 
         ]
 
-        let request = HTTPRequest(method: .GET, uri: URI("/api/json")!)
+        let request = HTTPRequest(method: .GET, uri: URI("/json")!)
         let response = ExampleServer.respond(request)
         XCTAssert(response.status == .OK)
         XCTAssert(response.equalsJSON(json))

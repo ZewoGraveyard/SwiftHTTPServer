@@ -87,7 +87,6 @@
 		B05372D31B9347DD00FC2B07 /* darwin.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA991B7973A100537FFE /* darwin.c */; };
 		B05372D41B9347DD00FC2B07 /* dl.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA9A1B7973A100537FFE /* dl.c */; };
 		B05372D51B9347DD00FC2B07 /* fs.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA9B1B7973A100537FFE /* fs.c */; };
-		B05372D61B9347DD00FC2B07 /* fsevents.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA9C1B7973A100537FFE /* fsevents.c */; };
 		B05372D71B9347DD00FC2B07 /* getaddrinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA9D1B7973A100537FFE /* getaddrinfo.c */; };
 		B05372D81B9347DD00FC2B07 /* getnameinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA9E1B7973A100537FFE /* getnameinfo.c */; };
 		B05372D91B9347DD00FC2B07 /* kqueue.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DAA01B7973A100537FFE /* kqueue.c */; };
@@ -244,6 +243,8 @@
 		B08E3B5B1B9734AB0076F5F5 /* Deliver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08E3B5A1B9734AB0076F5F5 /* Deliver.swift */; settings = {ASSET_TAGS = (); }; };
 		B08E3B5D1B97BD620076F5F5 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B070F6F61B95E81700B6FCBA /* Stream.swift */; settings = {ASSET_TAGS = (); }; };
 		B08E3B5E1B97BE570076F5F5 /* SocketStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B070F7151B95F0F700B6FCBA /* SocketStream.swift */; settings = {ASSET_TAGS = (); }; };
+		B08E3B5F1B97CB2D0076F5F5 /* fsevents.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA9C1B7973A100537FFE /* fsevents.c */; settings = {ASSET_TAGS = (); }; };
+		B08E3B601B97CB2D0076F5F5 /* fsevents.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA9C1B7973A100537FFE /* fsevents.c */; settings = {ASSET_TAGS = (); }; };
 		B093DA751B75A28E00537FFE /* HTTPError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B093DA741B75A28E00537FFE /* HTTPError.swift */; };
 		B093DA761B75A29800537FFE /* HTTPError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B093DA741B75A28E00537FFE /* HTTPError.swift */; };
 		B093DA7B1B763BE900537FFE /* Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B093DA7A1B763BE900537FFE /* Authenticator.swift */; };
@@ -257,7 +258,6 @@
 		B093DABE1B7973A200537FFE /* darwin.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA991B7973A100537FFE /* darwin.c */; };
 		B093DAC01B7973A200537FFE /* dl.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA9A1B7973A100537FFE /* dl.c */; };
 		B093DAC21B7973A200537FFE /* fs.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA9B1B7973A100537FFE /* fs.c */; };
-		B093DAC41B7973A200537FFE /* fsevents.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA9C1B7973A100537FFE /* fsevents.c */; };
 		B093DAC61B7973A200537FFE /* getaddrinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA9D1B7973A100537FFE /* getaddrinfo.c */; };
 		B093DAC81B7973A200537FFE /* getnameinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DA9E1B7973A100537FFE /* getnameinfo.c */; };
 		B093DACA1B7973A200537FFE /* kqueue.c in Sources */ = {isa = PBXBuildFile; fileRef = B093DAA01B7973A100537FFE /* kqueue.c */; };
@@ -890,10 +890,10 @@
 				B08E3B491B9655CD0076F5F5 /* Keep Alive Midleware */,
 				B08E3B5C1B9734AF0076F5F5 /* Deliver */,
 				3AAC2C181B4C5E0900CDB7C9 /* Example Server */,
+				B05372C21B927D5B00FC2B07 /* Server Tests */,
 				B0EC72981B4CC5B500D2D1D9 /* HTTP Client */,
 				B08E3B581B9725710076F5F5 /* Result */,
 				B0EC72FB1B4CD0DC00D2D1D9 /* Example Client */,
-				B05372C21B927D5B00FC2B07 /* Server Tests */,
 				B04FE23A1B94DE2600ACD50F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -1548,6 +1548,7 @@
 				B093DAD01B7973A200537FFE /* pipe.c in Sources */,
 				3AAC2BCA1B4C5C6200CDB7C9 /* File.swift in Sources */,
 				3AAC2BC01B4C5C6200CDB7C9 /* HTTPStatus.swift in Sources */,
+				B08E3B5F1B97CB2D0076F5F5 /* fsevents.c in Sources */,
 				B05E71261B69B3030004DB62 /* TextParserMiddleware.swift in Sources */,
 				3AAC2BED1B4C5C6200CDB7C9 /* MustacheBox.swift in Sources */,
 				3AAC2BB11B4C5C6200CDB7C9 /* HTTPResponse+HTML.swift in Sources */,
@@ -1556,7 +1557,6 @@
 				B049561E1B52C38C00AA2A54 /* ParametersMiddleware.swift in Sources */,
 				3AAC2BD71B4C5C6200CDB7C9 /* TemplateAST.swift in Sources */,
 				B09DBE351B7A3DCF00DE4ED0 /* FastCGIServer.c in Sources */,
-				B093DAC41B7973A200537FFE /* fsevents.c in Sources */,
 				3AAC2BCF1B4C5C6200CDB7C9 /* JSONParser.swift in Sources */,
 				3AAC2BDA1B4C5C6200CDB7C9 /* TemplateCompiler.swift in Sources */,
 				3AAC2BD61B4C5C6200CDB7C9 /* Tag.swift in Sources */,
@@ -1662,6 +1662,7 @@
 			files = (
 				B05373271B93484C00FC2B07 /* ServerOperators.swift in Sources */,
 				B05373281B93484C00FC2B07 /* ParametersMiddleware.swift in Sources */,
+				B08E3B601B97CB2D0076F5F5 /* fsevents.c in Sources */,
 				B05373291B93484C00FC2B07 /* LoggerMiddleware.swift in Sources */,
 				B053732A1B93484C00FC2B07 /* HeadersMiddleware.swift in Sources */,
 				B070F71B1B95F41C00B6FCBA /* FastCGIServer.c in Sources */,
@@ -1716,7 +1717,6 @@
 				B05372D41B9347DD00FC2B07 /* dl.c in Sources */,
 				B05372D51B9347DD00FC2B07 /* fs.c in Sources */,
 				B04245C51B94B0EA00463EDF /* CollectionType+Anthology.swift in Sources */,
-				B05372D61B9347DD00FC2B07 /* fsevents.c in Sources */,
 				B05372D71B9347DD00FC2B07 /* getaddrinfo.c in Sources */,
 				B05372D81B9347DD00FC2B07 /* getnameinfo.c in Sources */,
 				B05372D91B9347DD00FC2B07 /* kqueue.c in Sources */,
