@@ -22,10 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// TODO: Revisit this with async i/o
 struct HTTPResponseParser {
 
-    static func parseResponse(socket socket: Socket) throws -> HTTPResponse {
+    static func parseResponse(stream stream: Stream, completion: HTTPResponse -> Void) {
 
         struct RawHTTPResponse {
             var statusCode: Int = 0
@@ -90,45 +89,61 @@ struct HTTPResponseParser {
             var buffer: [Int8] = [Int8](count: length, repeatedValue: 0)
             memcpy(&buffer, data, length)
 
-            response.body = buffer
+            response.body += buffer
 
             return 0
 
+        }
+
+        func onMessageComplete(parser: UnsafeMutablePointer<http_parser>) -> Int32 {
+
+            let response = HTTPResponse(
+                status: HTTPStatus(statusCode: response.statusCode),
+                version: response.version,
+                headers: response.headers,
+                body: Data(bytes: response.body)
+            )
+
+            completion(response)
+            
+            return 0
+            
         }
 
         var parser = http_parser()
 
         http_parser_init(&parser, HTTP_RESPONSE)
 
-        var (buffer, bytesRead) = try socket.receiveBuffer(bufferSize: 80 * 1024)
+        try! stream.readData { data in
 
-        let bytesParsed = http_parser_execute(
-            &parser,
-            nil,
-            nil,
-            onStatus,
-            onHeaderField,
-            onHeaderValue,
-            onHeadersComplete,
-            onBody,
-            nil,
-            &buffer,
-            bytesRead
-        )
+            let bytesParsed = http_parser_execute(
+                &parser,
+                nil,
+                nil,
+                onStatus,
+                onHeaderField,
+                onHeaderValue,
+                onHeadersComplete,
+                onBody,
+                onMessageComplete,
+                UnsafePointer<Int8>(data.bytes),
+                data.length
+            )
 
-        if bytesParsed != bytesRead {
+            if parser.upgrade == 1 {
 
-            let error = http_errno_name(http_errno(parser.http_errno))
-            throw Error.Generic("Error parsing response",  String.fromCString(error)!)
+                print("Error parsing request: Protocol upgrade unsupported")
+
+            }
+
+            if bytesParsed != data.length {
+
+                let error = http_errno_name(http_errno(parser.http_errno))
+                print("Error parsing request: " + String.fromCString(error)!)
+
+            }
             
         }
-
-        return HTTPResponse(
-            status: HTTPStatus(statusCode: response.statusCode, reasonPhrase: response.reasonPhrase),
-            version: response.version,
-            headers: response.headers,
-            body: Data(bytes: response.body)
-        )
         
     }
     

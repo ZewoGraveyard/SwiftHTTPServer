@@ -24,37 +24,18 @@
 
 struct HTTPRequestSerializer {
 
-    static func serializeRequest(socket: Socket, request: HTTPRequest) throws {
+    static func serializeRequest(stream stream: Stream, request: HTTPRequest) {
 
-        try socket.writeString("\(request.method) \(request.uri) HTTP/1.3\r\n")
+        stream.writeData(Data(string: "\(request.method) \(request.uri) HTTP/1.3\r\n"))
 
         for (name, value) in request.headers {
 
-            try socket.writeString("\(name): \(value)\r\n")
+            stream.writeData(Data(string: "\(name): \(value)\r\n"))
 
         }
 
-        try socket.writeString("\r\n")
-
-        try socket.writeData(request.body)
-        
-    }
-    
-    static func serializeRequest2(socket: Socket, request: HTTPRequest) throws {
-
-        var headers = ""
-        
-        headers += "\(request.method) \(request.uri) HTTP/1.3\r\n"
-        
-        for (name, value) in request.headers {
-            
-            headers += "\(name): \(value)\r\n"
-            
-        }
-        
-        headers += "\r\n"
-
-        try socket.writeData(Data(string: headers) + request.body)
+        stream.writeData(Data(string: "\r\n"))
+        stream.writeData(request.body)
         
     }
     

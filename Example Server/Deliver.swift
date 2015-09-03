@@ -1,4 +1,4 @@
-// main.swift
+// Deliver.swift
 //
 // The MIT License (MIT)
 //
@@ -22,33 +22,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-let address: String = "www.apple.com"
-let port: TCPPort = 80
+public func deliver<T>(handler: T -> Void, runQueue: DispatchQueue = Dispatch.defaultQueue, resultQueue: DispatchQueue = Dispatch.mainQueue, run: Void -> T) {
 
-let request =  HTTPRequest(
-    method: .GET,
-    uri: URI("/")!,
-    headers: [
-        "host": "www.apple.com:80"
-    ]
-)
+    Dispatch.async(queue: runQueue) {
 
-Log.info(request)
+        let result = run()
+
+        Dispatch.async(queue: resultQueue) {
+
+            handler(result)
+            
+        }
+        
+    }
     
-HTTPClient.sendRequest(request, address: address, port: port) { result in
-
-    result.success { response in
-
-        Log.info(response)
-
-    }
-
-    result.failure { error in
-
-        Log.error(error)
-
-    }
-
 }
-
-Dispatch.main()

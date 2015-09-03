@@ -37,7 +37,7 @@ func POSIXErrorDescription(errorNumber: Int32) -> String? {
 
 }
 
-enum Error: ErrorType {
+enum Error : ErrorType {
 
     case Generic(ErrorDescription, ErrorReason)
 

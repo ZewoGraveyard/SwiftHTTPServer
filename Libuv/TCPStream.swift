@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class TCPStream: UVStream {
+class TCPStream : UVStream {
 
     let socket = UnsafeMutablePointer<uv_tcp_t>.alloc(1)
 

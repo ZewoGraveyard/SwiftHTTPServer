@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPRequest: Parameterizable, KeepAliveType {
+struct HTTPRequest {
 
     let method: HTTPMethod
     let uri: URI
@@ -90,19 +90,13 @@ struct HTTPRequest: Parameterizable, KeepAliveType {
 
     }
 
+}
+
+extension HTTPRequest : KeepAliveType {
+
     var keepAlive: Bool {
 
-        set {
-
-            if (newValue) { headers["connection"] = "keep-alive" }
-
-        }
-
-        get {
-
-            return (headers["connection"]?.trim().lowercaseString == "keep-alive") ?? false
-            
-        }
+        return (headers["connection"]?.lowercaseString == "keep-alive") ?? false
         
     }
     

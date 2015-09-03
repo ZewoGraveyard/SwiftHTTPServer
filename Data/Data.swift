@@ -76,15 +76,9 @@ public struct Data {
 
 }
 
-extension Data: CustomStringConvertible {
+extension Data : CustomStringConvertible {
 
     public var description: String {
-
-        if length > 500 {
-
-            return "Data: Data too large to be represented as string."
-
-        }
 
         if let string = String(data: self) {
 
@@ -100,7 +94,7 @@ extension Data: CustomStringConvertible {
 
 }
 
-extension Data: SequenceType {
+extension Data : SequenceType {
 
     public func generate() -> IndexingGenerator<[UInt8]> {
 

@@ -24,16 +24,20 @@
 
 struct HTTPClient {
 
-    // TODO: User Result<HTTPResponse>
-    static func sendRequest(request: HTTPRequest, address: String, port: TCPPort, completion: HTTPResponse -> Void) {
+    static func sendRequest(request: HTTPRequest, address: String, port: TCPPort, result: Result<HTTPResponse> -> Void) {
 
-        Dispatch.async {
+        strive(result) { success, failure in
 
-            let socket = try! Socket(IP: address, port: port)
-            try! HTTPRequestSerializer.serializeRequest(socket, request: request)
-            let response = try! HTTPResponseParser.parseResponse(socket: socket)
-            socket.release()
-            completion(response)
+            let socket = try Socket(address: address, port: port)
+            let socketStream = SocketStream(socket: socket)
+
+            HTTPRequestSerializer.serializeRequest(stream: socketStream, request: request)
+            HTTPResponseParser.parseResponse(stream: socketStream) { response in
+
+                success(response)
+                socketStream.close()
+
+            }
 
         }
     

@@ -51,7 +51,7 @@ struct URI {
 
 }
 
-extension URI: CustomStringConvertible {
+extension URI : CustomStringConvertible {
 
     var description: String {
 

@@ -24,20 +24,12 @@
 
 extension Middleware {
 
-    static func addParameters<Request, Response>(parameters: [String: String]) -> Request throws -> RequestMiddlewareResult<Request, Response> {
+    static func addParameters(parameters: [String: String]) -> HTTPRequest throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse> {
 
-        return { request in
+        return { (var request) in
 
-            if var request = request as? Parameterizable {
-
-                request.parameters = request.parameters + parameters
-                return .Request(request as! Request)
-
-            } else {
-
-                return .Request(request)
-
-            }
+            request.parameters = request.parameters + parameters
+            return .Request(request)
             
         }
         

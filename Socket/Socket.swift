@@ -25,7 +25,7 @@
 typealias TCPPort = in_port_t
 typealias SocketFileDescriptor = CInt
 
-enum SocketError: ErrorType {
+enum SocketError : ErrorType {
 
     case ConnectionClosed
 
@@ -35,37 +35,37 @@ struct Socket {
 
     let fileDescriptor: SocketFileDescriptor
 
-    private(set) var IP: String
+    private(set) var address: String
     private(set) var port: TCPPort
 
     init(port: TCPPort, maxConnections: Int = 20) throws {
 
-        self.fileDescriptor = try Socket.createSocketHandler()
-        self.IP = "0.0.0.0"
+        self.fileDescriptor = try Socket.createSocketFileDescriptor()
+        self.address = "0.0.0.0"
         self.port = port
 
         try setReuseAddressOption()
         try setNoSigPipeOption()
-        try bindTo(IP: self.IP, port: self.port)
+        try bindTo(address: self.address, port: self.port)
         try listenWithMaxConnections(maxConnections)
 
     }
 
-    init(IP: String, port: TCPPort) throws {
+    init(address: String, port: TCPPort) throws {
 
-        self.fileDescriptor = try Socket.createSocketHandler()
-        self.IP = "0.0.0.0"
+        self.fileDescriptor = try Socket.createSocketFileDescriptor()
+        self.address = address
         self.port = port
 
         try setReuseAddressOption()
         try setNoSigPipeOption()
-        try connectTo(IP: self.IP, port: self.port)
+        try connectTo(address: self.address, port: self.port)
 
     }
 
-    func connectTo(IP IP: String, port: TCPPort) throws {
+    func connectTo(address address: String, port: TCPPort) throws {
 
-        let addresses = try addressesFromDNSHost(IP, port: port)
+        let addresses = try addressesFromDNSHost(address, port: port)
 
         var address = addresses.first!
 
@@ -78,17 +78,17 @@ struct Socket {
 
     }
 
-    init(IP: String, port: TCPPort, socketHandler: SocketFileDescriptor) throws {
+    init(address: String, port: TCPPort, fileDescriptor: SocketFileDescriptor) throws {
 
-        if socketHandler == -1 {
+        if fileDescriptor == -1 {
 
-            throw Error.Generic("Could not create Socket", "socketHandler is invalid")
+            throw Error.Generic("Could not create Socket", "fileDescriptor is invalid")
 
         }
 
-        self.IP = IP
+        self.address = address
         self.port = port
-        self.fileDescriptor = socketHandler
+        self.fileDescriptor = fileDescriptor
 
     }
 
@@ -195,9 +195,9 @@ struct Socket {
 
         var length: socklen_t = socklen_t(sizeof(sockaddr))
 
-        let clientSocketHandler = accept(fileDescriptor, &clientAddress, &length)
+        let clientFileDescriptor = accept(fileDescriptor, &clientAddress, &length)
 
-        if clientSocketHandler == -1 {
+        if clientFileDescriptor == -1 {
 
             throw Error.lastSystemError(reason: "accept() failed")
 
@@ -223,7 +223,7 @@ struct Socket {
             
         }
 
-        guard let IP = String.fromCString(&addressString) else {
+        guard let address = String.fromCString(&addressString) else {
 
             throw Error.Generic("Could not get IP address from client", "CString not convertible to String")
 
@@ -231,7 +231,7 @@ struct Socket {
 
         let port = addressIn.sin_port
 
-        let clientSocket = try Socket(IP: IP, port: port, socketHandler: clientSocketHandler)
+        let clientSocket = try Socket(address: address, port: port, fileDescriptor: clientFileDescriptor)
 
         try clientSocket.setNoSigPipeOption()
 
@@ -239,17 +239,17 @@ struct Socket {
 
     }
 
-    private static func createSocketHandler() throws -> SocketFileDescriptor {
+    private static func createSocketFileDescriptor() throws -> SocketFileDescriptor {
 
-        let socketHandler = socket(AF_INET, SOCK_STREAM, 0)
+        let fileDescriptor = socket(AF_INET, SOCK_STREAM, 0)
 
-        if socketHandler == -1 {
+        if fileDescriptor == -1 {
 
             throw Error.lastSystemError(reason: "socket() failed")
 
         }
 
-        return socketHandler
+        return fileDescriptor
 
     }
 
@@ -279,13 +279,13 @@ struct Socket {
 
     }
 
-    private func bindTo(IP IP: String, port: TCPPort) throws {
+    private func bindTo(address address: String, port: TCPPort) throws {
 
         var addressIn = sockaddr_in(
             sin_len: __uint8_t(sizeof(sockaddr_in)),
             sin_family: sa_family_t(AF_INET),
             sin_port: port_htons(port),
-            sin_addr: in_addr(s_addr: inet_addr(IP)),
+            sin_addr: in_addr(s_addr: inet_addr(address)),
             sin_zero: (0, 0, 0, 0, 0, 0, 0, 0)
         )
 
@@ -313,7 +313,7 @@ struct Socket {
         
     }
 
-    private func addressesFromDNSHost(host: String, port: TCPPort) throws -> [sockaddr] {
+    private func addressesFromDNSHost(address: String, port: TCPPort) throws -> [sockaddr] {
 
         var addresses: [sockaddr] = []
 
@@ -332,7 +332,7 @@ struct Socket {
 
         let portString = "\(port)"
 
-        if getaddrinfo(host, portString, &hints, &results) == -1 {
+        if getaddrinfo(address, portString, &hints, &results) == -1 {
 
             release()
             throw Error.lastSystemError(reason: "getaddrinfo() failed")

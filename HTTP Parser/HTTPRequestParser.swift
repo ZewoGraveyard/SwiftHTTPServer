@@ -90,14 +90,13 @@ struct HTTPRequestParser {
             var buffer: [Int8] = [Int8](count: length, repeatedValue: 0)
             memcpy(&buffer, data, length)
 
-            request.body = buffer
+            request.body += buffer
 
             return 0
 
         }
 
         func onMessageComplete(parser: UnsafeMutablePointer<http_parser>) -> Int32 {
-
 
             guard let uri = URI(request.uri) else {
 

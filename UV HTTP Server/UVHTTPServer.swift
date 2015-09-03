@@ -27,7 +27,7 @@ struct UVHTTPServer: Server {
     let runLoop: RunLoop = UVRunLoop.defaultLoop
     let acceptTCPClient = UVAcceptTCPClient
     let parseRequest = HTTPRequestParser.parseRequest
-    let respond: (request: HTTPRequest) -> HTTPResponse
+    let respond: HTTPRequest -> HTTPResponse
     let serializeResponse = HTTPResponseSerializer.serializeResponse
 
     init(respond: (request: HTTPRequest) -> HTTPResponse) {

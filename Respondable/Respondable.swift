@@ -1,4 +1,4 @@
-// main.swift
+// Respondable.swift
 //
 // The MIT License (MIT)
 //
@@ -22,33 +22,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-let address: String = "www.apple.com"
-let port: TCPPort = 80
+protocol Respondable {
 
-let request =  HTTPRequest(
-    method: .GET,
-    uri: URI("/")!,
-    headers: [
-        "host": "www.apple.com:80"
-    ]
-)
+    typealias Request
+    typealias Response
 
-Log.info(request)
-    
-HTTPClient.sendRequest(request, address: address, port: port) { result in
-
-    result.success { response in
-
-        Log.info(response)
-
-    }
-
-    result.failure { error in
-
-        Log.error(error)
-
-    }
+    var respond: Request throws -> Response { get }
 
 }
-
-Dispatch.main()

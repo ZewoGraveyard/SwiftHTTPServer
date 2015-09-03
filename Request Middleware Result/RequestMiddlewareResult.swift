@@ -29,6 +29,12 @@ enum RequestMiddlewareResult<RequestType, ResponseType> {
     
 }
 
+func >>><Request, Response, T: Respondable where T.Request == Request, T.Response == Response>(middleware: Request throws -> RequestMiddlewareResult<Request, Response>, responder: T) -> Request throws -> Response {
+
+    return middleware >>> responder.respond
+
+}
+
 func >>><Request, Response>(middlewareA: Request throws -> RequestMiddlewareResult<Request, Response>, middlewareB: Request throws -> RequestMiddlewareResult<Request, Response>) -> Request throws -> RequestMiddlewareResult<Request, Response> {
 
     return { (request: Request) -> RequestMiddlewareResult<Request, Response> in

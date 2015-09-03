@@ -54,6 +54,18 @@ func >>><Request, Response>(respond: (Request -> Response), middleware: ((Reques
     
 }
 
+func >>><Request, Response, T: Respondable where T.Request == Request, T.Response == Response>(responder: T, middleware: ((Request, Response) -> Void)) -> (Request throws -> Response) {
+
+    return { request in
+
+        let response = try responder.respond(request)
+        middleware(request, response)
+        return response
+
+    }
+    
+}
+
 func >>><Request, Response>(respond: (Request throws -> Response), middleware: ((Request, Response) -> Void)) -> (Request throws -> Response) {
 
     return { request in
@@ -73,6 +85,24 @@ func >>><Request, Response>(respond: Request throws -> Response, respondError: E
         do {
 
             return try respond(request)
+
+        } catch {
+
+            return respondError(error)
+            
+        }
+        
+    }
+    
+}
+
+func >>><Request, Response, T: Respondable where T.Request == Request, T.Response == Response>(responder: T, respondError: ErrorType -> Response) -> (Request -> Response) {
+
+    return { request in
+
+        do {
+
+            return try responder.respond(request)
 
         } catch {
 

@@ -22,8 +22,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol Parameterizable {
-
-    var parameters: [String: String] { get set }
-    
-}
+//protocol Parameterizable {
+//
+//    var parameters: [String: String] { get set }
+//    
+//}
