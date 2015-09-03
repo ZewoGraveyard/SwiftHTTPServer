@@ -31,7 +31,7 @@ protocol Server {
     var acceptTCPClient: (port: Int, handleClient: (client: Stream) -> Void) throws -> Void { get }
     var parseRequest: (stream: Stream, completion: Request -> Void) -> Void { get }
     var respond: Request -> Response { get }
-    var serializeResponse: (stream: Stream, response: Response) -> Void { get }
+    var serializeResponse: (stream: Stream, response: Response, completion: Void -> Void) -> Void { get }
 
 }
 
@@ -46,12 +46,14 @@ extension Server {
                 self.parseRequest(stream: client) { request in
 
                     let response = self.respond(request)
-                    self.serializeResponse(stream: client, response: response)
-
-                    if !self.keepAliveRequest(request) {
-
-                        client.close()
-
+                    self.serializeResponse(stream: client, response: response) {
+                        
+                        if !self.keepAliveRequest(request) {
+                            
+                            client.close()
+                            
+                        }
+                        
                     }
 
                 }

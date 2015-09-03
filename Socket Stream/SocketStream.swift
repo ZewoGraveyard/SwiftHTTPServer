@@ -67,6 +67,7 @@ final class SocketStream : Stream {
     func close() {
         
         channel.close()
+        socket.release()
         
     }
     

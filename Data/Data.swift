@@ -109,3 +109,9 @@ func +(lhs: Data, rhs: Data) -> Data {
     return Data(bytes: lhs.bytes + rhs.bytes)
 
 }
+
+func +=(inout lhs: Data, rhs: Data) {
+    
+    lhs = lhs + rhs
+    
+}

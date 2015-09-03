@@ -34,6 +34,12 @@ func +<Key, Value>(var lhs: [Key: Value], rhs: [Key: Value]) -> [Key: Value] {
 
 }
 
+func +=<Key, Value>(inout lhs: [Key: Value], rhs: [Key: Value]) {
+    
+    lhs = lhs + rhs
+    
+}
+
 func dictionaryFromKeys<Key, Value>(keys: [Key], values: [Value]) throws -> [Key: Value] {
 
     if keys.count != values.count {

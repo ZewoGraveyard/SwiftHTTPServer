@@ -24,19 +24,21 @@
 
 struct HTTPResponseSerializer {
 
-    static func serializeResponse(stream stream: Stream, response: HTTPResponse) {
+    static func serializeResponse(stream stream: Stream, response: HTTPResponse, completion: Void -> Void) {
 
-        stream.writeData(Data(string: "\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n"))
+        var data = Data(string: "\(response.version) \(response.status.statusCode) \(response.status.reasonPhrase)\r\n")
 
         for (name, value) in response.headers {
 
-            stream.writeData(Data(string: "\(name): \(value)\r\n"))
+            data += Data(string: "\(name): \(value)\r\n")
 
         }
 
-        stream.writeData(Data(string: "\r\n"))
-        stream.writeData(response.body)
-
+        data += Data(string: "\r\n")
+        data += response.body
+        
+        stream.writeData(data, completion: completion)
+    
     }
     
 }

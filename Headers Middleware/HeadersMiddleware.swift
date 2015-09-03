@@ -28,7 +28,7 @@ extension Middleware {
 
         return { (var request) in
 
-            request.headers = request.headers + headers
+            request.headers += headers
             return .Request(request)
 
         }
@@ -39,7 +39,7 @@ extension Middleware {
 
         return { (var response) in
 
-            response.headers = response.headers + headers
+            response.headers += headers
             return response
             
         }

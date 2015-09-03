@@ -37,8 +37,14 @@ struct HTTPResponse {
 
         self.status = status
         self.version = version
-        self.headers = headers + ["content-length": "\(body.length)"]
+        self.headers = headers
         self.body = body
+            
+        if self.body.length > 0 {
+            
+            self.headers += ["content-length": "\(body.length)"]
+            
+        }
 
     }
 
