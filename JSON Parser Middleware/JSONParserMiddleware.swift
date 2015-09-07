@@ -26,6 +26,7 @@ extension Middleware {
 
     static func parseJSON(key key: String)(var request: HTTPRequest) throws -> RequestMiddlewareResult<HTTPRequest, HTTPResponse> {
 
+        // TODO: put contenty type as computed property on httprequest
         guard let contentType = request.headers["content-type"] where MediaType(contentType).type == "application/json" else {
 
             return .Request(request)

@@ -61,6 +61,147 @@ public enum JSON {
 
     }
 
+    // TODO: decide what to do if Any is not a JSON value
+    static func from(values: [Any]) -> JSON {
+
+        var jsonArray: [JSON] = []
+
+        for value in values {
+
+            if let value = value as? Bool {
+
+                jsonArray.append(JSON.from(value))
+
+            }
+
+            if let value = value as? Double {
+
+                jsonArray.append(JSON.from(value))
+
+            }
+
+            if let value = value as? String {
+
+                jsonArray.append(JSON.from(value))
+
+            }
+
+            if let value = value as? [Any] {
+
+                jsonArray.append(JSON.from(value))
+
+            }
+            
+            if let value = value as? [String: Any] {
+                
+                jsonArray.append(JSON.from(value))
+                
+            }
+
+        }
+
+        return JSON.from(jsonArray)
+
+    }
+
+    // TODO: decide what to do if Any is not a JSON value
+    static func from(value: [String: Any]) -> JSON {
+
+        var jsonDictionary: [String: JSON] = [:]
+
+        for (key, value) in value {
+
+            if let value = value as? Bool {
+
+                jsonDictionary[key] = JSON.from(value)
+
+            }
+
+            if let value = value as? Double {
+
+                jsonDictionary[key] = JSON.from(value)
+                
+            }
+
+            if let value = value as? String {
+
+                jsonDictionary[key] = JSON.from(value)
+
+            }
+
+            if let value = value as? [Any] {
+
+                jsonDictionary[key] = JSON.from(value)
+
+            }
+
+            if let value = value as? [String: Any] {
+
+                jsonDictionary[key] = JSON.from(value)
+                
+            }
+
+        }
+
+        return JSON.from(jsonDictionary)
+        
+    }
+
+    public var isBoolean: Bool {
+
+        switch self {
+
+        case .BooleanValue: return true
+        default: return false
+            
+        }
+
+    }
+
+    public var isNumber: Bool {
+
+        switch self {
+
+        case .NumberValue: return true
+        default: return false
+
+        }
+        
+    }
+
+    public var isString: Bool {
+
+        switch self {
+
+        case .StringValue: return true
+        default: return false
+
+        }
+        
+    }
+
+    public var isArray: Bool {
+
+        switch self {
+
+        case .ArrayValue: return true
+        default: return false
+
+        }
+        
+    }
+
+    public var isObject: Bool {
+
+        switch self {
+
+        case .ObjectValue: return true
+        default: return false
+
+        }
+        
+    }
+
     public var boolValue: Bool {
 
         switch self {
@@ -131,6 +272,45 @@ public enum JSON {
         default: return [:]
 
         }
+
+    }
+
+    public var anyValue: Any {
+
+        switch self {
+
+        case NullValue:
+            let array: [Any] = []
+            return array
+        case BooleanValue(let bool): return bool
+        case NumberValue(let double): return double
+        case StringValue(let string): return string
+        case ArrayValue(let array): return array.map { $0.anyValue }
+        case ObjectValue(let object):
+
+            var dictionaryOfAny: [String: Any] = [:]
+
+            for (key, json) in object {
+
+                dictionaryOfAny[key] = json.anyValue
+
+            }
+            
+            return dictionaryOfAny
+            
+        }
+        
+    }
+
+    public var dictionaryOfAnyValue: [String: Any] {
+
+        if let dictionaryOfAny = anyValue as? [String: Any] {
+
+            return dictionaryOfAny
+
+        }
+
+        return [:]
 
     }
 

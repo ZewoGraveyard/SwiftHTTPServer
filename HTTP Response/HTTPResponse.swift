@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPResponse {
+public struct HTTPResponse {
 
     let status: HTTPStatus
     let version: String
@@ -56,9 +56,25 @@ struct HTTPResponse {
 
 }
 
+extension HTTPResponse {
+
+    var contentType: String? {
+
+        if let contentType = headers["content-type"] {
+
+            return MediaType(contentType).type
+
+        }
+
+        return nil
+
+    }
+
+}
+
 extension HTTPResponse: CustomStringConvertible {
 
-    var description: String {
+    public var description: String {
 
         var string = "\(status.statusCode) \(status.reasonPhrase) \(version)\n"
 

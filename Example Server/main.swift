@@ -22,26 +22,57 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct ExampleServer {
+let respond = HTTPRouter { router in
 
-    static let respond = HTTPRouter { router in
+    router.get("/collection/taks") { (request: HTTPRequest) in
 
-        router.get("/login", LoginResponder.show)
-        router.post("/login", LoginResponder.authenticate)
+        let site = "http://localhost:3000/collection/tasks/"
+        let items: [String: Any] = [
+            "id": "666",
+            "description": "Do stuff",
+            "completed": false,
+            "dueDate": 123
+        ]
 
-        router.resources("/users") {
+        let data: [String: MustacheBoxable] = [
+            "site": site,
+            "items": [items]
+        ]
 
-            Middleware.basicAuthentication(Authenticator.authenticate) >>> UserResponder()
+        return try HTTPResponse(
+            status: .OK,
+            headers: ["content-type": "application/collection+json"],
+            templatePath: "Views/tasks.mustache",
+            templateData: data
+        )
 
-        }
+    }
 
-        router.get("/json", JSONResponder.get)
-        router.post("/json", Middleware.parseJSON >>> JSONResponder.post)
-        router.get("/redirect", Responder.redirect("http://www.google.com"))
-        router.any("/parameters/:id/", ParametersResponder.respond)
+} >>> HTTPError.respondError
 
-    } >>> HTTPError.respondError >>> Middleware.log
 
-}
 
-HTTPServer(respond: ExampleServer.respond).start()
+
+//struct ExampleServer {
+//
+//    static let respond = HTTPRouter { router in
+//
+//        router.get("/login", LoginResponder.show)
+//        router.post("/login", LoginResponder.authenticate)
+//
+//        router.resources("/users") {
+//
+//            Middleware.basicAuthentication(Authenticator.authenticate) >>> UserResponder()
+//
+//        }
+//
+//        router.get("/json", JSONResponder.get)
+//        router.post("/json", Middleware.parseJSON >>> JSONResponder.post)
+//        router.get("/redirect", Responder.redirect("http://www.google.com"))
+//        router.any("/parameters/:id/", ParametersResponder.respond)
+//
+//    } >>> HTTPError.respondError >>> Middleware.log
+//
+//}
+//
+HTTPServer(respond: respond).start()

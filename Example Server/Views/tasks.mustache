@@ -1,0 +1,24 @@
+{
+  "collection" : {
+    "href": "{{ site }}",
+    "version": "1.0",
+    "links": [
+      {"rel" : "author", "href" : "mailto:paulo.faria.rl@gmail.com", "prompt" : "Author"},
+      {"rel" : "queries", "href" : "{{ site }};queries", "prompt" : "Queries"},
+      {"rel" : "template", "href" : "{{ site }};template", "prompt" : "Template"}
+    ],
+    "items": [
+     {{# each(items) }}
+     {
+       "href" : "{{ site }}{{ .id }}",
+       "data" : [
+         {"name" : "description", "value" : "{{ .description }}", "prompt" : "Description"},
+         {"name" : "completed", "value" : "{{ .completed }}", "prompt" : "Completed"},
+         {"name" : "dateDue", "value" : "{{ .dueDate }}", "prompt" : "Due Date"}
+       ]
+     },
+     {{/}}
+     {}
+     ]
+  }
+}
