@@ -27,7 +27,7 @@ struct ExampleServer {
     static let respond = HTTPRouter { router in
 
         router.get("/login", LoginResponder.show)
-        router.post("/login", LoginResponder.authenticate)
+        router.post("/login", Middleware.parseURLEncoded >>> LoginResponder.authenticate)
 
         router.resources("/users") {
 

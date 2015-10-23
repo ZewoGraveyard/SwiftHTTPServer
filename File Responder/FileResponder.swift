@@ -36,7 +36,7 @@ extension Responder {
 
             }
 
-            return try HTTPResponse(filePath: baseDirectory + path)
+            return try HTTPResponse(baseDirectory: baseDirectory, filePath: path)
 
         }
 

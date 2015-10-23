@@ -27,12 +27,13 @@ extension HTTPResponse {
     init(
         status: HTTPStatus = .OK,
         headers: [String: String] = [:],
+        baseDirectory: String,
         filePath: String,
         contentType: String? = .None) throws {
 
-            guard let file = File(path: filePath) else {
+            guard let file = File(path: baseDirectory + filePath) else {
 
-                throw HTTPError.NotFound(description: "Could not find file \(filePath)")
+                throw HTTPError.NotFound(description: "Resource not found: \(filePath)")
 
             }
 

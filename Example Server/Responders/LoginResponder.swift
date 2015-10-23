@@ -37,7 +37,7 @@ struct LoginResponder {
 
         if email == "email@email.com" && password == "password" {
 
-            return HTTPResponse(HTML: "logou")
+            return HTTPResponse(HTML: "logged in")
 
         } else {
 
