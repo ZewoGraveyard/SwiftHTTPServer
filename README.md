@@ -232,6 +232,16 @@ let server = HTTPServer(respond: respond)
 server.start()
 ```
 
+## Installing FastCGI
+
+To install FCGI, download it from here: [http://www.fastcgi.com/dist/fcgi.tar.gz](http://www.fastcgi.com/dist/fcgi.tar.gz).
+
+```bash
+./configure
+make
+make install
+```
+
 ## `HTTPParser`
 
 The `HTTPParser` used by the `HTTPServer` is a wrapper over the **C** library [`http_parser`](https://github.com/joyent/http-parser) which is used by **Node.js**. I've made some simple benchmarks, and when compiled in release mode we were able to get faster results than the `http` module from **Node.js**.
